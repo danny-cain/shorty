@@ -1,0 +1,111 @@
+/* Scheme 1 - light blue*/
+body
+{
+	background-color: #5954FF; /* 89 84 255 */
+	color: black;
+}
+
+a
+{
+	color: white;
+}
+
+/* Scheme 2 - dark blue */
+#footer,
+#header,
+.sidebar
+{
+	background-color: #0C00FF; /* 12 0 255 */
+	color: white;
+}
+
+/* Popup Scheme - Black on White */
+.shortyNavigation nav,
+.autocompleteResults
+{
+	color: black;
+	background-color: white;
+}
+
+.shortyNavigation nav a,
+.shortyNavigation nav a:hover,
+.shortyNavigation nav .category,
+.shortyNavigation nav .category:hover
+{
+	color: black;
+}
+
+#header,
+#footer,
+.sidebar,
+#content
+{
+	box-shadow: #2222aa 5px 2px;
+}
+
+/* Other Styles */
+
+.navItem a,
+.navItem .category
+{
+	text-decoration: none;
+	color: #CCCCCC;
+	cursor: pointer;
+}
+
+nav.breadcrumbs a,
+nav.breadcrumbs a:hover,
+nav.breadcrumbs .breadcrumb
+{
+	color: black;
+}
+
+nav a:hover
+{
+	color: #888888;
+}
+
+#copyright
+{
+	font-size: 0.8em;
+	font-style: italic;
+}
+
+.autocompleteResults
+{
+	border: 1px solid black;
+}
+
+.autocompleteResults .result
+{
+	display: block;
+	padding: 5px 10px;
+	width: 200px;
+	text-decoration: none;
+	color: black;
+}
+
+.autocompleteResults .result:hover
+{
+	background-color: #ccc;
+}
+
+#header,
+#footer
+{
+	border-radius: 0 120px 120px 0;
+}
+
+
+.heroSpotItem
+{
+	background-color: white;
+	text-align: center;
+	height: 72px;
+}
+
+.heroSpotItem a
+{
+	color: black;
+	text-decoration: none;
+}

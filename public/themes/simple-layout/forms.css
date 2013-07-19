@@ -1,0 +1,78 @@
+.actionForm
+{
+	display: inline-block;
+}
+
+.actionButton
+{
+	display: inline-block;
+	border: 1px solid black;
+	border-radius: 0 4px 4px 0;
+	box-shadow: black 2px 2px;
+	background-color: #ccc;
+	color: black;
+	text-decoration: none;
+	padding: 2px 5px;
+	font-size: 0.8em;
+	font-family: arial,serif;
+	margin: 5px 0;
+}
+
+.actionButton:hover
+{
+	box-shadow: black 0 0;
+}
+
+.formFieldRow .formCaption
+{
+	width: 14%;
+	text-align: right;
+}
+
+.formFieldRow
+{
+	margin-bottom: 5px;
+}
+
+.formFieldRow .formInput
+{
+	width: 70%;
+}
+
+.sidebar .formFieldRow .formCaption
+{
+	width: 34%;
+}
+
+.sidebar .formFieldRow .formInput
+{
+	width: 40%;
+}
+
+.formFieldRow .formInput [type=text],
+.formFieldRow .formInput [type=password],
+.formFieldRow .formInput select,
+.formFieldRow .formInput textarea
+{
+	width: 98%;
+}
+
+.formFieldRow .formInput .dateSelect select
+{
+	width: auto;
+	margin-right: 5px;
+}
+
+.formFieldRow .formInput .dateSelect input[type=text]
+{
+	width: 30px;
+	margin-right: 5px;
+}
+
+
+.formFieldRow .formHelp
+{
+	font-size: 0.8em;
+	font-style: italic;
+	width: 15%;
+}

@@ -1,0 +1,205 @@
+** Log Started 2013-07-19 11:12:36 **
+SHOW TABLES LIKE 'baskets'
+Array
+(
+)
+
+EXPLAIN `baskets`
+Array
+(
+)
+
+SHOW TABLES LIKE 'basketitems'
+Array
+(
+)
+
+EXPLAIN `basketitems`
+Array
+(
+)
+
+SELECT `table`.*
+                FROM `uri` `table`
+                WHERE (LCASE(controller) = :controller OR controller = "") AND (method LIKE :method OR method = "")
+                
+                
+Array
+(
+    [controller] => \cannydain\shortycoremodules\usermodule\controllers\usercontroller
+    [method] => Login
+)
+
+SELECT `table`.*
+                FROM `uri` `table`
+                WHERE (LCASE(controller) = :controller OR controller = "") AND (method LIKE :method OR method = "")
+                
+                
+Array
+(
+    [controller] => \cannydain\shortycoremodules\usermodule\controllers\usercontroller
+    [method] => Register
+)
+
+SELECT `table`.*
+                FROM `uri` `table`
+                WHERE :uri LIKE CONCAT(uri, "%")
+                ORDER BY LENGTH(uri) DESC
+                
+Array
+(
+    [uri] => favicon.ico
+)
+
+SELECT *
+                FROM `navigation`
+                WHERE `parent` = :parent ORDER BY orderIndex ASC
+Array
+(
+    [parent] => 0
+)
+
+SELECT *
+                FROM `navigation`
+                WHERE `parent` = :parent ORDER BY orderIndex ASC
+Array
+(
+    [parent] => 1
+)
+
+SELECT *
+                FROM `navigation`
+                WHERE `parent` = :parent ORDER BY orderIndex ASC
+Array
+(
+    [parent] => 2
+)
+
+SELECT *
+                FROM `navigation`
+                WHERE `parent` = :parent ORDER BY orderIndex ASC
+Array
+(
+    [parent] => 3
+)
+
+SELECT *
+                FROM `navigation`
+                WHERE `parent` = :parent ORDER BY orderIndex ASC
+Array
+(
+    [parent] => 4
+)
+
+SELECT *
+                FROM `navigation`
+                WHERE `parent` = :parent ORDER BY orderIndex ASC
+Array
+(
+    [parent] => 5
+)
+
+SELECT *
+                FROM `navigation`
+                WHERE `parent` = :parent ORDER BY orderIndex ASC
+Array
+(
+    [parent] => 6
+)
+
+SELECT *
+                FROM `navigation`
+                WHERE `parent` = :parent ORDER BY orderIndex ASC
+Array
+(
+    [parent] => 7
+)
+
+SELECT *
+                FROM `navigation`
+                WHERE `parent` = :parent ORDER BY orderIndex ASC
+Array
+(
+    [parent] => 8
+)
+
+SELECT *
+                FROM `navigation`
+                WHERE `parent` = :parent ORDER BY orderIndex ASC
+Array
+(
+    [parent] => 9
+)
+
+SELECT *
+                FROM `navigation`
+                WHERE `parent` = :parent ORDER BY orderIndex ASC
+Array
+(
+    [parent] => 10
+)
+
+SELECT *
+                FROM `navigation`
+                WHERE `parent` = :parent ORDER BY orderIndex ASC
+Array
+(
+    [parent] => 14
+)
+
+SELECT *
+                FROM `navigation`
+                WHERE `parent` = :parent ORDER BY orderIndex ASC
+Array
+(
+    [parent] => 11
+)
+
+SELECT *
+                FROM `navigation`
+                WHERE `parent` = :parent ORDER BY orderIndex ASC
+Array
+(
+    [parent] => 12
+)
+
+SELECT *
+                FROM `navigation`
+                WHERE `parent` = :parent ORDER BY orderIndex ASC
+Array
+(
+    [parent] => 13
+)
+
+SHOW TABLES LIKE 'timeentry'
+Array
+(
+)
+
+EXPLAIN `timeentry`
+Array
+(
+)
+
+SELECT `table`.*
+                FROM `timeentry` `table`
+                WHERE user = :user AND end >= :start AND end <= :end
+                
+                
+Array
+(
+    [user] => 0
+    [start] => 2013-07-01 00:00:00
+    [end] => 2013-07-19 11:12:37
+)
+
+SELECT `table`.*
+                FROM `timeentry` `table`
+                WHERE user = :user
+                ORDER BY end DESC
+                LIMIT 1
+Array
+(
+    [user] => 0
+)
+

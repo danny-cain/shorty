@@ -1,0 +1,389 @@
+<?php
+
+namespace CannyDain\Shorty\Bootstrap;
+
+use CannyDain\Lib\CommentsManager\CommentsManager;
+use CannyDain\Lib\CommentsManager\NullCommentsManager;
+use CannyDain\Lib\DataMapping\DataMapper;
+use CannyDain\Lib\Database\Interfaces\DatabaseConnection;
+use CannyDain\Lib\Database\PDO\DatabaseConnections\PDOMySQLDatabaseConnection;
+use CannyDain\Lib\DependencyInjection\DependencyInjector;
+use CannyDain\Lib\Emailing\EmailerInterface;
+use CannyDain\Lib\Emailing\NullEmailer;
+use CannyDain\Lib\GUIDS\GUIDManagerInterface;
+use CannyDain\Lib\GUIDS\SimpleGuidManager;
+use CannyDain\Lib\Routing\Routers\DirectMappedRouter;
+use CannyDain\Lib\UI\Response\Document\DocumentInterface;
+use CannyDain\Lib\UI\Response\Response;
+use CannyDain\Lib\UI\ResponsiveLayout\ResponsiveLayoutFactory;
+use CannyDain\Lib\UI\ViewFactory;
+use CannyDain\Lib\Utils\Date\DateFormatManager;
+use CannyDain\Lib\Web\Server\Request;
+use CannyDain\Shorty\Comments\ShortyCommentsManager;
+use CannyDain\Shorty\Config\ShortyConfiguration;
+use CannyDain\Shorty\Consumers\RouterConsumer;
+use CannyDain\Shorty\ECommerce\ECommerceManager;
+use CannyDain\Shorty\ECommerce\Providers\NullProductProvider;
+use CannyDain\Shorty\Execution\AppMain;
+use CannyDain\Shorty\InstanceManager\InstanceManager;
+use CannyDain\Shorty\Modules\ModuleManager;
+use CannyDain\Shorty\Navigation\NavigationProvider;
+use CannyDain\Shorty\Navigation\StaticNavigation;
+use CannyDain\Shorty\Routing\URIManager;
+use CannyDain\Shorty\Sidebars\SidebarManager;
+use CannyDain\Shorty\Skinnable\Themes\Models\Theme;
+use CannyDain\Shorty\Skinnable\Themes\ThemeManager;
+use CannyDain\Shorty\TimeTracking\TimeTracker;
+use CannyDain\Shorty\UI\Response\ShortyHTMLDocument;
+use CannyDain\Shorty\UI\ViewHelpers\Factories\FormHelperFactory;
+use CannyDain\Shorty\UserControl\UserControl;
+
+class BaseBootstrap implements Bootstrap
+{
+    /**
+     * @var DependencyInjector
+     */
+    protected $_dependencyInjector;
+
+    /**
+     * @var TimeTracker
+     */
+    protected $_timeTracker;
+
+    /**
+     * @var CommentsManager
+     */
+    protected $_commentsManager;
+
+    /**
+     * @var SidebarManager
+     */
+    protected $_sidebarManager;
+
+    /**
+     * @var ViewFactory
+     */
+    protected $_viewFactory;
+
+    /**
+     * @var UserControl
+     */
+    protected $_userControl;
+
+    /**
+     * @var DataMapper
+     */
+    protected $_datamapper;
+
+    /**
+     * @var InstanceManager
+     */
+    protected $_instanceManager;
+
+    /**
+     * @var ModuleManager
+     */
+    protected $_moduleManager;
+
+    /**
+     * @var Request
+     */
+    protected $_request;
+
+    /**
+     * @var GUIDManagerInterface
+     */
+    protected $_guidManager;
+
+    /**
+     * @var RouterConsumer
+     */
+    protected $_router;
+
+    /**
+     * @var DatabaseConnection
+     */
+    protected $_database;
+
+    /**
+     * @var Response
+     */
+    protected $_response;
+
+    /**
+     * @var ResponsiveLayoutFactory
+     */
+    protected $_responsiveLayoutFactory;
+
+    /**
+     * @var NavigationProvider
+     */
+    protected $_navigationProvider;
+
+    /**
+     * @var ShortyConfiguration
+     */
+    protected $_config;
+
+    /**
+     * @var DateFormatManager
+     */
+    protected $_dateFormatManager;
+
+    /**
+     * @var ECommerceManager
+     */
+    protected $_ecommerce;
+
+    /**
+     * @var EmailerInterface
+     */
+    protected $_emailer;
+
+    /**
+     * @var URIManager
+     */
+    protected $_uriManager;
+
+    public function executeBootstrap(ShortyConfiguration $config, AppMain $main)
+    {
+        $this->_config = $config;
+        $this->_createObjects();
+        $this->_setupDependencies();
+        $this->_applyDependencies();
+        $this->_connectDatabase();
+
+        $this->_completeObjectSetup();
+
+        $this->_dependencyInjector->applyDependencies($main);
+        $main->main();
+    }
+
+    protected function _debugSetup()
+    {
+
+    }
+
+    protected function _setupThemes()
+    {
+        ThemeManager::Singleton()->addTheme(new Theme(0, 'Shorty Blue', 'shorty.json', array
+        (
+            '/themes/simple-blue.css'
+        )));
+
+        ThemeManager::Singleton()->addTheme(new Theme(1, 'Shorty Green', 'shorty.json', array
+        (
+            '/themes/simple-green.css'
+        )));
+
+        ThemeManager::Singleton()->addTheme(new Theme(2, 'Shorty Red', 'shorty.json', array
+        (
+            '/themes/simple-red.css'
+        )));
+
+        ThemeManager::Singleton()->addTheme(new Theme(3, 'Bannered Shorty Blue', 'shorty-bannered.json', array
+        (
+            '/themes/simple-blue.css'
+        )));
+
+        ThemeManager::Singleton()->addTheme(new Theme(4, 'Bannered Shorty Green', 'shorty-bannered.json', array
+        (
+            '/themes/simple-green.css'
+        )));
+
+        ThemeManager::Singleton()->addTheme(new Theme(5, 'Bannered Shorty Red', 'shorty-bannered.json', array
+        (
+            '/themes/simple-red.css'
+        )));
+    }
+
+    protected function _completeObjectSetup()
+    {
+        $this->_request->loadFromHTTPRequest('r');
+
+        $document = $this->_factory_DefaultDocument();
+        $this->_dependencyInjector->applyDependencies($document);
+        $this->_response->setDocument($document);
+
+        $this->_instanceManager->registerObjects();
+        $this->_moduleManager->initialise();
+
+        $this->_datamapper->dataStructureCheck();
+
+        $this->_ecommerce->setProductProvider($this->_factory_ProductProvider());
+
+        $this->_registerPaymentProviders();
+        $this->_setupThemes();
+        $this->_debugSetup();
+    }
+
+    protected function _connectDatabase()
+    {
+        $host =$this->_config->getValue(ShortyConfiguration::CONFIG_KEY_DATABASE_HOST);
+        $database = $this->_config->getValue(ShortyConfiguration::CONFIG_KEY_DATABASE_NAME);
+        $user = $this->_config->getValue(ShortyConfiguration::CONFIG_KEY_DATABASE_USER);
+        $pass = $this->_config->getValue(ShortyConfiguration::CONFIG_KEY_DATABASE_PASS);
+
+        $this->_database->connect($host, $user, $pass);
+        $this->_database->selectDatabase($database);
+    }
+
+    protected function _createObjects()
+    {
+        $this->_dependencyInjector = new DependencyInjector();
+        $this->_request = new Request();
+        $this->_router = $this->_factory_Router();
+        $this->_guidManager = $this->_factory_GUIDManager();
+        $this->_database = new PDOMySQLDatabaseConnection();
+        $this->_response = $this->_factory_Response();
+        $this->_responsiveLayoutFactory = new ResponsiveLayoutFactory();
+        $this->_datamapper = new DataMapper($this->_database);
+        $this->_moduleManager = new ModuleManager();
+        $this->_instanceManager = new InstanceManager();
+        $this->_userControl = new UserControl();
+        $this->_navigationProvider = $this->_factory_NavigationProvider();
+        $this->_viewFactory = $this->_factory_ViewFactory();
+        $this->_sidebarManager = $this->_factory_SidebarManager();
+        $this->_commentsManager = $this->_factory_CommentsManager();
+        $this->_dateFormatManager = new DateFormatManager('j\<\s\u\p\>S\<\/\s\u\p\> F Y', 'H:i', 'j\<\s\u\p\>S\<\/\s\u\p\> F Y \@ H:i');
+        $this->_ecommerce = new ECommerceManager();
+        $this->_uriManager = $this->_factory_URIManager();
+        $this->_timeTracker = new TimeTracker;
+        $this->_emailer = $this->_factory_Emailer();
+    }
+
+    protected function _setupDependencies()
+    {
+        $this->_dependencyInjector->defineDependency('\\CannyDain\\Shorty\\Consumers\\DependencyConsumer', $this->_dependencyInjector);
+        $this->_dependencyInjector->defineDependency('\\CannyDain\\Shorty\\Consumers\\GUIDManagerConsumer', $this->_guidManager);
+        $this->_dependencyInjector->defineDependency('\\CannyDain\\Shorty\\Consumers\\RequestConsumer', $this->_request);
+        $this->_dependencyInjector->defineDependency('\\CannyDain\\Shorty\\Consumers\\RouterConsumer', $this->_router);
+        $this->_dependencyInjector->defineDependency('\\CannyDain\\Shorty\\Consumers\\DatabaseConsumer', $this->_database);
+        $this->_dependencyInjector->defineDependency('\\CannyDain\\Shorty\\Consumers\\ResponseConsumer', $this->_response);
+        $this->_dependencyInjector->defineDependency('\\CannyDain\\Shorty\\Consumers\\ResponsiveLayoutConsumer', $this->_responsiveLayoutFactory);
+        $this->_dependencyInjector->defineDependency('\\CannyDain\\Shorty\\Consumers\\DataMapperConsumer', $this->_datamapper);
+        $this->_dependencyInjector->defineDependency('\\CannyDain\\Shorty\\Consumers\\ModuleConsumer', $this->_moduleManager);
+        $this->_dependencyInjector->defineDependency('\\CannyDain\\Shorty\\Consumers\\ConfigurationConsumer', $this->_config);
+        $this->_dependencyInjector->defineDependency('\\CannyDain\\Shorty\\Consumers\\InstanceManagerConsumer', $this->_instanceManager);
+        $this->_dependencyInjector->defineDependency('\\CannyDain\\Shorty\\Consumers\\UserControlConsumer', $this->_userControl);
+        $this->_dependencyInjector->defineDependency('\\CannyDain\\Shorty\\Consumers\\NavigationConsumer', $this->_navigationProvider);
+        $this->_dependencyInjector->defineDependency('\\CannyDain\\Shorty\\Consumers\\ViewFactoryConsumer', $this->_viewFactory);
+        $this->_dependencyInjector->defineDependency('\\CannyDain\\Shorty\\Consumers\\SidebarManagerConsumer', $this->_sidebarManager);
+        $this->_dependencyInjector->defineDependency('\\CannyDain\\Shorty\\Consumers\\CommentsConsumer', $this->_commentsManager);
+        $this->_dependencyInjector->defineDependency('\\CannyDain\\Shorty\\Consumers\\DateTimeConsumer', $this->_dateFormatManager);
+        $this->_dependencyInjector->defineDependency('\\CannyDain\\Shorty\\Consumers\\ECommerceConsumer', $this->_ecommerce);
+        $this->_dependencyInjector->defineDependency('\\CannyDain\\Shorty\\Consumers\\URIManagerConsumer', $this->_uriManager);
+        $this->_dependencyInjector->defineDependency('\\CannyDain\\Shorty\\Consumers\\TimeEntryConsumer', $this->_timeTracker);
+        $this->_dependencyInjector->defineDependency('\\CannyDain\\Shorty\\Consumers\\EmailerConsumer', $this->_emailer);
+
+        /* Dependency Factories */
+        $this->_dependencyInjector->defineDependencyFactory('\\CannyDain\\Shorty\\Consumers\\FormHelperConsumer', new FormHelperFactory());
+    }
+
+    protected function _applyDependencies()
+    {
+        $this->_dependencyInjector->applyDependencies($this->_request);
+        $this->_dependencyInjector->applyDependencies($this->_guidManager);
+        $this->_dependencyInjector->applyDependencies($this->_router);
+        $this->_dependencyInjector->applyDependencies($this->_database);
+        $this->_dependencyInjector->applyDependencies($this->_response);
+        $this->_dependencyInjector->applyDependencies($this->_responsiveLayoutFactory);
+        $this->_dependencyInjector->applyDependencies($this->_datamapper);
+        $this->_dependencyInjector->applyDependencies($this->_moduleManager);
+        $this->_dependencyInjector->applyDependencies($this->_instanceManager);
+        $this->_dependencyInjector->applyDependencies($this->_userControl);
+        $this->_dependencyInjector->applyDependencies($this->_navigationProvider);
+        $this->_dependencyInjector->applyDependencies($this->_viewFactory);
+        $this->_dependencyInjector->applyDependencies($this->_sidebarManager);
+        $this->_dependencyInjector->applyDependencies($this->_commentsManager);
+        $this->_dependencyInjector->applyDependencies($this->_dateFormatManager);
+        $this->_dependencyInjector->applyDependencies($this->_ecommerce);
+        $this->_dependencyInjector->applyDependencies($this->_uriManager);
+        $this->_dependencyInjector->applyDependencies($this->_timeTracker);
+        $this->_dependencyInjector->applyDependencies($this->_emailer);
+        $this->_dependencyInjector->applyDependencies(ThemeManager::Singleton());
+    }
+
+    /**
+     * @return ViewFactory
+     */
+    protected function _factory_ViewFactory()
+    {
+        $factory = new ViewFactory();
+
+        return $factory;
+    }
+
+    /**
+     * @return Response
+     */
+    protected function _factory_Response()
+    {
+        return new Response();
+    }
+
+    /**
+     * @return SidebarManager
+     */
+    protected function _factory_SidebarManager()
+    {
+        return new SidebarManager();
+    }
+
+    /**
+     * @return DocumentInterface
+     */
+    protected function _factory_DefaultDocument()
+    {
+        return new ShortyHTMLDocument;
+    }
+
+    /**
+     * @return CommentsManager
+     */
+    protected function _factory_CommentsManager()
+    {
+        return new NullCommentsManager();
+    }
+
+    /**
+     * @return SimpleGuidManager
+     */
+    protected function _factory_GUIDManager()
+    {
+        return new SimpleGuidManager();
+    }
+
+    protected function _factory_Router()
+    {
+        return new DirectMappedRouter();
+    }
+
+    protected function _factory_ProductProvider()
+    {
+        return new NullProductProvider();
+    }
+
+    protected function _registerPaymentProviders()
+    {
+
+    }
+
+    protected function _factory_Emailer()
+    {
+        return new NullEmailer();
+    }
+
+    protected function _factory_NavigationProvider()
+    {
+        return new StaticNavigation(array
+        (
+            '/' => 'Home'
+        ));
+    }
+
+    protected function _factory_URIManager()
+    {
+        return new URIManager();
+    }
+}

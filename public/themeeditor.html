@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title></title>
+    <script type="text/javascript" src="/scripts/jquery.min.js"></script>
+    <script type="text/javascript" src="/scripts/templates/editor.js"></script>
+    <script type="text/javascript" src="/scripts/templates/editorview.js"></script>
+    <script type="text/javascript" src="/scripts/templates/models.js"></script>
+    <script type="text/javascript">
+        window.templateEditor = new TemplateEditor();
+        window.templateEditor.addElement(new Element("\\CannyDain\\Lib\\UI\\Response\\TemplatedDocuments\\Models\\Elements\\HTML\\HeadElement", "Head Element", [], true));
+        window.templateEditor.addElement(new Element("\\CannyDain\\Lib\\UI\\Response\\TemplatedDocuments\\Models\\Elements\\HTML\\TitleElement", "Title Element", {"Title" : "string"}, false));
+        window.templateEditor.addElement(new Element("\\CannyDain\\Shorty\\Skinnable\\Themes\\TemplateElements\\ThemeStylesElement", "Theme Styles Element", [], false));
+        window.templateEditor.addElement(new Element("\\CannyDain\\Shorty\\Skinnable\\Themes\\TemplateElements\\ThemeSelectorElement", "Theme Selector Element", [], false));
+        window.templateEditor.addElement(new Element("\\CannyDain\\Lib\\UI\\Response\\TemplatedDocuments\\Models\\Elements\\ContentElement", "Content Element", [], false));
+        window.templateEditor.addElement(new Element("\\CannyDain\\Lib\\UI\\Response\\TemplatedDocuments\\Models\\Elements\\RawHTMLElement", "Raw HTML Element", {"HTML" : "string"}, false));
+        window.templateEditor.addElement(new Element("\\CannyDain\\Lib\\UI\\Response\\TemplatedDocuments\\Models\\Elements\\HTML\\BlockLevelElement", "Block Level Element", {"id" : "string", "classes" : "array"}, true));
+        window.templateEditor.addElement(new Element("\\CannyDain\\Lib\\UI\\Response\\TemplatedDocuments\\Models\\Elements\\HTML\\BodyElement", "Body Element", {"id" : "string", "classes" : "array"}, true));
+        window.templateEditor.addElement(new Element("\\CannyDain\\Lib\\UI\\Response\\TemplatedDocuments\\Models\\Elements\\HTML\\HyperlinkElement", "Hyperlink Element", {"url" : "string", "id" : "string", "classes" : "array"}, true));
+        window.templateEditor.addElement(new Element("\\CannyDain\\Lib\\UI\\Response\\TemplatedDocuments\\Models\\Elements\\HTML\\ImageElement", "Image Element", {"src" : "string", "id" : "string", "classes" : "array"}, false));
+        window.templateEditor.addElement(new Element("\\CannyDain\\Lib\\UI\\Response\\TemplatedDocuments\\Models\\Elements\\HTML\\ScriptElement", "Script Element", {"src" : "string"}, false ));
+        window.templateEditor.addElement(new Element("\\CannyDain\\Lib\\UI\\Response\\TemplatedDocuments\\Models\\Elements\\HTML\\StylesheetElement", "Stylesheet Element", {"path" : "string", "mediaTypes" : "string"}, false ));
+        window.templateEditor.addElement(new Element("\\CannyDain\\Lib\\UI\\Response\\TemplatedDocuments\\Models\\Elements\\HTML\\EnhancedElements\\SimpleHeroSpot", "Simple Hero Spot", {"id" : "string", "classes" : "array", "items" : "array"}, false));
+
+        window.templateEditor.template.elements.push(new TemplateElement("\\CannyDain\\Lib\\UI\\Response\\TemplatedDocuments\\Models\\Elements\\HTML\\BlockLevelElement", [],
+                [
+                        new TemplateElement("\\CannyDain\\Lib\\UI\\Response\\TemplatedDocuments\\Models\\Elements\\HTML\\BlockLevelElement", [], []),
+                        new TemplateElement("\\CannyDain\\Lib\\UI\\Response\\TemplatedDocuments\\Models\\Elements\\HTML\\BlockLevelElement", [], []),
+                        new TemplateElement("\\CannyDain\\Lib\\UI\\Response\\TemplatedDocuments\\Models\\Elements\\HTML\\BlockLevelElement", [], [])
+                ]));
+
+        $(document).ready(function()
+        {
+            var view = new TemplateEditorView(window.templateEditor,
+            {
+                "toolboxID" : "toolbox",
+                "editorID" : "editor",
+                "pathID" : "path",
+                "container" : "body"
+            });
+        });
+    </script>
+
+    <style type="text/css">
+        body
+        {
+            margin: 0;
+            padding: 0;
+        }
+
+        #toolbox
+        {
+            display: inline-block;
+            vertical-align: top;
+            width: 20%;
+            margin-right: 3%;
+            padding-right: 1%;
+            border-right: 1px solid black;;
+        }
+
+        #editor
+        {
+            display: inline-block;
+            vertical-align: top;
+            width: 75%;
+        }
+
+        #path
+        {
+            margin-top: 20px;
+            border: 1px solid black;
+            padding: 5px;
+        }
+
+        #editor .children
+        {
+            margin-left: 10px;
+        }
+
+        #toolbox > div
+        {
+            border: 1px solid black;
+            margin-bottom: 10px;
+            cursor: pointer;
+        }
+
+        .templateNode > .toggleChildren,
+        .templateNode > .caption,
+        .templateNode > .edit
+        {
+            display: inline-block;
+            margin-right: 10px;
+        }
+
+    </style>
+</head>
+<body>
+
+</body>
+</html>
+
+<!--
+[
+    {
+        "class" : "\\CannyDain\\Lib\\UI\\Response\\TemplatedDocuments\\Models\\Elements\\HTML\\HeadElement",
+        "params" :
+        [
+        ],
+        "children" :
+        [
+			{
+				"class" : "\\CannyDain\\Lib\\UI\\Response\\TemplatedDocuments\\Models\\Elements\\HTML\\TitleElement",
+				"params" :
+				[
+					"Danny Cain Dot Com"
+				],
+				"children" :
+				[
+				]
+			},
+            {
+				"class" : "\\CannyDain\\Shorty\\Skinnable\\Themes\\TemplateElements\\ThemeStylesElement",
+				"params" :
+				[
+
+				],
+				"children" :
+				[
+				]
+			},
+            {
+				"class" : "\\CannyDain\\Lib\\UI\\Response\\TemplatedDocuments\\Models\\Elements\\HTML\\ScriptElement",
+				"params" :
+				[
+                    "/scripts/jquery.min.js"
+				],
+				"children" :
+				[
+				]
+			}
+        ]
+    },
+	{
+        "class" : "\\CannyDain\\Lib\\UI\\Response\\TemplatedDocuments\\Models\\Elements\\HTML\\BodyElement",
+        "params" :
+        [
+        ],
+        "children" :
+        [
+			{
+				"class" : "\\CannyDain\\Lib\\UI\\Response\\TemplatedDocuments\\Models\\Elements\\HTML\\BlockLevelElement",
+				"params" :
+				[
+					"header"
+				],
+				"children" :
+				[
+                    {
+                        "class" : "\\CannyDain\\Lib\\UI\\Response\\TemplatedDocuments\\Models\\Elements\\HTML\\HyperlinkElement",
+                        "params" :
+                        [
+                            "/",
+                            "logo"
+                        ],
+                        "children" :
+                        [
+                            {
+                                "class" : "\\CannyDain\\Lib\\UI\\Response\\TemplatedDocuments\\Models\\Elements\\HTML\\ImageElement",
+                                "params" :
+                                [
+                                    "/images/shorty-logo.png"
+                                ],
+                                "children" :
+                                [
+
+                                ]
+                            }
+                        ]
+                    },
+                    {
+                        "class" : "\\CannyDain\\Shorty\\UI\\Response\\Templated\\Elements\\NavigationElement",
+                        "params" :
+                        [
+
+                        ],
+                        "children" :
+                        [
+                        ]
+                    },
+                    {
+                        "class" : "\\CannyDain\\Shorty\\Skinnable\\Themes\\TemplateElements\\ThemeSelectorElement",
+                        "params" :
+                        [
+
+                        ],
+                        "children" :
+                        [
+                        ]
+                    }
+				]
+			},
+            {
+				"class" : "\\CannyDain\\Lib\\UI\\Response\\TemplatedDocuments\\Models\\Elements\\HTML\\BlockLevelElement",
+				"params" :
+				[
+					"",
+                    ["contentPane"]
+				],
+				"children" :
+				[
+                    {
+                        "class" : "\\CannyDain\\Lib\\UI\\Response\\TemplatedDocuments\\Models\\Elements\\HTML\\BlockLevelElement",
+                        "params" :
+                        [
+                            "",
+                            ["sidebarContainer"]
+                        ],
+                        "children" :
+                        [
+                            {
+                                "class" : "\\CannyDain\\Shorty\\UI\\Response\\Templated\\Elements\\SidebarElement",
+                                "params" :
+                                [
+                                ]
+                            }
+                        ]
+                    },
+                    {
+                        "class" : "\\CannyDain\\Lib\\UI\\Response\\TemplatedDocuments\\Models\\Elements\\HTML\\BlockLevelElement",
+                        "params" : ["content"],
+                        "children" :
+                        [
+                            {
+                                "class" : "\\CannyDain\\Lib\\UI\\Response\\TemplatedDocuments\\Models\\Elements\\ContentElement",
+                                "params" :
+                                [
+
+                                ],
+                                "children" :
+                                [
+                                ]
+                            }
+                        ]
+                    }
+				]
+			},
+            {
+				"class" : "\\CannyDain\\Lib\\UI\\Response\\TemplatedDocuments\\Models\\Elements\\HTML\\BlockLevelElement",
+				"params" :
+				[
+					"footer"
+				],
+				"children" :
+				[
+
+				]
+			}
+        ]
+    }
+]
+-->
