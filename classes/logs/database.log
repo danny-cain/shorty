@@ -1,4 +1,4 @@
-** Log Started 2013-07-19 11:12:36 **
+** Log Started 2013-07-22 17:00:08 **
 SHOW TABLES LIKE 'baskets'
 Array
 (
@@ -19,15 +19,12 @@ Array
 (
 )
 
-SELECT `table`.*
-                FROM `uri` `table`
-                WHERE (LCASE(controller) = :controller OR controller = "") AND (method LIKE :method OR method = "")
-                
-                
+SELECT *
+                FROM users
+                WHERE id = :id
 Array
 (
-    [controller] => \cannydain\shortycoremodules\usermodule\controllers\usercontroller
-    [method] => Login
+    [id] => 1
 )
 
 SELECT `table`.*
@@ -38,7 +35,7 @@ SELECT `table`.*
 Array
 (
     [controller] => \cannydain\shortycoremodules\usermodule\controllers\usercontroller
-    [method] => Register
+    [method] => Logout
 )
 
 SELECT `table`.*
@@ -48,7 +45,127 @@ SELECT `table`.*
                 
 Array
 (
-    [uri] => favicon.ico
+    [uri] => CannyDain-ShortyCoreModules-ProjectManagement-Controllers-ProjectManagementController/CreateStory/1
+)
+
+SELECT *
+                FROM users
+                WHERE id = :id
+Array
+(
+    [id] => 1
+)
+
+SELECT *
+                FROM projects
+                WHERE id = :id
+Array
+(
+    [id] => 1
+)
+
+SELECT `table`.*
+                FROM `uri` `table`
+                WHERE (LCASE(controller) = :controller OR controller = "") AND (method LIKE :method OR method = "")
+                
+                
+Array
+(
+    [controller] => \cannydain\shortycoremodules\projectmanagement\controllers\projectmanagementcontroller
+    [method] => EditStory
+)
+
+SHOW TABLES LIKE 'comments'
+Array
+(
+)
+
+EXPLAIN `comments`
+Array
+(
+)
+
+SELECT *
+                FROM `comments`
+                WHERE `object` = :object ORDER BY `posted` ASC
+Array
+(
+    [object] => \CannyDain\ShortyCoreModules\ProjectManagement\Models\UserStory-null
+)
+
+SELECT `table`.*
+                FROM `uri` `table`
+                WHERE (LCASE(controller) = :controller OR controller = "") AND (method LIKE :method OR method = "")
+                
+                
+Array
+(
+    [controller] => \cannydain\shorty\comments\controllers\shortycommentscontroller
+    [method] => AddComment
+)
+
+SHOW TABLES LIKE 'timeentry'
+Array
+(
+)
+
+EXPLAIN `timeentry`
+Array
+(
+)
+
+SELECT `table`.*
+                FROM `timeentry` `table`
+                WHERE object = :guid
+                ORDER BY `start` DESC
+                
+Array
+(
+    [guid] => \CannyDain\ShortyCoreModules\ProjectManagement\Models\UserStory-null
+)
+
+SELECT `table`.*
+                FROM `uri` `table`
+                WHERE (LCASE(controller) = :controller OR controller = "") AND (method LIKE :method OR method = "")
+                
+                
+Array
+(
+    [controller] => \cannydain\shorty\timetracking\controllers\timetrackingcontroller
+    [method] => TrackTime
+)
+
+SELECT `table`.*
+                FROM `uri` `table`
+                WHERE (LCASE(controller) = :controller OR controller = "") AND (method LIKE :method OR method = "")
+                
+                
+Array
+(
+    [controller] => \cannydain\shortycoremodules\projectmanagement\controllers\projectmanagementcontroller
+    [method] => CreateStory
+)
+
+SELECT `table`.*
+                FROM `uri` `table`
+                WHERE (LCASE(controller) = :controller OR controller = "") AND (method LIKE :method OR method = "")
+                
+                
+Array
+(
+    [controller] => \cannydain\shortycoremodules\projectmanagement\controllers\projectmanagementcontroller
+    [method] => 
+)
+
+SELECT `table`.*
+                FROM `uri` `table`
+                WHERE (LCASE(controller) = :controller OR controller = "") AND (method LIKE :method OR method = "")
+                
+                
+Array
+(
+    [controller] => \cannydain\shortycoremodules\projectmanagement\controllers\projectmanagementcontroller
+    [method] => ViewStories
 )
 
 SELECT *
@@ -171,16 +288,6 @@ Array
     [parent] => 13
 )
 
-SHOW TABLES LIKE 'timeentry'
-Array
-(
-)
-
-EXPLAIN `timeentry`
-Array
-(
-)
-
 SELECT `table`.*
                 FROM `timeentry` `table`
                 WHERE user = :user AND end >= :start AND end <= :end
@@ -188,9 +295,9 @@ SELECT `table`.*
                 
 Array
 (
-    [user] => 0
+    [user] => 1
     [start] => 2013-07-01 00:00:00
-    [end] => 2013-07-19 11:12:37
+    [end] => 2013-07-22 17:00:08
 )
 
 SELECT `table`.*
@@ -200,6 +307,6 @@ SELECT `table`.*
                 LIMIT 1
 Array
 (
-    [user] => 0
+    [user] => 1
 )
 

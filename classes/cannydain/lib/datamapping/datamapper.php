@@ -138,7 +138,7 @@ class DataMapper
         $def = $this->_getDefinitionFromClassName($className);
 
         if ($def == null)
-            throw new ObjectDefinitionNotFoundException;
+            throw new ObjectDefinitionNotFoundException($className);
 
         $where = '';
         if (count($clauses) > 0)
@@ -177,7 +177,7 @@ class DataMapper
         $def = $this->_getDefinitionFromClassName($className);
 
         if ($def == null)
-            throw new ObjectDefinitionNotFoundException;
+            throw new ObjectDefinitionNotFoundException($className);
 
         $whereClauses = array();
         $parameters = array();
@@ -214,7 +214,7 @@ class DataMapper
         $def = $this->_getDefinitionFromClassName($className);
 
         if ($def == null)
-            throw new ObjectDefinitionNotFoundException;
+            throw new ObjectDefinitionNotFoundException($className);
 
         $sql = 'SELECT *
                 FROM `'.$def->getTableName().'`';
@@ -234,7 +234,7 @@ class DataMapper
         $def = $this->_getDefinitionFromClassName($className);
 
         if ($def == null)
-            throw new ObjectDefinitionNotFoundException;
+            throw new ObjectDefinitionNotFoundException($className);
 
         $where = array();
         $params = array();
@@ -262,7 +262,7 @@ class DataMapper
         $def = $this->_getDefinitionFromClassName($className);
 
         if ($def == null)
-            throw new ObjectDefinitionNotFoundException();
+            throw new ObjectDefinitionNotFoundException($className);
 
         $where = array();
         $params = array();

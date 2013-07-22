@@ -89,7 +89,8 @@ HTML;
 
     public function editRichText($name, $caption, $value, $helpText = '')
     {
-        $this->editLargeText($name, $caption, $value, $helpText);
+        $markup = '<textarea class="richtext" name="'.$name.'">'.htmlentities($value, ENT_COMPAT, 'UTF-8').'</textarea>';
+        $this->_writeField($markup, $caption, $helpText);
     }
 
     public function editLargeText($name, $caption, $value, $helpText = '')

@@ -43,7 +43,7 @@ class RegisterUserView extends HTMLView implements RouterConsumer, FormHelperCon
             $this->_formHelper->antiBotHiddenField('office-use');
             $this->_formHelper->editText('username', 'Username', $this->_user->getUsername(), 'The username you wish to use');
             $this->_formHelper->editPassword('password', 'Password', 'The password you wish to use to login');
-            $this->_formHelper->submitButton('Register an account');
+            $this->_formHelper->submitButton('Register');
         $this->_formHelper->endForm();
     }
 

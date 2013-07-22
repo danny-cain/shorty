@@ -39,6 +39,28 @@ class ModuleManager implements DependencyConsumer, InstanceManagerConsumer, Data
      */
     protected $_loadedModules = array();
 
+    public function getModuleInstanceByModuleName($moduleName)
+    {
+        foreach ($this->_loadedModules as $module)
+        {
+            if ('\\'.get_class($module) == $moduleName)
+                return $module;
+        }
+
+        return null;
+    }
+
+    public function getModuleStatusByModuleName($moduleName)
+    {
+        foreach ($this->_knownModules as $status)
+        {
+            if ($status->getModuleName() == $moduleName)
+                return $status;
+        }
+
+        return null;
+    }
+
     public function initialise()
     {
         $this->datasource()->registerObjects();

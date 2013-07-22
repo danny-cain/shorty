@@ -25,7 +25,9 @@ class AdminView extends HTMLView implements RouterConsumer
         echo '<h1>Administration</h1>';
 
         foreach ($this->_modules as $module)
+        {
             $this->_displayModule($module);
+        }
     }
 
     protected function _displayModule(ModuleInterface $module)

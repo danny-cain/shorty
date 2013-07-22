@@ -10,6 +10,7 @@ use CannyDain\Shorty\Controllers\ShortyController;
 use CannyDain\Shorty\Modules\Interfaces\ModuleInterface;
 use CannyDain\Shorty\Modules\Models\ModuleStatus;
 use CannyDain\Shorty\Modules\ModuleManager;
+use CannyDain\ShortyCoreModules\AdminModule\DataAccess\AdminModuleDataAccess;
 use CannyDain\ShortyCoreModules\AdminModule\Views\AdminView;
 
 class AdminController extends ShortyController implements ModuleConsumer, DependencyConsumer
@@ -41,17 +42,17 @@ class AdminController extends ShortyController implements ModuleConsumer, Depend
          */
         $modules = array();
 
-        foreach ($this->_moduleManager->getAllModuleStatuses() as $moduleStatus)
+        // todo - refactor this so it is in the view
+        foreach ($this->datasource()->getAllDashboardEntries() as $entry)
         {
-            if ($moduleStatus->getStatus() != ModuleStatus::STATUS_ENABLED)
+            $status = $this->_moduleManager->getModuleStatusByModuleName($entry->getModuleName());
+            if ($status == null)
                 continue;
 
-            if (!class_exists($moduleStatus->getModuleName()))
+            if ($status->getStatus() != ModuleStatus::STATUS_ENABLED)
                 continue;
 
-            $classname = $moduleStatus->getModuleName();
-            $instance = new $classname();
-
+            $instance = $this->_moduleManager->getModuleInstanceByModuleName($entry->getModuleName());
             $modules[] = $instance;
         }
 
@@ -60,6 +61,19 @@ class AdminController extends ShortyController implements ModuleConsumer, Depend
         $view->setModules($modules);
 
         return $view;
+    }
+
+    protected function datasource()
+    {
+        static $datasource = null;
+
+        if ($datasource == null)
+        {
+            $datasource = new AdminModuleDataAccess();
+            $this->_dependencies->applyDependencies($datasource);
+        }
+
+        return $datasource;
     }
 
     public function dependenciesConsumed()

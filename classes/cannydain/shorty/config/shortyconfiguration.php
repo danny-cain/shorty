@@ -20,15 +20,18 @@ class ShortyConfiguration
     protected $_configuration = array();
     protected $_filename = '';
     protected $_configExists = false;
+    protected $_replacements = array();
 
     public function __construct($filename = '', $configReplacements = array())
     {
         $this->_filename = $filename;
+        $this->_replacements = $configReplacements;
         if (!file_exists($filename))
             return;
 
         $this->_configExists = true;
-        $data = strtr(file_get_contents($filename), $configReplacements);
+        $data = file_get_contents($filename);
+
         $this->_configuration = json_decode($data, true);
         if (!is_array($this->_configuration))
             $this->_configuration = array();
@@ -64,7 +67,8 @@ class ShortyConfiguration
 
     public function getValue($key)
     {
-        return $this->_extractConfigPathFromConfigArray($this->_configuration, $key);
+        $val = $this->_extractConfigPathFromConfigArray($this->_configuration, $key);
+        return strtr($val, $this->_replacements);
     }
 
     protected function _extractConfigPathFromConfigArray($array, $path)
