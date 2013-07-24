@@ -57,7 +57,6 @@ class Autoloader
             return true;
         }
 
-        echo '<pre>'.htmlentities(print_r($attemptedPaths, true), ENT_COMPAT, 'UTF-8').'</pre>';
         foreach ($this->_listeners as $listener)
             $listener->autoloadFailed($class, $attemptedPaths);
 
