@@ -1,4 +1,4 @@
-** Log Started 2013-07-22 17:00:08 **
+** Log Started 2013-07-24 18:35:00 **
 SHOW TABLES LIKE 'baskets'
 Array
 (
@@ -19,12 +19,15 @@ Array
 (
 )
 
-SELECT *
-                FROM users
-                WHERE id = :id
+SELECT `table`.*
+                FROM `uri` `table`
+                WHERE (LCASE(controller) = :controller OR controller = "") AND (method LIKE :method OR method = "")
+                
+                
 Array
 (
-    [id] => 1
+    [controller] => \cannydain\shortycoremodules\usermodule\controllers\usercontroller
+    [method] => Login
 )
 
 SELECT `table`.*
@@ -35,7 +38,15 @@ SELECT `table`.*
 Array
 (
     [controller] => \cannydain\shortycoremodules\usermodule\controllers\usercontroller
-    [method] => Logout
+    [method] => Register
+)
+
+SELECT *
+                FROM `navigation`
+                WHERE `parent` = :parent ORDER BY orderIndex ASC
+Array
+(
+    [parent] => 0
 )
 
 SELECT `table`.*
@@ -45,127 +56,7 @@ SELECT `table`.*
                 
 Array
 (
-    [uri] => CannyDain-ShortyCoreModules-ProjectManagement-Controllers-ProjectManagementController/CreateStory/1
-)
-
-SELECT *
-                FROM users
-                WHERE id = :id
-Array
-(
-    [id] => 1
-)
-
-SELECT *
-                FROM projects
-                WHERE id = :id
-Array
-(
-    [id] => 1
-)
-
-SELECT `table`.*
-                FROM `uri` `table`
-                WHERE (LCASE(controller) = :controller OR controller = "") AND (method LIKE :method OR method = "")
-                
-                
-Array
-(
-    [controller] => \cannydain\shortycoremodules\projectmanagement\controllers\projectmanagementcontroller
-    [method] => EditStory
-)
-
-SHOW TABLES LIKE 'comments'
-Array
-(
-)
-
-EXPLAIN `comments`
-Array
-(
-)
-
-SELECT *
-                FROM `comments`
-                WHERE `object` = :object ORDER BY `posted` ASC
-Array
-(
-    [object] => \CannyDain\ShortyCoreModules\ProjectManagement\Models\UserStory-null
-)
-
-SELECT `table`.*
-                FROM `uri` `table`
-                WHERE (LCASE(controller) = :controller OR controller = "") AND (method LIKE :method OR method = "")
-                
-                
-Array
-(
-    [controller] => \cannydain\shorty\comments\controllers\shortycommentscontroller
-    [method] => AddComment
-)
-
-SHOW TABLES LIKE 'timeentry'
-Array
-(
-)
-
-EXPLAIN `timeentry`
-Array
-(
-)
-
-SELECT `table`.*
-                FROM `timeentry` `table`
-                WHERE object = :guid
-                ORDER BY `start` DESC
-                
-Array
-(
-    [guid] => \CannyDain\ShortyCoreModules\ProjectManagement\Models\UserStory-null
-)
-
-SELECT `table`.*
-                FROM `uri` `table`
-                WHERE (LCASE(controller) = :controller OR controller = "") AND (method LIKE :method OR method = "")
-                
-                
-Array
-(
-    [controller] => \cannydain\shorty\timetracking\controllers\timetrackingcontroller
-    [method] => TrackTime
-)
-
-SELECT `table`.*
-                FROM `uri` `table`
-                WHERE (LCASE(controller) = :controller OR controller = "") AND (method LIKE :method OR method = "")
-                
-                
-Array
-(
-    [controller] => \cannydain\shortycoremodules\projectmanagement\controllers\projectmanagementcontroller
-    [method] => CreateStory
-)
-
-SELECT `table`.*
-                FROM `uri` `table`
-                WHERE (LCASE(controller) = :controller OR controller = "") AND (method LIKE :method OR method = "")
-                
-                
-Array
-(
-    [controller] => \cannydain\shortycoremodules\projectmanagement\controllers\projectmanagementcontroller
-    [method] => 
-)
-
-SELECT `table`.*
-                FROM `uri` `table`
-                WHERE (LCASE(controller) = :controller OR controller = "") AND (method LIKE :method OR method = "")
-                
-                
-Array
-(
-    [controller] => \cannydain\shortycoremodules\projectmanagement\controllers\projectmanagementcontroller
-    [method] => ViewStories
+    [uri] => favicon.ico
 )
 
 SELECT *
@@ -182,6 +73,14 @@ SELECT *
 Array
 (
     [parent] => 1
+)
+
+SELECT *
+                FROM `navigation`
+                WHERE `parent` = :parent ORDER BY orderIndex ASC
+Array
+(
+    [parent] => 0
 )
 
 SELECT *
@@ -206,6 +105,271 @@ SELECT *
 Array
 (
     [parent] => 4
+)
+
+SELECT *
+                FROM `navigation`
+                WHERE `parent` = :parent ORDER BY orderIndex ASC
+Array
+(
+    [parent] => 1
+)
+
+SELECT *
+                FROM `navigation`
+                WHERE `parent` = :parent ORDER BY orderIndex ASC
+Array
+(
+    [parent] => 5
+)
+
+SELECT *
+                FROM `navigation`
+                WHERE `parent` = :parent ORDER BY orderIndex ASC
+Array
+(
+    [parent] => 2
+)
+
+SELECT *
+                FROM `navigation`
+                WHERE `parent` = :parent ORDER BY orderIndex ASC
+Array
+(
+    [parent] => 3
+)
+
+SELECT *
+                FROM `navigation`
+                WHERE `parent` = :parent ORDER BY orderIndex ASC
+Array
+(
+    [parent] => 4
+)
+
+SELECT *
+                FROM `navigation`
+                WHERE `parent` = :parent ORDER BY orderIndex ASC
+Array
+(
+    [parent] => 5
+)
+
+SELECT *
+                FROM `navigation`
+                WHERE `parent` = :parent ORDER BY orderIndex ASC
+Array
+(
+    [parent] => 6
+)
+
+SELECT *
+                FROM `navigation`
+                WHERE `parent` = :parent ORDER BY orderIndex ASC
+Array
+(
+    [parent] => 6
+)
+
+SELECT *
+                FROM `navigation`
+                WHERE `parent` = :parent ORDER BY orderIndex ASC
+Array
+(
+    [parent] => 7
+)
+
+SELECT *
+                FROM `navigation`
+                WHERE `parent` = :parent ORDER BY orderIndex ASC
+Array
+(
+    [parent] => 7
+)
+
+SELECT *
+                FROM `navigation`
+                WHERE `parent` = :parent ORDER BY orderIndex ASC
+Array
+(
+    [parent] => 8
+)
+
+SELECT *
+                FROM `navigation`
+                WHERE `parent` = :parent ORDER BY orderIndex ASC
+Array
+(
+    [parent] => 9
+)
+
+
+SELECT *
+                FROM `navigation`
+                WHERE `parent` = :parent ORDER BY orderIndex ASC
+Array
+(
+    [parent] => 14
+)
+
+SELECT *
+                FROM `navigation`
+                WHERE `parent` = :parent ORDER BY orderIndex ASC
+Array
+(
+    [parent] => 11
+)
+
+SELECT *
+                FROM `navigation`
+                WHERE `parent` = :parent ORDER BY orderIndex ASC
+Array
+(
+    [parent] => 10
+)
+
+SELECT *
+                FROM `navigation`
+                WHERE `parent` = :parent ORDER BY orderIndex ASC
+Array
+(
+    [parent] => 14
+)
+
+SELECT *
+                FROM `navigation`
+                WHERE `parent` = :parent ORDER BY orderIndex ASC
+Array
+(
+    [parent] => 12
+)
+
+SELECT *
+                FROM `navigation`
+                WHERE `parent` = :parent ORDER BY orderIndex ASC
+Array
+(
+    [parent] => 13
+)
+
+SELECT *
+                FROM `navigation`
+                WHERE `parent` = :parent ORDER BY orderIndex ASC
+Array
+(
+    [parent] => 11
+)
+
+SELECT *
+                FROM `navigation`
+                WHERE `parent` = :parent ORDER BY orderIndex ASC
+Array
+(
+    [parent] => 12
+)
+
+SHOW TABLES LIKE 'timeentry'
+Array
+(
+)
+
+SELECT *
+                FROM `navigation`
+                WHERE `parent` = :parent ORDER BY orderIndex ASC
+Array
+(
+    [parent] => 13
+)
+
+EXPLAIN `timeentry`
+Array
+(
+)
+
+SHOW TABLES LIKE 'timeentry'
+Array
+(
+)
+
+EXPLAIN `timeentry`
+Array
+(
+)
+
+SELECT `table`.*
+                FROM `timeentry` `table`
+                WHERE user = :user AND end >= :start AND end <= :end
+                
+                
+Array
+(
+    [user] => 0
+    [start] => 2013-07-01 00:00:00
+    [end] => 2013-07-24 18:35:00
+)
+
+SELECT `table`.*
+                FROM `timeentry` `table`
+                WHERE user = :user
+                ORDER BY end DESC
+                LIMIT 1
+Array
+(
+    [user] => 0
+)
+
+SELECT *
+                FROM `navigation`
+                WHERE `parent` = :parent ORDER BY orderIndex ASC
+Array
+(
+    [parent] => 1
+)
+
+SELECT *
+                FROM `navigation`
+                WHERE `parent` = :parent ORDER BY orderIndex ASC
+Array
+(
+    [parent] => 2
+)
+
+SELECT `table`.*
+                FROM `timeentry` `table`
+                WHERE user = :user AND end >= :start AND end <= :end
+                
+                
+Array
+(
+    [user] => 0
+    [start] => 2013-07-01 00:00:00
+    [end] => 2013-07-24 18:35:00
+)
+
+SELECT *
+                FROM `navigation`
+                WHERE `parent` = :parent ORDER BY orderIndex ASC
+Array
+(
+    [parent] => 3
+)
+
+SELECT *
+                FROM `navigation`
+                WHERE `parent` = :parent ORDER BY orderIndex ASC
+Array
+(
+    [parent] => 4
+)
+
+SELECT `table`.*
+                FROM `timeentry` `table`
+                WHERE user = :user
+                ORDER BY end DESC
+                LIMIT 1
+Array
+(
+    [user] => 0
 )
 
 SELECT *
@@ -288,6 +452,16 @@ Array
     [parent] => 13
 )
 
+SHOW TABLES LIKE 'timeentry'
+Array
+(
+)
+
+EXPLAIN `timeentry`
+Array
+(
+)
+
 SELECT `table`.*
                 FROM `timeentry` `table`
                 WHERE user = :user AND end >= :start AND end <= :end
@@ -295,9 +469,9 @@ SELECT `table`.*
                 
 Array
 (
-    [user] => 1
+    [user] => 0
     [start] => 2013-07-01 00:00:00
-    [end] => 2013-07-22 17:00:08
+    [end] => 2013-07-24 18:35:00
 )
 
 SELECT `table`.*
@@ -307,6 +481,6 @@ SELECT `table`.*
                 LIMIT 1
 Array
 (
-    [user] => 1
+    [user] => 0
 )
 

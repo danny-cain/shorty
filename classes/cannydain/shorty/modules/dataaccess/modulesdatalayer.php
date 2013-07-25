@@ -19,7 +19,6 @@ class ModulesDataLayer implements DataMapperConsumer
         $file = dirname(dirname(__FILE__)).'/datadictionary/objectdefinitions.json';
         $builder = new JSONFileDefinitionBuilder();
         $builder->readFile($file, $this->_datamapper);
-        $this->_datamapper->dataStructureCheck();
     }
 
     public function saveModuleInfo(ModuleStatus $module)

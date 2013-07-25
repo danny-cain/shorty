@@ -145,9 +145,6 @@ class UserModuleDataLayer implements DataMapperConsumer, DatabaseConsumer
         $builder = new JSONFileDefinitionBuilder();
 
         $builder->readFile($file, $this->_datamapper);
-        $this->_datamapper->dataStructureCheckForObject(self::OBJECT_USER);
-        $this->_datamapper->dataStructureCheckForObject(self::OBJECT_SESSION);
-        $this->_datamapper->dataStructureCheckForObject(self::OBJECT_GROUP);
     }
 
     public function dependenciesConsumed()

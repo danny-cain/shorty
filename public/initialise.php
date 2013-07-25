@@ -7,9 +7,10 @@ if (USE_SOURCE)
     require dirname(dirname(__FILE__)).'/classes/cannydain/initialise.php';
 else
 {
-    require 'phar://'.dirname(dirname(__FILE__)).'/build/core.phar';
-    require 'phar://'.dirname(dirname(__FILE__)).'/build/shorty.phar';
-    require 'phar://'.dirname(dirname(__FILE__)).'/build/modules.phar';
+    $pharBase = dirname(dirname(__FILE__)).'/build/';
+    require 'phar://'.$pharBase.'core.phar';
+    require 'phar://'.$pharBase.'shorty.phar';
+    require 'phar://'.$pharBase.'modules.phar';
 }
 
 define('SITE_DEV', 'dev');

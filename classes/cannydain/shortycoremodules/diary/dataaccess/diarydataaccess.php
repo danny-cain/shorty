@@ -21,7 +21,6 @@ class DiaryDataAccess implements DataMapperConsumer
         $file = dirname(dirname(__FILE__)).'/datadictionary/objects.json';
         $builder = new JSONFileDefinitionBuilder();
         $builder->readFile($file, $this->_datamapper);
-        $this->_datamapper->dataStructureCheckForObject(self::OBJECT_TYPE_DIARY_ENTRY);
     }
 
     /**

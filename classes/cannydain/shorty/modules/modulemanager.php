@@ -88,7 +88,6 @@ class ModuleManager implements DependencyConsumer, InstanceManagerConsumer, Data
         $moduleInstance = $this->_moduleFactory($module);
 
         $moduleInstance->initialise();
-        $this->_datamapper->dataStructureCheck();
 
         $module->setStatus(ModuleStatus::STATUS_INSTALLED);
         $this->datasource()->saveModuleInfo($module);

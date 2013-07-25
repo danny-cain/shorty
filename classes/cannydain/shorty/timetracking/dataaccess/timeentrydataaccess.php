@@ -71,8 +71,6 @@ class TimeEntryDataAccess implements DataMapperConsumer
         $file = dirname(dirname(__FILE__)).'/datadictionary/timeentry.json';
         $builder = new JSONFileDefinitionBuilder();
         $builder->readFile($file, $this->_datamapper);
-
-        $this->_datamapper->dataStructureCheckForObject(self::OBJECT_TIME_ENTRY);
     }
 
     public function saveTimeEntry(TimeEntry $entry)

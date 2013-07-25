@@ -8,6 +8,7 @@ use CannyDain\Lib\DataMapping\DataMapper;
 use CannyDain\Lib\Database\Interfaces\DatabaseConnection;
 use CannyDain\Lib\Database\PDO\DatabaseConnections\PDOMySQLDatabaseConnection;
 use CannyDain\Lib\DependencyInjection\DependencyInjector;
+use CannyDain\Lib\DependencyInjection\Interfaces\DependencyFactoryInterface;
 use CannyDain\Lib\Emailing\EmailerInterface;
 use CannyDain\Lib\Emailing\NullEmailer;
 use CannyDain\Lib\GUIDS\GUIDManagerInterface;
@@ -38,8 +39,22 @@ use CannyDain\Shorty\UI\Response\ShortyHTMLDocument;
 use CannyDain\Shorty\UI\ViewHelpers\Factories\FormHelperFactory;
 use CannyDain\Shorty\UserControl\UserControl;
 
-class BaseBootstrap implements Bootstrap
+class BaseBootstrap implements Bootstrap, DependencyFactoryInterface
 {
+    const CONSUMER_COMMENTS_MANAGER = '\\CannyDain\\Shorty\\Consumers\\CommentsConsumer';
+    const CONSUMER_EMAILER = '\\CannyDain\\Shorty\\Consumers\\EmailerConsumer';
+    const CONSUMER_NAVIGATION_PROVIDER = '\\CannyDain\\Shorty\\Consumers\\NavigationConsumer';
+    const CONSUMER_GUID_MANAGER = '\\CannyDain\\Shorty\\Consumers\\GUIDManagerConsumer';
+    const CONSUMER_RESPONSIVE_LAYOUT_FACTORY = '\\CannyDain\\Shorty\\Consumers\\ResponsiveLayoutConsumer';
+    const CONSUMER_INSTANCE_MANAGER = '\\CannyDain\\Shorty\\Consumers\\InstanceManagerConsumer';
+    const CONSUMER_USER_CONTROL = '\\CannyDain\\Shorty\\Consumers\\UserControlConsumer';
+    const CONSUMER_VIEW_FACTORY = '\\CannyDain\\Shorty\\Consumers\\ViewFactoryConsumer';
+    const CONSUMER_SIDEBAR_MANAGER = '\\CannyDain\\Shorty\\Consumers\\SidebarManagerConsumer';
+    const CONSUMER_DATE_FORMAT_MANAGER = '\\CannyDain\\Shorty\\Consumers\\DateTimeConsumer';
+    const CONSUMER_ECOMMERCE_MANAGER = '\\CannyDain\\Shorty\\Consumers\\ECommerceConsumer';
+    const CONSUMER_URI_MANAGER = '\\CannyDain\\Shorty\\Consumers\\URIManagerConsumer';
+    const CONSUMER_TIME_TRACKER = '\\CannyDain\\Shorty\\Consumers\\TimeEntryConsumer';
+
     /**
      * @var DependencyInjector
      */
@@ -145,6 +160,102 @@ class BaseBootstrap implements Bootstrap
      */
     protected $_uriManager;
 
+    public function createInstance($consumerInterface)
+    {
+        switch($consumerInterface)
+        {
+            case self::CONSUMER_COMMENTS_MANAGER:
+                if ($this->_commentsManager == null)
+                    $this->_commentsManager = $this->_factory_CommentsManager();
+
+                $instance = $this->_commentsManager;
+                break;
+            case self::CONSUMER_EMAILER:
+                if ($this->_emailer == null)
+                    $this->_emailer = $this->_factory_Emailer();
+
+                $instance = $this->_emailer;
+                break;
+            case self::CONSUMER_NAVIGATION_PROVIDER:
+                if ($this->_navigationProvider == null)
+                    $this->_navigationProvider = $this->_factory_NavigationProvider();
+
+                $instance = $this->_navigationProvider;
+                break;
+            case self::CONSUMER_GUID_MANAGER:
+                if ($this->_guidManager == null)
+                    $this->_guidManager = $this->_factory_GUIDManager();
+
+                $instance = $this->_guidManager;
+                break;
+            case self::CONSUMER_RESPONSIVE_LAYOUT_FACTORY:
+                if($this->_responsiveLayoutFactory == null)
+                    $this->_responsiveLayoutFactory = new ResponsiveLayoutFactory();
+
+                $instance = $this->_responsiveLayoutFactory;
+                break;
+            case self::CONSUMER_INSTANCE_MANAGER:
+                if ($this->_instanceManager == null)
+                    $this->_instanceManager = new InstanceManager();
+
+                $instance = $this->_instanceManager;
+                break;
+            case self::CONSUMER_USER_CONTROL:
+                if ($this->_userControl == null)
+                    $this->_userControl = new UserControl;
+
+                $instance = $this->_userControl;
+                break;
+            case self::CONSUMER_VIEW_FACTORY:
+                if ($this->_viewFactory == null)
+                    $this->_viewFactory = $this->_factory_ViewFactory();
+
+                $instance = $this->_viewFactory;
+                break;
+            case self::CONSUMER_SIDEBAR_MANAGER:
+                if ($this->_sidebarManager == null)
+                    $this->_sidebarManager = $this->_factory_SidebarManager();
+
+                $instance = $this->_sidebarManager;
+                break;
+            case self::CONSUMER_DATE_FORMAT_MANAGER:
+                if ($this->_dateFormatManager == null)
+                    $this->_dateFormatManager = new DateFormatManager('j\<\s\u\p\>S\<\/\s\u\p\> F Y', 'H:i', 'j\<\s\u\p\>S\<\/\s\u\p\> F Y \@ H:i');
+
+                $instance = $this->_dateFormatManager;
+                break;
+            case self::CONSUMER_ECOMMERCE_MANAGER:
+                if ($this->_ecommerce == null)
+                {
+                    $this->_ecommerce = new ECommerceManager();
+                    $this->_ecommerce->setProductProvider($this->_factory_ProductProvider());
+                    $this->_registerPaymentProviders();
+                }
+
+                $instance = $this->_ecommerce;
+                break;
+            case self::CONSUMER_URI_MANAGER:
+                if ($this->_uriManager = null)
+                    $this->_uriManager = $this->_factory_URIManager();
+
+                $instance = $this->_uriManager;
+                break;
+            case self::CONSUMER_TIME_TRACKER:
+                if ($this->_timeTracker == null)
+                    $this->_timeTracker = new TimeTracker();
+
+                $instance = $this->_timeTracker;
+                break;
+            default:
+                $instance = null;
+        }
+
+        if ($instance != null)
+            $this->_dependencyInjector->applyDependencies($instance);
+
+        return $instance;
+    }
+
     public function executeBootstrap(ShortyConfiguration $config, AppMain $main)
     {
         $this->_config = $config;
@@ -208,11 +319,6 @@ class BaseBootstrap implements Bootstrap
         $this->_instanceManager->registerObjects();
         $this->_moduleManager->initialise();
 
-        $this->_datamapper->dataStructureCheck();
-
-        $this->_ecommerce->setProductProvider($this->_factory_ProductProvider());
-
-        $this->_registerPaymentProviders();
         $this->_setupThemes();
         $this->_debugSetup();
     }
@@ -233,48 +339,37 @@ class BaseBootstrap implements Bootstrap
         $this->_dependencyInjector = new DependencyInjector();
         $this->_request = new Request();
         $this->_router = $this->_factory_Router();
-        $this->_guidManager = $this->_factory_GUIDManager();
         $this->_database = new PDOMySQLDatabaseConnection();
         $this->_response = $this->_factory_Response();
-        $this->_responsiveLayoutFactory = new ResponsiveLayoutFactory();
         $this->_datamapper = new DataMapper($this->_database);
         $this->_moduleManager = new ModuleManager();
-        $this->_instanceManager = new InstanceManager();
-        $this->_userControl = new UserControl();
-        $this->_navigationProvider = $this->_factory_NavigationProvider();
-        $this->_viewFactory = $this->_factory_ViewFactory();
-        $this->_sidebarManager = $this->_factory_SidebarManager();
-        $this->_commentsManager = $this->_factory_CommentsManager();
-        $this->_dateFormatManager = new DateFormatManager('j\<\s\u\p\>S\<\/\s\u\p\> F Y', 'H:i', 'j\<\s\u\p\>S\<\/\s\u\p\> F Y \@ H:i');
-        $this->_ecommerce = new ECommerceManager();
-        $this->_uriManager = $this->_factory_URIManager();
-        $this->_timeTracker = new TimeTracker;
-        $this->_emailer = $this->_factory_Emailer();
     }
 
     protected function _setupDependencies()
     {
         $this->_dependencyInjector->defineDependency('\\CannyDain\\Shorty\\Consumers\\DependencyConsumer', $this->_dependencyInjector);
-        $this->_dependencyInjector->defineDependency('\\CannyDain\\Shorty\\Consumers\\GUIDManagerConsumer', $this->_guidManager);
         $this->_dependencyInjector->defineDependency('\\CannyDain\\Shorty\\Consumers\\RequestConsumer', $this->_request);
         $this->_dependencyInjector->defineDependency('\\CannyDain\\Shorty\\Consumers\\RouterConsumer', $this->_router);
         $this->_dependencyInjector->defineDependency('\\CannyDain\\Shorty\\Consumers\\DatabaseConsumer', $this->_database);
         $this->_dependencyInjector->defineDependency('\\CannyDain\\Shorty\\Consumers\\ResponseConsumer', $this->_response);
-        $this->_dependencyInjector->defineDependency('\\CannyDain\\Shorty\\Consumers\\ResponsiveLayoutConsumer', $this->_responsiveLayoutFactory);
         $this->_dependencyInjector->defineDependency('\\CannyDain\\Shorty\\Consumers\\DataMapperConsumer', $this->_datamapper);
         $this->_dependencyInjector->defineDependency('\\CannyDain\\Shorty\\Consumers\\ModuleConsumer', $this->_moduleManager);
         $this->_dependencyInjector->defineDependency('\\CannyDain\\Shorty\\Consumers\\ConfigurationConsumer', $this->_config);
-        $this->_dependencyInjector->defineDependency('\\CannyDain\\Shorty\\Consumers\\InstanceManagerConsumer', $this->_instanceManager);
-        $this->_dependencyInjector->defineDependency('\\CannyDain\\Shorty\\Consumers\\UserControlConsumer', $this->_userControl);
-        $this->_dependencyInjector->defineDependency('\\CannyDain\\Shorty\\Consumers\\NavigationConsumer', $this->_navigationProvider);
-        $this->_dependencyInjector->defineDependency('\\CannyDain\\Shorty\\Consumers\\ViewFactoryConsumer', $this->_viewFactory);
-        $this->_dependencyInjector->defineDependency('\\CannyDain\\Shorty\\Consumers\\SidebarManagerConsumer', $this->_sidebarManager);
-        $this->_dependencyInjector->defineDependency('\\CannyDain\\Shorty\\Consumers\\CommentsConsumer', $this->_commentsManager);
-        $this->_dependencyInjector->defineDependency('\\CannyDain\\Shorty\\Consumers\\DateTimeConsumer', $this->_dateFormatManager);
-        $this->_dependencyInjector->defineDependency('\\CannyDain\\Shorty\\Consumers\\ECommerceConsumer', $this->_ecommerce);
-        $this->_dependencyInjector->defineDependency('\\CannyDain\\Shorty\\Consumers\\URIManagerConsumer', $this->_uriManager);
-        $this->_dependencyInjector->defineDependency('\\CannyDain\\Shorty\\Consumers\\TimeEntryConsumer', $this->_timeTracker);
-        $this->_dependencyInjector->defineDependency('\\CannyDain\\Shorty\\Consumers\\EmailerConsumer', $this->_emailer);
+
+        /* Lazy loaded dependencies */
+        $this->_dependencyInjector->defineDependencyFactory('\\CannyDain\\Shorty\\Consumers\\URIManagerConsumer', $this);
+        $this->_dependencyInjector->defineDependencyFactory('\\CannyDain\\Shorty\\Consumers\\TimeEntryConsumer', $this);
+        $this->_dependencyInjector->defineDependencyFactory('\\CannyDain\\Shorty\\Consumers\\SidebarManagerConsumer', $this);
+        $this->_dependencyInjector->defineDependencyFactory('\\CannyDain\\Shorty\\Consumers\\DateTimeConsumer', $this);
+        $this->_dependencyInjector->defineDependencyFactory('\\CannyDain\\Shorty\\Consumers\\ECommerceConsumer', $this);
+        $this->_dependencyInjector->defineDependencyFactory('\\CannyDain\\Shorty\\Consumers\\InstanceManagerConsumer', $this);
+        $this->_dependencyInjector->defineDependencyFactory('\\CannyDain\\Shorty\\Consumers\\UserControlConsumer', $this);
+        $this->_dependencyInjector->defineDependencyFactory('\\CannyDain\\Shorty\\Consumers\\ViewFactoryConsumer', $this);
+        $this->_dependencyInjector->defineDependencyFactory('\\CannyDain\\Shorty\\Consumers\\ResponsiveLayoutConsumer', $this);
+        $this->_dependencyInjector->defineDependencyFactory('\\CannyDain\\Shorty\\Consumers\\GUIDManagerConsumer', $this);
+        $this->_dependencyInjector->defineDependencyFactory('\\CannyDain\\Shorty\\Consumers\\NavigationConsumer', $this);
+        $this->_dependencyInjector->defineDependencyFactory('\\CannyDain\\Shorty\\Consumers\\EmailerConsumer', $this);
+        $this->_dependencyInjector->defineDependencyFactory('\\CannyDain\\Shorty\\Consumers\\CommentsConsumer', $this);
 
         /* Dependency Factories */
         $this->_dependencyInjector->defineDependencyFactory('\\CannyDain\\Shorty\\Consumers\\FormHelperConsumer', new FormHelperFactory());
@@ -283,24 +378,11 @@ class BaseBootstrap implements Bootstrap
     protected function _applyDependencies()
     {
         $this->_dependencyInjector->applyDependencies($this->_request);
-        $this->_dependencyInjector->applyDependencies($this->_guidManager);
         $this->_dependencyInjector->applyDependencies($this->_router);
         $this->_dependencyInjector->applyDependencies($this->_database);
         $this->_dependencyInjector->applyDependencies($this->_response);
-        $this->_dependencyInjector->applyDependencies($this->_responsiveLayoutFactory);
         $this->_dependencyInjector->applyDependencies($this->_datamapper);
         $this->_dependencyInjector->applyDependencies($this->_moduleManager);
-        $this->_dependencyInjector->applyDependencies($this->_instanceManager);
-        $this->_dependencyInjector->applyDependencies($this->_userControl);
-        $this->_dependencyInjector->applyDependencies($this->_navigationProvider);
-        $this->_dependencyInjector->applyDependencies($this->_viewFactory);
-        $this->_dependencyInjector->applyDependencies($this->_sidebarManager);
-        $this->_dependencyInjector->applyDependencies($this->_commentsManager);
-        $this->_dependencyInjector->applyDependencies($this->_dateFormatManager);
-        $this->_dependencyInjector->applyDependencies($this->_ecommerce);
-        $this->_dependencyInjector->applyDependencies($this->_uriManager);
-        $this->_dependencyInjector->applyDependencies($this->_timeTracker);
-        $this->_dependencyInjector->applyDependencies($this->_emailer);
         $this->_dependencyInjector->applyDependencies(ThemeManager::Singleton());
     }
 

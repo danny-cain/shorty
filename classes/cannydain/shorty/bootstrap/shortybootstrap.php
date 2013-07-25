@@ -30,8 +30,10 @@ class ShortyBootstrap extends BaseBootstrap
             $this->_database->registerQueryListener(new FileLoggerQueryListener($logDirectory.'database.log', true));
 
         // ecommerce debug setup (shipping and discounts)
-            $this->_ecommerce->setShippingManager(new ShippingManager(500));
-            $this->_ecommerce->setDiscountManager(new DiscountManager(array
+            $ecommerce = $this->createInstance(self::CONSUMER_ECOMMERCE_MANAGER);
+
+            $ecommerce->setShippingManager(new ShippingManager(500));
+            $ecommerce->setDiscountManager(new DiscountManager(array
             (
                 'dc' => 500,
                 'free-stuff' => 1000
@@ -80,7 +82,7 @@ class ShortyBootstrap extends BaseBootstrap
     {
         $invoiceProvider = new InvoicePaymentProvider();
         $this->_dependencyInjector->applyDependencies($invoiceProvider);
-        $this->_ecommerce->addPaymentProvider($invoiceProvider);
+        $this->createInstance(self::CONSUMER_ECOMMERCE_MANAGER)->addPaymentProvider($invoiceProvider);
     }
 
     /**

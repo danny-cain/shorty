@@ -29,7 +29,6 @@ class ShortyCommentsDatasource implements DataMapperConsumer
     {
         $builder = new JSONFileDefinitionBuilder();
         $builder->readFile(dirname(dirname(__FILE__)).'/datadictionary/comments.json', $this->_datamapper);
-        $this->_datamapper->dataStructureCheckForObject(self::OBJECT_COMMENT);
     }
 
     public function deleteComment($id)
