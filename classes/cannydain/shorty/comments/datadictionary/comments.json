@@ -52,5 +52,41 @@
                 "size":0
             }
         ]
+    },
+	    {
+        "class":"\\CannyDain\\Shorty\\Comments\\Models\\CommentsSettingsEntry",
+        "auto_id":"id",
+        "id":
+        [
+            "id"
+        ],
+        "table":"commentsettings",
+        "fields":
+        [
+            {
+                "column":"id",
+                "type":"int",
+                "property":"_id",
+                "size":11
+            },
+            {
+                "column":"object",
+                "type":"varchar",
+                "property":"_objectGUID",
+                "size":250
+            },
+            {
+                "column":"setting",
+                "type":"varchar",
+                "property":"_setting",
+                "size":250
+            },
+            {
+                "column":"value",
+                "type":"varchar",
+                "property":"_value",
+                "size":250
+            }
+        ]
     }
 ]

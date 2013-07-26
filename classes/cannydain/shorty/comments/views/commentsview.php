@@ -5,6 +5,7 @@ namespace CannyDain\Shorty\Comments\Views;
 use CannyDain\Lib\UI\Views\HTMLView;
 use CannyDain\Lib\UI\Views\ViewInterface;
 use CannyDain\Lib\Utils\Date\DateFormatManager;
+use CannyDain\Lib\Web\Server\Request;
 use CannyDain\Shorty\Comments\Models\Comment;
 use CannyDain\Shorty\Consumers\DateTimeConsumer;
 
@@ -14,6 +15,8 @@ class CommentsView extends HTMLView implements DateTimeConsumer
      * @var Comment[]
      */
     protected $_comments;
+
+    protected $_guid;
 
     /**
      * @var DateFormatManager
@@ -27,6 +30,50 @@ class CommentsView extends HTMLView implements DateTimeConsumer
 
     protected $_deleteCommentURITemplate = '';
     protected $_deleteCommentReturnToURI = '';
+    protected $_saveSettingsURI = '';
+
+    protected $_showComments = false;
+    protected $_canAddComments = false;
+
+    public function setGuid($guid)
+    {
+        $this->_guid = $guid;
+    }
+
+    public function getGuid()
+    {
+        return $this->_guid;
+    }
+
+    public function setCanAddComments($canAddComments)
+    {
+        $this->_canAddComments = $canAddComments;
+    }
+
+    public function getCanAddComments()
+    {
+        return $this->_canAddComments;
+    }
+
+    public function setShowComments($showComments)
+    {
+        $this->_showComments = $showComments;
+    }
+
+    public function getShowComments()
+    {
+        return $this->_showComments;
+    }
+
+    public function setSaveSettingsURI($saveSettingsURI)
+    {
+        $this->_saveSettingsURI = $saveSettingsURI;
+    }
+
+    public function getSaveSettingsURI()
+    {
+        return $this->_saveSettingsURI;
+    }
 
     /**
      * @param \CannyDain\Lib\UI\Views\ViewInterface $addCommentView
@@ -74,8 +121,46 @@ class CommentsView extends HTMLView implements DateTimeConsumer
         return $this->_comments;
     }
 
+    public function updateFromRequest(Request $request)
+    {
+        $this->_showComments = $request->getParameter('showComments') == '1';
+        $this->_canAddComments = $request->getParameter('addComments') == '1';
+        $this->_guid = $request->getParameter('guid');
+        $this->_deleteCommentReturnToURI = $request->getParameter('returnTo');
+    }
+
+    protected function _displaySettings()
+    {
+        $showChecked = '';
+        $addChecked = '';
+
+        if ($this->_canAddComments)
+            $addChecked = ' checked="checked"';
+        if ($this->_showComments)
+            $showChecked = ' checked="checked"';
+
+        echo '<form method="post" action="'.$this->_saveSettingsURI.'">';
+            echo '<input type="hidden" name="returnTo" value="'.$this->_deleteCommentReturnToURI.'" />';
+            echo '<input type="hidden" name="guid" value="'.$this->_guid.'" />';
+            echo '<div>';
+                echo '<input type="checkbox" name="showComments" value="1"'.$showChecked.'/> ';
+                echo 'Show Comments';
+            echo '</div>';
+
+            echo '<div>';
+                echo '<input type="checkbox" name="addComments" value="1"'.$addChecked.'/> ';
+                echo 'Can Add Comments';
+            echo '</div>';
+
+            echo '<input type="submit" value="Save" />';
+        echo '</form>';
+    }
+
     public function display()
     {
+        if ($this->_saveSettingsURI != '')
+            $this->_displaySettings();
+
         echo '<div class="comments">';
             foreach ($this->_comments as $comment)
                 $this->_displayComment($comment);

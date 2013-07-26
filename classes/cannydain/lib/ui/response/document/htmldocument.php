@@ -2,6 +2,8 @@
 
 namespace CannyDain\Lib\UI\Response\Document;
 
+use CannyDain\Lib\UI\Views\ViewInterface;
+
 abstract class HTMLDocument extends BaseDocument
 {
     protected function _displayDocumentHead()
@@ -23,6 +25,8 @@ abstract class HTMLDocument extends BaseDocument
         foreach ($this->_getScriptIncludes() as $script)
             echo '<script type="text/javascript" src="'.$script.'"></script>';
 
+        $this->_writePostIncludesHead();
+
         echo '<style type="text/css">';
             $this->_writeInlineStyles();
         echo '</style>';
@@ -31,6 +35,8 @@ abstract class HTMLDocument extends BaseDocument
             $this->_writeInlineScripts();
         echo '</script>';
     }
+
+    protected function _writePostIncludesHead() {}
 
     protected abstract function _writeInlineStyles();
     protected abstract function _writeInlineScripts();

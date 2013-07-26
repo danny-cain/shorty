@@ -11,6 +11,11 @@ class ShortyConfiguration
     const CONFIG_KEY_EMAILING_CONTACT_FORM_EMAIL = 'shorty.emailing.contactFormEmail';
     const CONFIG_KEY_EMAILING_COMMENTS_EMAIL = 'shorty.emailing.commentsFormEmail';
 
+    const CONFIG_KEY_EMAILING_SMTP_HOST = 'shorty.emailing.smtp.host';
+    const CONFIG_KEY_EMAILING_SMTP_USER = 'shorty.emailing.smtp.user';
+    const CONFIG_KEY_EMAILING_SMTP_PASS = 'shorty.emailing.smtp.pass';
+    const CONFIG_KEY_EMAILING_SMTP_PORT = 'shorty.emailing.smtp.port';
+
     const CONFIG_KEY_DATABASE_USER = 'shorty.database.user';
     const CONFIG_KEY_DATABASE_PASS = 'shorty.database.pass';
     const CONFIG_KEY_DATABASE_HOST = 'shorty.database.host';

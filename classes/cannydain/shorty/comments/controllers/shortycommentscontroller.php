@@ -12,7 +12,9 @@ use CannyDain\Lib\UI\Views\RedirectView;
 use CannyDain\Lib\Web\Server\Request;
 use CannyDain\Shorty\Comments\Datasource\ShortyCommentsDatasource;
 use CannyDain\Shorty\Comments\Models\Comment;
+use CannyDain\Shorty\Comments\Models\CommentsSettingsEntry;
 use CannyDain\Shorty\Comments\Views\AddCommentForm;
+use CannyDain\Shorty\Comments\Views\CommentsView;
 use CannyDain\Shorty\Config\ShortyConfiguration;
 use CannyDain\Shorty\Consumers\ConfigurationConsumer;
 use CannyDain\Shorty\Consumers\DependencyConsumer;
@@ -54,6 +56,32 @@ class ShortyCommentsController extends ShortyController implements RequestConsum
     public function __isAdministratorOnly()
     {
         return false;
+    }
+
+    public function SaveSettings()
+    {
+        $view = new CommentsView();
+        $view->updateFromRequest($this->_request);
+
+        $guid = $view->getGUID();
+        $settings = $this->datasource()->getSettingsForObject($guid);
+        if (!isset($settings[CommentsSettingsEntry::SETTING_CAN_POST_COMMENTS]))
+            $settings[CommentsSettingsEntry::SETTING_CAN_POST_COMMENTS] = new CommentsSettingsEntry();
+
+        if (!isset($settings[CommentsSettingsEntry::SETTING_DISPLAY_COMMENTS]))
+            $settings[CommentsSettingsEntry::SETTING_DISPLAY_COMMENTS] = new CommentsSettingsEntry();
+
+        $settings[CommentsSettingsEntry::SETTING_DISPLAY_COMMENTS]->setValue($view->getShowComments());
+        $settings[CommentsSettingsEntry::SETTING_DISPLAY_COMMENTS]->setObjectGUID($guid);
+        $settings[CommentsSettingsEntry::SETTING_DISPLAY_COMMENTS]->setSetting(CommentsSettingsEntry::SETTING_DISPLAY_COMMENTS);
+        $settings[CommentsSettingsEntry::SETTING_CAN_POST_COMMENTS]->setValue($view->getCanAddComments());
+        $settings[CommentsSettingsEntry::SETTING_CAN_POST_COMMENTS]->setObjectGUID($guid);
+        $settings[CommentsSettingsEntry::SETTING_CAN_POST_COMMENTS]->setSetting(CommentsSettingsEntry::SETTING_CAN_POST_COMMENTS);
+
+        foreach ($settings as $setting)
+            $this->datasource()->saveSetting($setting);
+
+        return new RedirectView($view->getDeleteCommentReturnToURI());
     }
 
     public function DeleteComment($commentID)

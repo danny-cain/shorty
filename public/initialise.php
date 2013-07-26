@@ -22,7 +22,7 @@ class ShortyInit
         $init = new ShortyInit();
 
         date_default_timezone_set('Europe/London');
-        error_reporting(E_ALL);
+        error_reporting(E_STRICT);
         ini_set('log_errors', true);
         ini_set('display_errors', true);
         ini_set('error_log', 'error_log');

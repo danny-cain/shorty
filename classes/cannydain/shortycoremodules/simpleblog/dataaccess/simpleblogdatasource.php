@@ -59,10 +59,13 @@ class SimpleBlogDatasource implements DataMapperConsumer, GUIDManagerConsumer
      */
     public function getBlogByURI($uri)
     {
-        return array_shift($this->_datamapper->getAllObjectsViaEqualityFilter(self::OBJECT_BLOG, array
+        $results = $this->_datamapper->getAllObjectsViaEqualityFilter(self::OBJECT_BLOG, array
         (
             'uri' => $uri
-        )));
+        ));
+        $ret = array_shift($results);
+
+        return $ret;
     }
 
     /**

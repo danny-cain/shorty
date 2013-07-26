@@ -6,6 +6,11 @@ use CannyDain\Lib\UI\Views\ViewInterface;
 
 abstract class BaseDocument implements DocumentInterface
 {
+    /**
+     * @var ViewInterface
+     */
+    protected $_view;
+
     protected abstract function _displayDocumentHead();
     protected abstract function _displayPageHead();
 
@@ -14,6 +19,8 @@ abstract class BaseDocument implements DocumentInterface
 
     public function display(ViewInterface $view = null)
     {
+        $this->_view = $view;
+
         $this->_displayDocumentHead();
             $this->_displayPageHead();
 

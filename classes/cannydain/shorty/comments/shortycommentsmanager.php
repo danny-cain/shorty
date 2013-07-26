@@ -7,10 +7,12 @@ use CannyDain\Lib\DependencyInjection\DependencyInjector;
 use CannyDain\Lib\Routing\Interfaces\RouterInterface;
 use CannyDain\Lib\Routing\Models\Route;
 use CannyDain\Lib\UI\ViewFactory;
+use CannyDain\Lib\UI\Views\NullHTMLView;
 use CannyDain\Lib\UI\Views\ViewInterface;
 use CannyDain\Shorty\Comments\Controllers\ShortyCommentsController;
 use CannyDain\Shorty\Comments\Datasource\ShortyCommentsDatasource;
 use CannyDain\Shorty\Comments\Models\Comment;
+use CannyDain\Shorty\Comments\Models\CommentsSettingsEntry;
 use CannyDain\Shorty\Comments\Views\AddCommentForm;
 use CannyDain\Shorty\Comments\Views\CommentsView;
 use CannyDain\Shorty\Consumers\DependencyConsumer;
@@ -41,10 +43,16 @@ class ShortyCommentsManager implements CommentsManager, DependencyConsumer, Rout
      */
     public function getAdministrateCommentsView($guid, $returnURI)
     {
+        $settings = $this->datasource()->getSettingsForObject($guid);
+
         $view = new CommentsView();
         $view->setComments($this->datasource()->getCommentsForObject($guid));
         $view->setDeleteCommentReturnToURI($returnURI);
         $view->setDeleteCommentURITemplate($this->_router->getURI(new Route(ShortyCommentsController::COMMENTS_CONTROLLER_ID, 'DeleteComment', array('#id#'))));
+        $view->setCanAddComments(isset($settings[CommentsSettingsEntry::SETTING_CAN_POST_COMMENTS]) ? $settings[CommentsSettingsEntry::SETTING_CAN_POST_COMMENTS] : false);
+        $view->setShowComments(isset($settings[CommentsSettingsEntry::SETTING_DISPLAY_COMMENTS]) ? $settings[CommentsSettingsEntry::SETTING_DISPLAY_COMMENTS] : false);
+        $view->setGuid($guid);
+        $view->setSaveSettingsURI($this->_router->getURI(new Route(ShortyCommentsController::COMMENTS_CONTROLLER_ID, 'SaveSettings')));
 
         $this->_dependencies->applyDependencies($view);
 
@@ -58,6 +66,10 @@ class ShortyCommentsManager implements CommentsManager, DependencyConsumer, Rout
      */
     public function getCommentsViewForObject($guid, $objectURI)
     {
+        $settings = $this->datasource()->getSettingsForObject($guid);
+        if (!isset($settings[CommentsSettingsEntry::SETTING_DISPLAY_COMMENTS]) || $settings[CommentsSettingsEntry::SETTING_DISPLAY_COMMENTS] == 0)
+            return new NullHTMLView();
+
         $view = new CommentsView();
         $view->setComments($this->datasource()->getCommentsForObject($guid));
         $view->setAddCommentView($this->getAddCommentForm($guid, $objectURI));
@@ -69,6 +81,10 @@ class ShortyCommentsManager implements CommentsManager, DependencyConsumer, Rout
 
     protected function getAddCommentForm($object, $returnURI)
     {
+        $settings = $this->datasource()->getSettingsForObject($object);
+        if (!isset($settings[CommentsSettingsEntry::SETTING_CAN_POST_COMMENTS]) || $settings[CommentsSettingsEntry::SETTING_CAN_POST_COMMENTS] == 0)
+            return new NullHTMLView();
+
         $view = new AddCommentForm();
         $view->setComment(new Comment());
         $view->setReturnURI($returnURI);

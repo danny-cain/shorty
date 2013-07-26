@@ -235,7 +235,7 @@ class BaseBootstrap implements Bootstrap, DependencyFactoryInterface
                 $instance = $this->_ecommerce;
                 break;
             case self::CONSUMER_URI_MANAGER:
-                if ($this->_uriManager = null)
+                if ($this->_uriManager == null)
                     $this->_uriManager = $this->_factory_URIManager();
 
                 $instance = $this->_uriManager;
@@ -372,7 +372,12 @@ class BaseBootstrap implements Bootstrap, DependencyFactoryInterface
         $this->_dependencyInjector->defineDependencyFactory('\\CannyDain\\Shorty\\Consumers\\CommentsConsumer', $this);
 
         /* Dependency Factories */
-        $this->_dependencyInjector->defineDependencyFactory('\\CannyDain\\Shorty\\Consumers\\FormHelperConsumer', new FormHelperFactory());
+        $this->_dependencyInjector->defineDependencyFactory('\\CannyDain\\Shorty\\Consumers\\FormHelperConsumer', $this->_factory_FormHelperFactory());
+    }
+
+    protected function _factory_FormHelperFactory()
+    {
+        return new FormHelperFactory();
     }
 
     protected function _applyDependencies()
