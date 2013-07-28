@@ -2,10 +2,20 @@
 
 namespace CannyDain\APIClients\Google;
 
+use CannyDain\APIClients\Google\Models\Analytics\AnalyticsQuery;
+use CannyDain\APIClients\Google\Models\Analytics\AnalyticsQueryResponse;
 use Exception;
 
 class AnalyticsClient
 {
+    //https://developers.google.com/analytics/devguides/reporting/core/dimsmets#q=country&cats=visitor,session,trafficsources,adwords,goalconversions,platform,geonetwork,system,socialactivities,pagetracking,internalsearch,sitespeed,apptracking,eventtracking,ecommerce,socialinteractions,usertimings,exceptions,experiments,customvars,time
+    const METRIC_VISITS = 'ga:visits';
+    const METRIC_BOUNCES = 'ga:bounces';
+    const METRIC_NEW_VISITS = 'ga:newVisits';
+
+    const DIMENSION_BROWSER = 'ga:browser';
+    const DIMENSION_COUNTRY = 'ga:country';
+
     /**
      * @var GoogleClient
      */
@@ -25,16 +35,58 @@ class AnalyticsClient
         $this->_analytics = new \Google_AnalyticsService($this->_googleClient->getBaseClient());
     }
 
+    public function getTotalVisitsBetweenDates($profileID, $startDate, $endDate)
+    {
+        return $this->query(new AnalyticsQuery($profileID, $startDate, $endDate, array(self::METRIC_VISITS)));
+    }
+
+    public function query(AnalyticsQuery $query)
+    {
+        $params = array
+        (
+            'dimensions' => implode(',', $query->getDimensions())
+        );
+        $start = $query->getStartDate();
+        $end = $query->getEndDate();
+
+        if (is_int($start))
+            $start = date('Y-m-d', $start);
+        if (is_int($end))
+            $end = date('Y-m-d', $end);
+
+        $results = $this->_analytics->data_ga->get('ga:'.$query->getProfileID(), $start, $end, implode(',', $query->getMetrics()), $params);
+
+
+        return AnalyticsQueryResponse::ParseFromGAResponse($results);
+    }
+
     public function dev()
     {
-        $profID = $this->getFirstProfileID();
-        $results = $this->_analytics->data_ga->get('ga:' . $profID, '2013-07-26', '2013-07-26', 'ga:visits');
+        $results = $this->query(new AnalyticsQuery
+        (
+            $this->getFirstProfileID(),
+            null,
+            null,
+            array(self::METRIC_VISITS, self::METRIC_BOUNCES),
+            array(self::DIMENSION_BROWSER, self::DIMENSION_COUNTRY)
+        ));
 
-        $name = $results->getProfileInfo()->getProfileName();
-        $rows = $results->getRows();
-        $visits = $rows[0][0];
+        echo '<table>';
+            echo '<tr>';
+                echo '<th>Country/Browser</th>';
+                echo '<th>Visits</th>';
+                echo '<th>Bounces</th>';
+            echo '</tr>';
 
-        echo $name.': '.$visits.' visits<br>';
+        foreach ($results->getRows() as $row)
+        {
+            echo '<tr>';
+                echo '<td>'.$row->getValueByHeader(self::DIMENSION_COUNTRY).'/'.$row->getValueByHeader(self::DIMENSION_BROWSER).'</td>';
+                echo '<td>'.$row->getValueByHeader(self::METRIC_VISITS).'</td>';
+                echo '<td>'.$row->getValueByHeader(self::METRIC_BOUNCES).'</td>';
+            echo '</tr>';
+        }
+        echo '</table>';
     }
 
     public function getFirstProfileID()
