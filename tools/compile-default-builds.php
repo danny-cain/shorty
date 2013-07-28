@@ -33,6 +33,17 @@ require dirname(dirname(__FILE__)).'/classes/cannydain/initialise.php';
     $rootPath = dirname(dirname(__FILE__)).'/classes/';
     $buildPath = dirname(dirname(__FILE__)).'/build/';
 
+    $apiClientRoot = 'cannydain/apiclients/';
+    $dir = opendir($rootPath.$apiClientRoot);
+    while ($entry = readdir($dir))
+    {
+        $fullPath = $rootPath.$apiClientRoot.$entry;
+        if ($entry == '.' || $entry == '..' || !is_dir($fullPath))
+            continue;
+
+        $builds[] = new BuildDefinition($entry.' api', 'api-'.$entry.'.phar', array($apiClientRoot.$entry), array(), '<?php \CannyDain\Autoloader::Singleton()->registerRootPath(dirname(__FILE__)."/");');
+    }
+
     foreach ($builds as $build)
     {
         echo "Building ".$build->getBuildName()."\r\n";
