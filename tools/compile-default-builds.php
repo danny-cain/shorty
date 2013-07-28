@@ -41,7 +41,7 @@ require dirname(dirname(__FILE__)).'/classes/cannydain/initialise.php';
         if ($entry == '.' || $entry == '..' || !is_dir($fullPath))
             continue;
 
-        $builds[] = new BuildDefinition($entry.' api', 'api-'.$entry.'.phar', array($rootPath.$apiClientRoot.$entry), array(), '<?php \CannyDain\Autoloader::Singleton()->registerRootPath(dirname(__FILE__)."/");');
+        $builds[] = new BuildDefinition($entry.' api', 'api-'.$entry.'.phar', array($apiClientRoot.$entry.'/'), array(), '<?php \CannyDain\Autoloader::Singleton()->registerRootPath(dirname(__FILE__)."/");');
     }
 
     foreach ($builds as $build)

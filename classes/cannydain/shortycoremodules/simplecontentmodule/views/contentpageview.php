@@ -57,10 +57,6 @@ class ContentPageView extends HTMLView implements CommentsConsumer, DateTimeCons
 
     protected function _displayComments()
     {
-        echo '<div class="commentCount">';
-            echo $this->_comments->getCommentCountForObject($this->_pageGUID).' comment(s)';
-        echo '</div>';
-
         $view = $this->_comments->getCommentsViewForObject($this->_pageGUID, $this->_viewURI);
         if ($view != null)
             $view->display();
