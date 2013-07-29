@@ -4,14 +4,16 @@ namespace CannyDain\ShortyCoreModules\UserModule\DataAccess;
 
 use CannyDain\Lib\DataMapping\Config\JSONFileDefinitionBuilder;
 use CannyDain\Lib\DataMapping\DataMapper;
+use CannyDain\Lib\DataMapping\Interfaces\ModelFactoryInterface;
 use CannyDain\Lib\Database\Interfaces\DatabaseConnection;
 use CannyDain\Shorty\Consumers\DataMapperConsumer;
 use CannyDain\Shorty\Consumers\DatabaseConsumer;
 use CannyDain\ShortyCoreModules\UserModule\Models\GroupModel;
 use CannyDain\ShortyCoreModules\UserModule\Models\SessionModel;
+use CannyDain\ShortyCoreModules\UserModule\Models\SingleSignOnUserModel;
 use CannyDain\ShortyCoreModules\UserModule\Models\UserModel;
 
-class UserModuleDataLayer implements DataMapperConsumer, DatabaseConsumer
+class UserModuleDataLayer implements DataMapperConsumer, DatabaseConsumer, ModelFactoryInterface
 {
     const OBJECT_USER = '\\CannyDain\\ShortyCoreModules\\UserModule\\Models\\UserModel';
     const OBJECT_SESSION = '\\CannyDain\\ShortyCoreModules\\UserModule\\Models\\SessionModel';
@@ -26,6 +28,21 @@ class UserModuleDataLayer implements DataMapperConsumer, DatabaseConsumer
      * @var DatabaseConnection
      */
     protected $_database;
+
+    /**
+     * @param $type
+     * @param array $rowData
+     * @return object
+     */
+    public function createModel($type, $rowData)
+    {
+        if ($type != self::OBJECT_USER)
+            return null;
+
+        // check for Facebook users etc
+
+        return null;
+    }
 
     /**
      * @param $id
@@ -145,6 +162,7 @@ class UserModuleDataLayer implements DataMapperConsumer, DatabaseConsumer
         $builder = new JSONFileDefinitionBuilder();
 
         $builder->readFile($file, $this->_datamapper);
+        $this->_datamapper->registerModelFactory(self::OBJECT_USER, $this);
     }
 
     public function dependenciesConsumed()

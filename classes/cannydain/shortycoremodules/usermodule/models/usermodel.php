@@ -9,6 +9,28 @@ class UserModel
     protected $_hashedPassword = '';
     protected $_isAdmin = 0;
     protected $_registrationDate = 0;
+    protected $_type = '';
+    protected $_externalID = '';
+
+    public function setExternalID($externalID)
+    {
+        $this->_externalID = $externalID;
+    }
+
+    public function getExternalID()
+    {
+        return $this->_externalID;
+    }
+
+    public function setType($type)
+    {
+        $this->_type = $type;
+    }
+
+    public function getType()
+    {
+        return $this->_type;
+    }
 
     public function setRegistrationDate($registrationDate)
     {

@@ -6,6 +6,7 @@ use CannyDain\Lib\DataMapping\DataDiff\DataDiff;
 use CannyDain\Lib\DataMapping\DataDiff\Models\DiffEntry;
 use CannyDain\Lib\DataMapping\Exceptions\InvalidIDException;
 use CannyDain\Lib\DataMapping\Exceptions\ObjectDefinitionNotFoundException;
+use CannyDain\Lib\DataMapping\Interfaces\ModelFactoryInterface;
 use CannyDain\Lib\DataMapping\Models\FieldDefinition;
 use CannyDain\Lib\DataMapping\Models\ObjectDefinition;
 use CannyDain\Lib\Database\Interfaces\DatabaseConnection;
@@ -16,6 +17,11 @@ class DataMapper
      * @var ObjectDefinition[]
      */
     protected $_objects = array();
+
+    /**
+     * @var ModelFactoryInterface[]
+     */
+    protected $_modelFactories = array();
 
     /**
      * @var DatabaseConnection
@@ -50,6 +56,11 @@ class DataMapper
             if (count($diff) > 0)
                 $this->_applyDiff($object, $diff);
         }
+    }
+
+    public function registerModelFactory($objectName, ModelFactoryInterface $factory)
+    {
+        $this->_modelFactories[$objectName] = $factory;
     }
 
     /**
@@ -282,10 +293,24 @@ class DataMapper
         return $this->_createObjectFromRow($def, $results->nextRow_AssociativeArray());
     }
 
+    protected function _modelFactory($type, $row)
+    {
+        $model = null;
+        if (isset($this->_modelFactories[$type]))
+        {
+            $model = $this->_modelFactories[$type]->createModel($type, $row);
+        }
+
+        if ($model == null)
+            $model = new $type();
+
+        return $model;
+    }
+
     protected function _createObjectFromRow(ObjectDefinition $def, $row)
     {
         $className = $def->getClassName();
-        $object = new $className();
+        $object = $this->_modelFactory($className, $row);
 
         foreach ($def->getFields() as $field)
         {

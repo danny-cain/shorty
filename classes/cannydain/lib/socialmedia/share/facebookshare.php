@@ -67,6 +67,7 @@ HTML;
           appId      : '{$this->_appID}',                        // App ID from the app dashboard
           channelUrl : '//{$host}/channel.html', // Channel file for x-domain c
           status     : true,                                 // Check Facebook Login status
+          cookie     : true,                                 // Set login status cookie (for server side)
           xfbml      : true                                  // Look for social plugins on the page
         });
 

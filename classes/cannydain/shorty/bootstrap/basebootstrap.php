@@ -2,6 +2,7 @@
 
 namespace CannyDain\Shorty\Bootstrap;
 
+use CannyDain\APIClients\Facebook\FacebookAPIClient;
 use CannyDain\Lib\CommentsManager\CommentsManager;
 use CannyDain\Lib\CommentsManager\NullCommentsManager;
 use CannyDain\Lib\DataMapping\DataMapper;
@@ -54,6 +55,7 @@ class BaseBootstrap implements Bootstrap, DependencyFactoryInterface
     const CONSUMER_ECOMMERCE_MANAGER = '\\CannyDain\\Shorty\\Consumers\\ECommerceConsumer';
     const CONSUMER_URI_MANAGER = '\\CannyDain\\Shorty\\Consumers\\URIManagerConsumer';
     const CONSUMER_TIME_TRACKER = '\\CannyDain\\Shorty\\Consumers\\TimeEntryConsumer';
+    const CONSUMER_FACEBOOK_CLIENT = '\\CannyDain\\Shorty\\Consumers\\FacebookClientConsumer';
 
     /**
      * @var DependencyInjector

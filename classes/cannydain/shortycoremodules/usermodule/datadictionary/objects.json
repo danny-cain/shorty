@@ -38,6 +38,18 @@
                 "type":"datetime",
                 "property":"_registrationDate",
                 "size":0
+            },
+			{
+                "column":"type",
+                "type":"varchar(100)",
+                "property":"_type",
+                "size":0
+            },
+			{
+                "column":"externalID",
+                "type":"varchar(250)",
+                "property":"_externalID",
+                "size":0
             }
         ]
     },
