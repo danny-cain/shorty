@@ -1,0 +1,29 @@
+#homeLink
+{
+	width: 15%;
+}
+
+#homeLink img
+{
+	width: 100%;
+}
+
+#mainNav
+{
+	width: 85%;
+	text-align: left;
+}
+
+#homeLink,
+#mainNav
+{
+	display: inline-block;
+	vertical-align: bottom;
+}
+
+#mainNav > a
+{
+	display: inline-block;
+	vertical-align: middle;
+	padding: 5px 10px;
+}

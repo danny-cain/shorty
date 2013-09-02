@@ -1,0 +1,22 @@
+{
+	"shorty":
+	{
+		"emailing" :
+		{
+			"smtp":
+			{
+				"host": "",
+				"user": "",
+				"pass": "",
+				"port": 25
+			}
+		},
+		"database":
+		{
+			"user": "root",
+			"pass": "",
+			"host": "localhost",
+			"name": "shorty2"
+		}
+	}
+}

@@ -1,0 +1,30 @@
+.comment .meta
+{
+	display: inline-block;
+	vertical-align: top;
+	width: 20%;
+}
+
+.comment .post
+{
+	display: inline-block;
+	vertical-align: top;
+	width: 80%;
+}
+
+.comment
+{
+	border-bottom: 1px solid #ccc;
+	padding: 5px;
+}
+
+.comments .commentCount
+{
+	font-style: italic;
+	font-size: 0.8em;
+}
+
+.comment .subject
+{
+	border-bottom: 1px solid #ccc;
+}

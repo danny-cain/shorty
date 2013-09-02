@@ -1,0 +1,56 @@
+[
+    {
+        "class":"CannyDain\\ShortyModules\\SimpleShop\\Models\\Product",
+        "auto_id":"id",
+        "id":
+        [
+            "id"
+        ],
+        "table":"products",
+        "fields":
+        [
+            {
+                "column":"id",
+                "type":"int",
+                "property":"_id",
+                "size":11
+            },
+            {
+                "column":"name",
+                "type":"varchar",
+                "property":"_name",
+                "size":500
+            },
+            {
+                "column":"shortDescription",
+                "type":"varchar",
+                "property":"_shortDescription",
+                "size":500
+            },
+			{
+                "column":"longDescription",
+                "type":"text",
+                "property":"_longDescription",
+                "size":0
+            },
+            {
+                "column":"price",
+                "type":"int",
+                "property":"_priceInPence",
+                "size":0
+            },
+            {
+                "column":"stock",
+                "type":"int",
+                "property":"_stockLevel",
+                "size":0
+            },
+			{
+				"column" : "image",
+				"type" : "varchar",
+				"property" : "_image",
+				"size" : 500
+			}
+        ]
+    }
+]
