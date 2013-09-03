@@ -1,4 +1,4 @@
-<p><span style="text-decoration: underline;"><strong>Initialisation</strong></span></p>
+<h1>Initialisation</h1>
 <p>Shorty initialisation is performed by the initialise.php script in /public.&nbsp; This script begins with a mini bootstrap that includes the library (either from direct source or from .phar) and register's the autoloader.&nbsp; You then call ShortyInit::Initialise passing in an array of objects that require dependency injection.&nbsp; The initialisation script creates an instance of BaseBootstrap, passes an instance of ShortyConfiguration to it then calls executeBootstrap passing in the array of dependent objects.&nbsp; The ShortyConfiguration holds basic configuration data (database connection details, SMTP details etc), the data is usually loaded from a JSON file.&nbsp; The bootstrap instance will set up the environment.&nbsp; </p>
 <p>&nbsp;</p>
 <p><span style="text-decoration: underline;"><strong>Bootstrap</strong></span></p>
@@ -13,3 +13,51 @@
 <p><span style="text-decoration: underline;"><strong>Modules</strong></span></p>
 <p>For an example of how modules work, see the existing examples in (/classes/cannydain/shortymodules), each module needs a class that extends ShortyModule.&nbsp; Modules are loaded in the DependencyFactory (in the _factory_modules() method).&nbsp; The default shorty router uses direct controller mapping (i.e. each controller is accessible by replacing the "/"'s in the name with -'s to get a sanitised name, the url is then /&lt;sanitised-controller-name&gt;/method/param1/param2....</p>
 <p>&nbsp;</p>
+<h2>Dependencies</h2>
+<p>The following consumers are all located in the \CannyDain\Shorty\Consumers namespace.&nbsp; To make use of the provided dependency you need to implement the relevant consumerInterface, the DependencyInjector will then inject the correct object.</p>
+<p><span style="text-decoration: underline;"><strong>AccessControlConsumer</strong></span></p>
+<p>This dependency is an instance of \CannyDain\Shorty\Helpers\AccessControl\AccessControlHelper which handles checking/granting and revoking access to guids. &nbsp;<span style="text-decoration: underline;"><br /></span></p>
+<p>&nbsp;</p>
+<p><span style="text-decoration: underline;"><strong>CommentsConsumer</strong></span></p>
+<p>This dependency injects an instance of \CannyDain\Lib\CommentsManager\CommentsManager which handles displaying comments for guids (including the add comment form)</p>
+<p>&nbsp;</p>
+<p><span style="text-decoration: underline;"><strong>DatabaseConsumer</strong></span></p>
+<p>This dependency injects an instance of \CannyDain\Lib\Database\Interfaces\DatabaseConnection which handles raw SQL access.&nbsp; This dependency should rarely be used, the DataMapper dependency should be used instead.</p>
+<p>&nbsp;</p>
+<p><span style="text-decoration: underline;"><strong>DatamapperConsumer</strong></span></p>
+<p>This dependency injects an instance of \CannyDain\Lib\DataMapping\DataMapperInterface which handles mapping between database and POPO's.</p>
+<p><span style="text-decoration: underline;"><strong>DependencyConsumer</strong></span></p>
+<p>This dependency injects the dependency injector itself (useful for if your object in turn creates it's own objects)</p>
+<p>&nbsp;</p>
+<p><span style="text-decoration: underline;"><strong>EmailConsumer</strong></span></p>
+<p>This dependency injects the Emailer object, used for sending out emails.</p>
+<p>&nbsp;</p>
+<p><span style="text-decoration: underline;"><strong>Event</strong><strong>C</strong><strong>onsumer</strong></span></p>
+<p>This dependency injects the EventManager, allowing you to bindEvent handlers and triggerEvents.</p>
+<p>&nbsp;</p>
+<p><span style="text-decoration: underline;"><strong>FormHelperConsumer</strong></span></p>
+<p>This dependency is used for outputting forms and reading them back in, allowing for a standard look across the site.</p>
+<p>&nbsp;</p>
+<p><span style="text-decoration: underline;"><strong>GUIDConsumer</strong></span></p>
+<p>This injects the GUIDManager, allowing you to retrieve Object ID's and Types from GUIDS, or create a GUID based on Type and ID.</p>
+<p>&nbsp;</p>
+<p><span style="text-decoration: underline;"><strong>ModuleConsumer</strong></span></p>
+<p>This injects the ModuleManager.</p>
+<p>&nbsp;</p>
+<p><span style="text-decoration: underline;"><strong>RequestConsumer</strong></span></p>
+<p>The request object injected by this consumer allows you to access the properties of the HTTPRequest.</p>
+<p>&nbsp;</p>
+<p><span style="text-decoration: underline;"><strong>RouteAccessControlConsumer</strong></span></p>
+<p>The RouteAccessControlInterface object control's access to Routes.</p>
+<p>&nbsp;</p>
+<p><span style="text-decoration: underline;"><strong>RouterConsumer</strong></span></p>
+<p>This injects the RouterInterface which is responsible for translating between URI's and Route objects, allowing you to output valid URI's with no knowledge of how they are generated.</p>
+<p>&nbsp;</p>
+<p><span style="text-decoration: underline;"><strong>SessionConsumer</strong></span></p>
+<p>This injects the SessionHelper which is used for managing the current session (sessionID etc)</p>
+<p>&nbsp;</p>
+<p><span style="text-decoration: underline;"><strong>UserConsumer</strong></span></p>
+<p>This injects the UserHelper which handles interaction with site Users (converting id's to usernames etc)</p>
+<p>&nbsp;</p>
+<p><span style="text-decoration: underline;"><strong>ViewHelperConsumer</strong></span></p>
+<p>Provides various helper methods and objects for Views.</p>
