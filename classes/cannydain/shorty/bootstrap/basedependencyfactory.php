@@ -14,6 +14,9 @@ use CannyDain\Lib\Routing\Routers\DirectMappedRouter;
 use CannyDain\Lib\Web\Server\Request;
 use CannyDain\Shorty\Config\ShortyConfiguration;
 use CannyDain\Shorty\Events\EventManager;
+use CannyDain\Shorty\Finance\InvoiceManager;
+use CannyDain\Shorty\Finances\PaymentManager;
+use CannyDain\Shorty\Geo\AddressManager;
 use CannyDain\Shorty\Helpers\AccessControl\AccessControlHelper;
 use CannyDain\Shorty\Helpers\AccessControl\NullAccessControlHelper;
 use CannyDain\Shorty\Helpers\Forms\FormHelper;
@@ -41,6 +44,9 @@ class BaseDependencyFactory implements DependencyFactoryInterface
     const CONSUMER_ACCESS_CONTROL = '\\CannyDain\\Shorty\\Consumers\\AccessControlConsumer';
     const CONSUMER_VIEW_HELPER = '\\CannyDain\\Shorty\\Consumers\\ViewHelperConsumer';
     const CONSUMER_ROUTE_ACCESS_CONTROL = '\\CannyDain\\Shorty\\Consumers\\RouteAccessControlConsumer';
+    const CONSUMER_ADDRESS_MANAGER = '\\CannyDain\\Shorty\\Consumers\\AddressManagerConsumer';
+    const CONSUMER_PAYMENT_MANAGER = '\\CannyDain\\Shorty\\Consumers\\PaymentManagerConsumer';
+    const CONSUMER_INVOICE_MANAGER = '\\CannyDain\\Shorty\\Consumers\\InvoiceManagerConsumer';
 
     /**
      * @var DependencyInjector
@@ -74,7 +80,25 @@ class BaseDependencyFactory implements DependencyFactoryInterface
             self::CONSUMER_ACCESS_CONTROL,
             self::CONSUMER_VIEW_HELPER,
             self::CONSUMER_ROUTE_ACCESS_CONTROL,
+            self::CONSUMER_PAYMENT_MANAGER,
+            self::CONSUMER_ADDRESS_MANAGER,
+            self::CONSUMER_INVOICE_MANAGER,
         );
+    }
+
+    protected function _factory_invoiceManager()
+    {
+        return new InvoiceManager();
+    }
+
+    protected function _factory_paymentManager()
+    {
+        return new PaymentManager();
+    }
+
+    protected function _factory_addressManager()
+    {
+        return new AddressManager();
     }
 
     protected function _factory_routeAccessControl()
@@ -236,6 +260,15 @@ class BaseDependencyFactory implements DependencyFactoryInterface
                 break;
             case self::CONSUMER_ROUTE_ACCESS_CONTROL:
                 $this->_cachedDependenciesByInterface[$consumerInterface] = $this->_factory_routeAccessControl();
+                break;
+            case self::CONSUMER_ADDRESS_MANAGER:
+                $this->_cachedDependenciesByInterface[$consumerInterface] = $this->_factory_addressManager();
+                break;
+            case self::CONSUMER_PAYMENT_MANAGER:
+                $this->_cachedDependenciesByInterface[$consumerInterface] = $this->_factory_paymentManager();
+                break;
+            case self::CONSUMER_INVOICE_MANAGER:
+                $this->_cachedDependenciesByInterface[$consumerInterface] = $this->_factory_invoiceManager();
                 break;
             default:
                 $object = $this->_createOtherInstance($consumerInterface);
