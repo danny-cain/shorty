@@ -37,18 +37,28 @@ class DependencyInjector
             throw new InterfaceNotFoundException($interface);
     }
 
+    /**
+     * @param object $object
+     * @return object
+     */
     public function applyDependencies($object)
     {
-        $hash = spl_object_hash($object);
-        if (in_array($hash, $this->_injectedObjects))
-            return;
+        foreach ($this->_injectedObjects as $injectedObj)
+        {
+            if ($object === $injectedObj)
+                return $object;
+        }
 
-        $this->_injectedObjects[] = $hash;
+        $this->_injectedObjects[] = $object;
         foreach ($this->_dependencies as $dependency)
+        {
             $this->_applyDependency($dependency, $object);
+        }
 
         if ($object instanceof ConsumerInterface)
             $object->dependenciesConsumed();
+
+        return $object;
     }
 
     protected function _applyDependency(DependencyDefinition $dependency, $object)
