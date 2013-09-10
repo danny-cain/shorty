@@ -1,6 +1,6 @@
 <?php
 
-namespace CannyDain\Shorty\Finances;
+namespace CannyDain\Shorty\Finance;
 
 use CannyDain\Lib\DependencyInjection\DependencyInjector;
 use CannyDain\Lib\Routing\Models\Route;

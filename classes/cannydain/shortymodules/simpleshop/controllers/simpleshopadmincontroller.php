@@ -16,21 +16,12 @@ class SimpleShopAdminController extends ShortyModuleController
     public function Index()
     {
         $view = new ProductAdminListView();
-        $view->setViewProductRouteTemplate(new Route(__CLASS__, 'ViewProduct', array('#id#')));
+        $view->setViewProductRouteTemplate(new Route(SimpleShopController::SIMPLE_SHOP_CONTROLLER, 'ViewProduct', array('#id#')));
         $view->setEditProductRouteTemplate(new Route(__CLASS__, 'EditProduct', array('#id#')));
         $view->setCreateProductRoute(new Route(__CLASS__, 'CreateProduct'));
 
         $view->setTitle('All Products');
         $view->setProducts($this->_getModule()->getDatasource()->getAllProducts());
-
-        return $view;
-    }
-
-    public function ViewProduct($id)
-    {
-        $view = new SingleProductView();
-        $view->setAddToBasketRoute(new Route(__CLASS__, 'ViewProduct', array($id)));
-        $view->setProduct($this->_getModule()->getDatasource()->loadProduct($id));
 
         return $view;
     }

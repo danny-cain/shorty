@@ -22,19 +22,23 @@ interface InvoiceItemInterface
      * @return string
      */
     public function getName();
+    public function setName($name);
 
     /**
      * @return int
      */
     public function getPricePerUnitInPence();
+    public function setPricePerUnitInPence($price);
 
     /**
      * @return int
      */
     public function getQuantity();
+    public function setQuantity($qty);
 
     /**
      * @return int
      */
     public function getInvoiceID();
+    public function setInvoiceID($id);
 }

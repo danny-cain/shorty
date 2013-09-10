@@ -2,10 +2,18 @@
 
 namespace CannyDain\Shorty\UI;
 
+use CannyDain\Lib\DependencyInjection\DependencyInjector;
 use CannyDain\Lib\UI\Response\Layouts\Layout;
+use CannyDain\Shorty\Consumers\DependencyConsumer;
+use CannyDain\ShortyModules\SimpleShop\Views\MiniBasketView;
 
-class ShortyLayout extends Layout
+class ShortyLayout extends Layout implements DependencyConsumer
 {
+    /**
+     * @var DependencyInjector
+     */
+    protected $_dependencies;
+
     protected function _displayDocumentHead()
     {
         echo '<!DOCTYPE html>';
@@ -56,6 +64,8 @@ class ShortyLayout extends Layout
             echo '<a href="/cannydain-shortymodules-todo-controllers-todocontroller">Todo</a>';
             echo '<a href="/cannydain-shortymodules-users-controllers-usercontroller/login">Login</a>';
             echo '<a href="/cannydain-shortymodules-content-controllers-contentcontroller/view/1">About</a>';
+            echo '<a href="/cannydain-shortymodules-simpleshop-controllers-simpleshopadmincontroller">Shop Admin</a>';
+            echo '<a href="/cannydain-shortymodules-content-controllers-contentadmincontroller">Content Admin</a>';
         echo '</nav>';
     }
 
@@ -65,6 +75,11 @@ class ShortyLayout extends Layout
         echo '<div id="footerPane">';
             echo '&copy; 2013 Danny Cain';
         echo '</div>';
+
+        $view = new MiniBasketView();
+        $this->_dependencies->applyDependencies($view);
+
+        $view->display();
     }
 
     protected function _displayDocumentFoot()
@@ -76,5 +91,10 @@ class ShortyLayout extends Layout
     public function getContentType()
     {
         return self::CONTENT_TYPE_HTML;
+    }
+
+    public function consumeDependencies(DependencyInjector $dependencies)
+    {
+        $this->_dependencies = $dependencies;
     }
 }

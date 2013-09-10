@@ -1,6 +1,6 @@
 <?php
 
-namespace CannyDain\Shorty\Finances\Interfaces;
+namespace CannyDain\Shorty\Finance\Interfaces;
 
 interface InvoiceInterface
 {

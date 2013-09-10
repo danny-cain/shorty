@@ -2,7 +2,7 @@
 
 namespace CannyDain\Shorty\Consumers;
 
-use CannyDain\Shorty\Finances\PaymentManager;
+use CannyDain\Shorty\Finance\PaymentManager;
 
 interface PaymentManagerConsumer
 {

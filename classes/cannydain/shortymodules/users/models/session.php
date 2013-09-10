@@ -12,6 +12,17 @@ class Session extends ShortyModel
     protected $_uid = 0;
     protected $_sessionStart = 0;
     protected $_active = true;
+    protected $_sessionData = array();
+
+    public function setSessionData($sessionData)
+    {
+        $this->_sessionData = $sessionData;
+    }
+
+    public function getSessionData()
+    {
+        return $this->_sessionData;
+    }
 
     /**
      * @return array

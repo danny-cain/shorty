@@ -91,4 +91,21 @@ class UsersModuleSessionHelper extends SessionHelper implements ModuleConsumer, 
     {
         $this->_request = $request;
     }
+
+    public function setData($key, $value)
+    {
+        $data = $this->_session()->getSessionData();
+        $data[$key] = $value;
+        $this->_session()->setSessionData($data);
+        $this->_session()->save();
+    }
+
+    public function getData($key)
+    {
+        $data = $this->_session()->getSessionData();
+        if (!isset($data[$key]))
+            return null;
+
+        return $data[$key];
+    }
 }

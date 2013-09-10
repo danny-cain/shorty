@@ -34,6 +34,9 @@ require dirname(dirname(__FILE__)).'/classes/cannydain/initialise.php';
     $rootPath = dirname(dirname(__FILE__)).'/classes/';
     $buildPath = dirname(dirname(__FILE__)).'/build/';
 
+    if (!file_exists($buildPath))
+        mkdir($buildPath, 0755, true);
+
     $apiClientRoot = 'cannydain/apiclients/';
     $dir = opendir($rootPath.$apiClientRoot);
     while ($entry = readdir($dir))

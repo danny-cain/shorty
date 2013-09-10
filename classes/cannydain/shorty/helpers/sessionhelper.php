@@ -18,4 +18,14 @@ class SessionHelper
     {
         return false;
     }
+
+    public function setData($key, $value)
+    {
+
+    }
+
+    public function getData($key)
+    {
+        return null;
+    }
 }

@@ -68,6 +68,12 @@
                 "type":"int",
                 "property":"_active",
                 "size":0
+            },
+			{
+                "column":"data",
+                "type":"array",
+                "property":"_sessionData",
+                "size":0
             }
         ]
     }

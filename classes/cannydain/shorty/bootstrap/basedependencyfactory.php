@@ -13,11 +13,12 @@ use CannyDain\Lib\GUIDS\SimpleGuidManager;
 use CannyDain\Lib\Routing\Routers\DirectMappedRouter;
 use CannyDain\Lib\Web\Server\Request;
 use CannyDain\Shorty\Config\ShortyConfiguration;
+use CannyDain\Shorty\ECommerce\Basket\BasketHelper;
+use CannyDain\Shorty\ECommerce\Products\ProductManager;
 use CannyDain\Shorty\Events\EventManager;
 use CannyDain\Shorty\Finance\InvoiceManager;
-use CannyDain\Shorty\Finances\PaymentManager;
+use CannyDain\Shorty\Finance\PaymentManager;
 use CannyDain\Shorty\Geo\AddressManager;
-use CannyDain\Shorty\Helpers\AccessControl\AccessControlHelper;
 use CannyDain\Shorty\Helpers\AccessControl\NullAccessControlHelper;
 use CannyDain\Shorty\Helpers\Forms\FormHelper;
 use CannyDain\Shorty\Helpers\SessionHelper;
@@ -47,6 +48,8 @@ class BaseDependencyFactory implements DependencyFactoryInterface
     const CONSUMER_ADDRESS_MANAGER = '\\CannyDain\\Shorty\\Consumers\\AddressManagerConsumer';
     const CONSUMER_PAYMENT_MANAGER = '\\CannyDain\\Shorty\\Consumers\\PaymentManagerConsumer';
     const CONSUMER_INVOICE_MANAGER = '\\CannyDain\\Shorty\\Consumers\\InvoiceManagerConsumer';
+    const CONSUMER_BASKET_HELPER = '\\CannyDain\\Shorty\\Consumers\\BasketHelperConsumer';
+    const CONSUMER_PRODUCT_MANAGER = '\\CannyDain\\Shorty\\Consumers\\ProductManagerConsumer';
 
     /**
      * @var DependencyInjector
@@ -83,7 +86,21 @@ class BaseDependencyFactory implements DependencyFactoryInterface
             self::CONSUMER_PAYMENT_MANAGER,
             self::CONSUMER_ADDRESS_MANAGER,
             self::CONSUMER_INVOICE_MANAGER,
+            self::CONSUMER_BASKET_HELPER,
+            self::CONSUMER_PRODUCT_MANAGER,
         );
+    }
+
+    protected function _factory_productManager()
+    {
+        $manager = new ProductManager();
+
+        return $manager;
+    }
+
+    protected function _factory_basketHelper()
+    {
+        return new BasketHelper();
     }
 
     protected function _factory_invoiceManager()
@@ -93,7 +110,9 @@ class BaseDependencyFactory implements DependencyFactoryInterface
 
     protected function _factory_paymentManager()
     {
-        return new PaymentManager();
+        $manager = new PaymentManager();
+
+        return $manager;
     }
 
     protected function _factory_addressManager()
@@ -139,8 +158,6 @@ class BaseDependencyFactory implements DependencyFactoryInterface
     protected function _factory_modules()
     {
         $manager = new ModuleManager();
-
-        // load modules here
 
         return $manager;
     }
@@ -269,6 +286,12 @@ class BaseDependencyFactory implements DependencyFactoryInterface
                 break;
             case self::CONSUMER_INVOICE_MANAGER:
                 $this->_cachedDependenciesByInterface[$consumerInterface] = $this->_factory_invoiceManager();
+                break;
+            case self::CONSUMER_BASKET_HELPER:
+                $this->_cachedDependenciesByInterface[$consumerInterface] = $this->_factory_basketHelper();
+                break;
+            case self::CONSUMER_PRODUCT_MANAGER:
+                $this->_cachedDependenciesByInterface[$consumerInterface] = $this->_factory_productManager();
                 break;
             default:
                 $object = $this->_createOtherInstance($consumerInterface);

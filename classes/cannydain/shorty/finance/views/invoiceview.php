@@ -4,7 +4,7 @@ namespace CannyDain\Shorty\Finance\Views;
 
 use CannyDain\Lib\Routing\Models\Route;
 use CannyDain\Shorty\Finance\Interfaces\InvoiceItemInterface;
-use CannyDain\Shorty\Finances\Interfaces\InvoiceInterface;
+use CannyDain\Shorty\Finance\Interfaces\InvoiceInterface;
 use CannyDain\Shorty\Views\ShortyView;
 
 class InvoiceView extends ShortyView
@@ -63,7 +63,7 @@ class InvoiceView extends ShortyView
                 echo '</td>';
 
                 echo '<td>';
-                    echo number_format($amountInPence / 100, 2);
+                    echo '&pound;'.number_format($amountInPence / 100, 2);
                 echo '</td>';
             echo '</tr>';
     }
@@ -76,7 +76,7 @@ class InvoiceView extends ShortyView
             echo '<td>'.$item->getName().'</td>';
             echo '<td>&pound;'.number_format($item->getPricePerUnitInPence() / 100, 2).'</td>';
             echo '<td>'.$item->getQuantity().'</td>';
-            echo '<td>'.number_format($lineTotal / 100, 2).'</td>';
+            echo '<td>&pound;'.number_format($lineTotal / 100, 2).'</td>';
         echo '</tr>';
 
         if ($item->getLineDiscountInPence() < 1)
@@ -86,7 +86,7 @@ class InvoiceView extends ShortyView
             echo '<td>Line Discount</td>';
             echo '<td>&pound;'.number_format($item->getLineDiscountInPence() / 100, 2).'</td>';
             echo '<td>1</td>';
-            echo '<td>-'.number_format($item->getLineDiscountInPence() / 100, 2).'</td>';
+            echo '<td>-&pound;'.number_format($item->getLineDiscountInPence() / 100, 2).'</td>';
         echo '</tr>';
 
         return $lineTotal - $item->getLineDiscountInPence();
@@ -123,11 +123,11 @@ class InvoiceView extends ShortyView
 
             echo '<tr>';
                 echo '<td colspan="3" align="right">';
-                    echo 'Tax @ '.number_format($rate, 2).'%';
+                    echo 'Tax @ '.number_format($rate * 100, 2).'%';
                 echo '</td>';
 
                 echo '<td>';
-                    echo number_format($tax, 2);
+                    echo '&pound;'.number_format($tax / 100, 2);
                 echo '</td>';
             echo '</tr>';
         }
@@ -136,7 +136,7 @@ class InvoiceView extends ShortyView
     }
 
     /**
-     * @param \CannyDain\Shorty\Finances\Interfaces\InvoiceInterface $invoice
+     * @param \CannyDain\Shorty\Finance\Interfaces\InvoiceInterface $invoice
      */
     public function setInvoice($invoice)
     {
@@ -144,7 +144,7 @@ class InvoiceView extends ShortyView
     }
 
     /**
-     * @return \CannyDain\Shorty\Finances\Interfaces\InvoiceInterface
+     * @return \CannyDain\Shorty\Finance\Interfaces\InvoiceInterface
      */
     public function getInvoice()
     {

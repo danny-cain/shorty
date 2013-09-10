@@ -4,8 +4,10 @@ namespace CannyDain\Shorty\Finance;
 
 use CannyDain\Lib\Routing\Models\Route;
 use CannyDain\Shorty\Finance\Interfaces\InvoiceItemInterface;
+use CannyDain\Shorty\Finance\Models\NullInvoice;
+use CannyDain\Shorty\Finance\Models\NullInvoiceItem;
 use CannyDain\Shorty\Finance\Views\InvoiceView;
-use CannyDain\Shorty\Finances\Interfaces\InvoiceInterface;
+use CannyDain\Shorty\Finance\Interfaces\InvoiceInterface;
 
 class InvoiceManager
 {
@@ -16,6 +18,19 @@ class InvoiceManager
     public function getInvoiceByID($id)
     {
         return null;
+    }
+
+    public function saveInvoice(InvoiceInterface $invoice) {}
+    public function saveInvoiceItem(InvoiceItemInterface $invoiceItem) {}
+
+    public function createInvoice()
+    {
+        return new NullInvoice();
+    }
+
+    public function createInvoiceItem()
+    {
+        return new NullInvoiceItem();
     }
 
     /**
@@ -29,7 +44,7 @@ class InvoiceManager
 
         $this->updateItemDiscounts($invoiceID);
         $view->setInvoice($this->getInvoiceByID($invoiceID));
-        $view->setInvoiceItems($invoiceID);
+        $view->setInvoiceItems($this->getItemsByInvoice($invoiceID));
         $view->setRemoveItemRoute($removeItemRoute);
 
         return $view;
