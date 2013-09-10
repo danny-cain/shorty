@@ -28,6 +28,12 @@ class BasketHelper implements BasketHelperInterface
         return 0;
     }
 
+    public function emptyBasket()
+    {
+
+    }
+
+
     public function setViewBasketRoute(Route $route)
     {
         $this->_viewBasketRoute = $route;

@@ -3,6 +3,7 @@
 namespace CannyDain\Shorty\Finance;
 
 use CannyDain\Lib\Routing\Models\Route;
+use CannyDain\Shorty\ECommerce\Basket\BasketHelperInterface;
 use CannyDain\Shorty\Finance\Interfaces\InvoiceItemInterface;
 use CannyDain\Shorty\Finance\Models\NullInvoice;
 use CannyDain\Shorty\Finance\Models\NullInvoiceItem;
@@ -16,6 +17,15 @@ class InvoiceManager
      * @return InvoiceInterface
      */
     public function getInvoiceByID($id)
+    {
+        return null;
+    }
+
+    /**
+     * @param BasketHelperInterface $basket
+     * @return InvoiceInterface
+     */
+    public function createFromBasket(BasketHelperInterface $basket)
     {
         return null;
     }

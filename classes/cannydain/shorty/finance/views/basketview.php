@@ -35,7 +35,7 @@ class BasketView extends ShortyView
 
     protected function _displayPaymentProvider(PaymentProvider $provider)
     {
-        $route = $provider->getCheckoutRoute()->getRouteWithReplacements(array('#invoiceID#' => $this->_invoiceID));
+        $route = $provider->getCheckoutRoute();
         $uri = $this->_router->getURI($route);
 
         echo '<a class="checkoutButton" href="'.$uri.'">';

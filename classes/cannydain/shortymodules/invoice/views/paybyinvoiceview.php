@@ -8,7 +8,7 @@ class PayByInvoiceView extends ShortyView
 {
     public function display()
     {
-        echo '<h1>Your invoice is on it\'s way</h1>';
-        echo '<p>Your invoice should be with you withing 3 weeks.</p>';
+        echo '<h1>Invoice Created</h1>';
+        echo '<p>Your invoice has been created and should be on it\'s way to you shortly.</p>';
     }
 }

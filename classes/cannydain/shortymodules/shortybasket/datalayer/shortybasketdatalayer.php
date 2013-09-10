@@ -9,6 +9,28 @@ use CannyDain\ShortyModules\ShortyBasket\Models\BasketModel;
 
 class ShortyBasketDatalayer extends ShortyDatasource
 {
+    public function deleteBasket($basketID)
+    {
+        foreach ($this->getBasketItems($basketID) as $item)
+            $this->deleteBasketItem($item->getId());
+
+        $this->_datamapper->deleteObject(BasketModel::BASKET_OBJECT_TYPE, array('id' => $basketID));
+    }
+
+    /**
+     * @param $id
+     * @return BasketModel
+     */
+    public function loadBasket($id)
+    {
+        return $this->_datamapper->loadObject(BasketModel::BASKET_OBJECT_TYPE, array('id' => $id));
+    }
+
+    public function deleteBasketItem($id)
+    {
+        $this->_datamapper->deleteObject(BasketItemModel::BASKET_ITEM_OBJECT_TYPE, array('id' => $id));
+    }
+
     /**
      * @param $basketID
      * @return BasketItemModel[]

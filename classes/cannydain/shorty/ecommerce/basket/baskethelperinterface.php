@@ -11,6 +11,8 @@ interface BasketHelperInterface
      */
     public function getProductGUIDs();
 
+    public function emptyBasket();
+
     /**
      * @param string $guid
      * @return int
