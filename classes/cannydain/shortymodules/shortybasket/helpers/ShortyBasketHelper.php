@@ -10,6 +10,7 @@ use CannyDain\Shorty\Helpers\SessionHelper;
 use CannyDain\Shorty\Modules\ModuleManager;
 use CannyDain\ShortyModules\ShortyBasket\Controllers\BasketController;
 use CannyDain\ShortyModules\ShortyBasket\DataLayer\ShortyBasketDatalayer;
+use CannyDain\ShortyModules\ShortyBasket\Models\BasketModel;
 use CannyDain\ShortyModules\ShortyBasket\ShortyBasketModule;
 
 class ShortyBasketHelper implements BasketHelperInterface, ModuleConsumer, SessionConsumer
@@ -87,6 +88,13 @@ class ShortyBasketHelper implements BasketHelperInterface, ModuleConsumer, Sessi
         return $item;
     }
 
+    public function emptyBasket()
+    {
+        $this->_datasource->deleteBasket($this->getBasketID());
+        $this->_session->setData(self::SESSION_KEY_BASKET_ID, null);
+    }
+
+
     /**
      * @param string $guid
      * @return int
@@ -118,6 +126,15 @@ class ShortyBasketHelper implements BasketHelperInterface, ModuleConsumer, Sessi
     public function getBasketID()
     {
         $basketID = $this->_session->getData(self::SESSION_KEY_BASKET_ID);
+        if ($basketID != null)
+        {
+            /**
+             * @var BasketModel $basket
+             */
+            $basket = $this->_datasource->loadBasket($basketID);
+            if ($basket == null || $basket->getId() < 1)
+                $basketID = null;
+        }
 
         if ($basketID == null)
         {

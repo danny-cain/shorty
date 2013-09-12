@@ -13,6 +13,7 @@ use CannyDain\ShortyModules\ShortyBasket\Helpers\ShortyBasketHelper;
 use CannyDain\ShortyModules\ShortyBasket\ShortyBasketModule;
 use CannyDain\ShortyModules\SimpleShop\Providers\SimpleShopProductProvider;
 use CannyDain\ShortyModules\SimpleShop\SimpleShopModule;
+use CannyDain\ShortyModules\Tasks\TasksModule;
 use CannyDain\ShortyModules\Todo\TodoModule;
 use CannyDain\ShortyModules\Users\Helpers\UsersModuleSessionHelper;
 use CannyDain\ShortyModules\Users\UsersModule;
@@ -86,6 +87,7 @@ class DevDependencyFactory extends BaseDependencyFactory
         $moduleManager->loadModule(new SimpleShopModule());
         $moduleManager->loadModule(new InvoiceModule());
         $moduleManager->loadModule(new ShortyBasketModule());
+        $moduleManager->loadModule(new TasksModule());
 
         return $moduleManager;
     }

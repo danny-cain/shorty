@@ -37,7 +37,7 @@ class ShortyLayout extends Layout implements DependencyConsumer
 
     protected function _outputScripts()
     {
-
+        echo '<script type="text/javascript" src="/scripts/jquery.min.js"></script>';
     }
 
     protected function _displayPageHead()
@@ -66,6 +66,7 @@ class ShortyLayout extends Layout implements DependencyConsumer
             echo '<a href="/cannydain-shortymodules-content-controllers-contentcontroller/view/1">About</a>';
             echo '<a href="/cannydain-shortymodules-simpleshop-controllers-simpleshopadmincontroller">Shop Admin</a>';
             echo '<a href="/cannydain-shortymodules-content-controllers-contentadmincontroller">Content Admin</a>';
+            echo '<a href="/cannydain-shortymodules-tasks-controllers-taskscontroller">Project Management</a>';
         echo '</nav>';
     }
 

@@ -107,11 +107,16 @@ class Request
         return $this->_cookies[$cookie];
     }
 
-    public function getParameter($param)
+    public function getParameterOrDefault($param, $default = null)
     {
         if (!isset($this->_parameters[$param]))
-            return null;
+            return $default;
 
         return $this->_parameters[$param];
+    }
+
+    public function getParameter($param)
+    {
+        return $this->getParameterOrDefault($param);
     }
 }
