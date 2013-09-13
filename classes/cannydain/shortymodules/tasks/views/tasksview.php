@@ -14,6 +14,8 @@ class TasksView extends ShortyView
 
     public function display()
     {
+        $completedDateSelector = $this->_getDataSelector('completed');
+
         $uri = $this->_router->getURI($this->_jsRoute);
         echo <<<HTML
 <script type="text/javascript" src="{$uri}"></script>
@@ -39,7 +41,32 @@ class TasksView extends ShortyView
             task.shortDesc = $('[name="shortDesc"]', containers.taskEditPane).val();
             task.longDesc = $('[name="longDesc"]', containers.taskEditPane).val();
             task.project = $('[name="project"]', containers.taskEditPane).val();
+            task.completed = getDateField('completed', containers.taskEditPane);
+            task.cost = $('[name="cost"]', containers.taskEditPane).val();
+            task.created = $('[name="created"]', containers.taskEditPane).val();
+            task.estimate = $('[name="estimate"]', containers.taskEditPane).val();
+            task.priority = $('[name="priority"]', container.taskEditPane).val();
+            task.status = $('[name="status"]', containers.taskEditPane).val();
+
             task.id = containers.taskEditPane.attr('data-id');
+        }
+
+        function getDateField(fieldname, container)
+        {
+            var day = $('[name="' + fieldname + '_day"]', container).val();
+            var month = $('[name="' + fieldname + '_month"]', container).val();
+            var year = $('[name="' + fieldname + '_year"]', container).val();
+
+            if (year == '')
+                return null;
+
+            year = parseInt(year);
+            if (year > 70 && year < 100)
+                year = year + 1900;
+            if (year < 70)
+                year = year + 2000;
+
+            return year + "-" + month + "-" + day;
         }
 
         function updateProjectEditPane(project)
@@ -57,6 +84,21 @@ class TasksView extends ShortyView
             $('[name="shortDesc"]', containers.taskEditPane).val(task.shortDesc);
             $('[name="longDesc"]', containers.taskEditPane).val(task.longDesc);
             $('[name="project"]', containers.taskEditPane).val(task.project);
+            $('[name="cost"]', containers.taskEditPane).val(task.cost);
+            $('[name="created"]', containers.taskEditPane).val(task.created);
+            $('[name="estimate"]', containers.taskEditPane).val(task.estimate);
+            $('[name="priority"]', containers.taskEditPane).val(task.priority);
+            $('[name="status"]', containers.taskEditPane).val(task.status);
+
+            var parts;
+            if (task.completed == '')
+                parts = ["1970", "1", "1"];
+            else
+                parts = task.completed.split("-");
+
+            $('[name="completed_day"]', containers.taskEditPane).val(parts[2]);
+            $('[name="completed_month"]', containers.taskEditPane).val(parts[1]);
+            $('[name="completed_year"]', containers.taskEditPane).val(parts[0]);
         }
 
         $('.cancelButton', containers.projectEditPane).bind('click.PM', function()
@@ -289,6 +331,75 @@ class TasksView extends ShortyView
                     </div>
                 </div>
 
+                <div class="row">
+                    <div class="caption">
+                        Completed:
+                    </div>
+                    <div class="field">
+                        {$completedDateSelector}
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="caption">
+                        Created:
+                    </div>
+                    <div class="field">
+                        <input type="text" readonly="readonly" name="created" />
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="caption">
+                        Cost (in pence):
+                    </div>
+                    <div class="field">
+                        <input type="text" name="cost" />
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="caption">
+                        Estimate:
+                    </div>
+                    <div class="field">
+                        <select name="estimate">
+                            <option value="1">Small</option>
+                            <option value="3">Medium</option>
+                            <option value="5">Large</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="caption">
+                        Priority:
+                    </div>
+                    <div class="field">
+                        <select name="priority">
+                            <option value="1">Low</option>
+                            <option value="3">Medium</option>
+                            <option value="5">High</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="caption">
+                        Status:
+                    </div>
+                    <div class="field">
+                        <select name="status">
+                            <option value="0">To be Specified</option>
+                            <option value="1">To be Developed</option>
+                            <option value="2">To be Tested</option>
+                            <option value="3">To be Signed Off</option>
+                            <option value="4">To be Billed</option>
+                            <option value="5">Completed</option>
+                        </select>
+                    </div>
+                </div>
+
                 <div class="buttonRow">
                     <button class="saveButton">Save</button>
                     <button class="cancelButton">Cancel</button>
@@ -299,6 +410,29 @@ class TasksView extends ShortyView
 </div>
 HTML;
 
+    }
+
+    protected function _getDataSelector($fieldname)
+    {
+        ob_start();
+            echo '<select name="'.$fieldname.'_day">';
+                for ($i = 1; $i <= 31; $i ++)
+                {
+                    $suffix = date('S', strtotime('2000-01-'.$i));
+                    echo '<option value="'.$i.'">'.$i.$suffix.'</option>';
+                }
+            echo '</select>';
+
+            echo '<select name="'.$fieldname.'_month">';
+                for ($i = 1; $i <= 12; $i ++)
+                {
+                    $month = date('F', strtotime('2000-'.$i.'-01'));
+                    echo '<option value="'.$i.'">'.$month.'</option>';
+                }
+            echo '</select>';
+
+            echo '<input type="text" name="year" />';
+        return ob_get_clean();
     }
 
     /**

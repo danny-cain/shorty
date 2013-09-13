@@ -179,6 +179,13 @@ class TasksAPIController extends TasksBaseController
         $task->setProjectID($this->_request->getParameterOrDefault('project', $task->getProjectID()));
         $task->setShortDesc($this->_request->getParameterOrDefault('shortDesc', $task->getShortDesc()));
         $task->setLongDesc($this->_request->getParameterOrDefault('longDesc', $task->getLongDesc()));
+        $task->setId($this->_request->getParameterOrDefault('id', $task->getId()));
+        $task->setCompletedDate($this->_request->getParameterOrDefault('completed', $task->getCompletedDate()));
+        $task->setCostInPence($this->_request->getParameterOrDefault('cost', $task->getCostInPence()));
+        $task->setCreatedDate($this->_request->getParameterOrDefault('created', $task->getCreatedDate()));
+        $task->setEstimate($this->_request->getParameterOrDefault('estimate', $task->getEstimate()));
+        $task->setPriority($this->_request->getParameterOrDefault('priority', $task->getPriority()));
+        $task->setStatus($this->_request->getParameterOrDefault('status', $task->getStatus()));
     }
 
     protected function _updateProjectFromPost(ProjectModel $project)

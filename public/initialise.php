@@ -49,7 +49,8 @@ class ShortyInit
      */
     protected function _getConfig()
     {
-        $root = dirname(dirname(__FILE__)).'/';
+        $publicRoot = dirname(__FILE__).'/';
+        $root = dirname($publicRoot).'/';
         $path = $root.'private/';
 
         switch($_SERVER['SERVER_NAME'])
@@ -74,6 +75,9 @@ class ShortyInit
         $config->setConfiguration($data);
 
         $config->setValue(\CannyDain\Shorty\Config\ShortyConfiguration::KEY_FILE_SYSTEM_ROOT, $root);
+        $config->setValue(\CannyDain\Shorty\Config\ShortyConfiguration::KEY_PUBLIC_ROOT, $publicRoot);
+        $config->setValue(\CannyDain\Shorty\Config\ShortyConfiguration::KEY_STYLE_ROOT, $publicRoot.'styles/');
+        $config->setValue(\CannyDain\Shorty\Config\ShortyConfiguration::KEY_SCRIPT_ROOT, $publicRoot.'scripts/');
         $config->setValue(\CannyDain\Shorty\Config\ShortyConfiguration::KEY_PRIVATE_DATA_ROOT, $root.'private/');
 
         return $config;

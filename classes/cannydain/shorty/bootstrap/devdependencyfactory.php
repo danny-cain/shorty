@@ -2,6 +2,7 @@
 
 namespace CannyDain\Shorty\Bootstrap;
 
+use CannyDain\Shorty\Config\ShortyConfiguration;
 use CannyDain\ShortyModules\Comments\CommentsModule;
 use CannyDain\ShortyModules\Comments\EventHandlers\NewCommentEmailHandler;
 use CannyDain\ShortyModules\Comments\Managers\CommentsManager;
@@ -9,6 +10,7 @@ use CannyDain\ShortyModules\Content\ContentModule;
 use CannyDain\ShortyModules\Invoice\Controllers\InvoiceController;
 use CannyDain\ShortyModules\Invoice\InvoiceModule;
 use CannyDain\ShortyModules\Invoice\Manager\InvoiceManager;
+use CannyDain\ShortyModules\Minifier\MinifierModule;
 use CannyDain\ShortyModules\ShortyBasket\Helpers\ShortyBasketHelper;
 use CannyDain\ShortyModules\ShortyBasket\ShortyBasketModule;
 use CannyDain\ShortyModules\SimpleShop\Providers\SimpleShopProductProvider;

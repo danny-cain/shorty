@@ -15,4 +15,7 @@ class ShortyConfiguration extends Configuration
 
     const KEY_FILE_SYSTEM_ROOT = 'shorty.filesystem.root';
     const KEY_PRIVATE_DATA_ROOT = 'shorty.filesystem.privateRoot';
+    const KEY_STYLE_ROOT = 'shorty.filesystem.styleRoot';
+    const KEY_SCRIPT_ROOT = 'shorty.filesystem.scriptRoot';
+    const KEY_PUBLIC_ROOT = 'shorty.filesystem.publicRoot';
 }

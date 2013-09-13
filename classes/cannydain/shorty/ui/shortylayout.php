@@ -3,16 +3,25 @@
 namespace CannyDain\Shorty\UI;
 
 use CannyDain\Lib\DependencyInjection\DependencyInjector;
+use CannyDain\Lib\Routing\Interfaces\RouterInterface;
+use CannyDain\Lib\Routing\Models\Route;
 use CannyDain\Lib\UI\Response\Layouts\Layout;
 use CannyDain\Shorty\Consumers\DependencyConsumer;
+use CannyDain\Shorty\Consumers\RouterConsumer;
+use CannyDain\ShortyModules\Minifier\Controllers\MinifierController;
 use CannyDain\ShortyModules\SimpleShop\Views\MiniBasketView;
 
-class ShortyLayout extends Layout implements DependencyConsumer
+class ShortyLayout extends Layout implements DependencyConsumer, RouterConsumer
 {
     /**
      * @var DependencyInjector
      */
     protected $_dependencies;
+
+    /**
+     * @var RouterInterface
+     */
+    protected $_router;
 
     protected function _displayDocumentHead()
     {
@@ -29,15 +38,12 @@ class ShortyLayout extends Layout implements DependencyConsumer
 
     protected function _outputStylesheets()
     {
-        echo '<link rel="stylesheet" type="text/css" href="/styles/layout.css" />';
-        echo '<link rel="stylesheet" type="text/css" href="/styles/styles.css" />';
-        echo '<link rel="stylesheet" type="text/css" href="/styles/forms.css" />';
-        echo '<link rel="stylesheet" type="text/css" href="/styles/comments.css" />';
+        echo '<link rel="stylesheet" type="text/css" href="/styles.php" />';
     }
 
     protected function _outputScripts()
     {
-        echo '<script type="text/javascript" src="/scripts/jquery.min.js"></script>';
+        echo '<script type="application/javascript" src="/scripts.php"></script>';
     }
 
     protected function _displayPageHead()
@@ -97,5 +103,10 @@ class ShortyLayout extends Layout implements DependencyConsumer
     public function consumeDependencies(DependencyInjector $dependencies)
     {
         $this->_dependencies = $dependencies;
+    }
+
+    public function consumeRouter(RouterInterface $router)
+    {
+        $this->_router = $router;
     }
 }
