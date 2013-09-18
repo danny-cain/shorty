@@ -83,10 +83,26 @@ class ShortyLayout extends Layout implements DependencyConsumer, RouterConsumer
             echo '&copy; 2013 Danny Cain';
         echo '</div>';
 
+        $this->_displayProfilerInfo();
+
         $view = new MiniBasketView();
         $this->_dependencies->applyDependencies($view);
 
         $view->display();
+    }
+
+    protected function _displayProfilerInfo()
+    {
+        if (!function_exists('xdebug_get_profiler_filename'))
+            return;
+
+        $filename = xdebug_get_profiler_filename();
+        if ($filename == '')
+            return;
+
+        echo '<div id="profilerFilename">';
+            echo 'profile: '.xdebug_get_profiler_filename();
+        echo '</div>';
     }
 
     protected function _displayDocumentFoot()

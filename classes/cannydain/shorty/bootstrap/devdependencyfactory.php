@@ -10,6 +10,7 @@ use CannyDain\ShortyModules\Content\ContentModule;
 use CannyDain\ShortyModules\Invoice\Controllers\InvoiceController;
 use CannyDain\ShortyModules\Invoice\InvoiceModule;
 use CannyDain\ShortyModules\Invoice\Manager\InvoiceManager;
+use CannyDain\ShortyModules\KnowledgeBase\KnowledgeBaseModule;
 use CannyDain\ShortyModules\Minifier\MinifierModule;
 use CannyDain\ShortyModules\ShortyBasket\Helpers\ShortyBasketHelper;
 use CannyDain\ShortyModules\ShortyBasket\ShortyBasketModule;

@@ -190,6 +190,12 @@ class DataMapper implements DataMapperInterface
         return $ret;
     }
 
+    public function createObjectFromData($class, $data)
+    {
+        $def = $this->_getDefinitionFromClassName($class);
+        return $this->_createObjectFromRow($def, $data);
+    }
+
     public function getAllObjectsViaEqualityFilter($className, $filters = array(), $orderBy = '')
     {
         $def = $this->_getDefinitionFromClassName($className);

@@ -10,6 +10,8 @@ use CannyDain\Lib\DependencyInjection\Interfaces\DependencyFactoryInterface;
 use CannyDain\Lib\Emailing\NullEmailer;
 use CannyDain\Lib\Emailing\SMTPEmailer;
 use CannyDain\Lib\GUIDS\SimpleGuidManager;
+use CannyDain\Lib\ObjectPermissions\NullObjectPermissionsManager;
+use CannyDain\Lib\ObjectPermissions\ObjectPermissionsManagerInterface;
 use CannyDain\Lib\Routing\Routers\DirectMappedRouter;
 use CannyDain\Lib\Web\Server\Request;
 use CannyDain\Shorty\Config\ShortyConfiguration;
@@ -50,6 +52,7 @@ class BaseDependencyFactory implements DependencyFactoryInterface
     const CONSUMER_INVOICE_MANAGER = '\\CannyDain\\Shorty\\Consumers\\InvoiceManagerConsumer';
     const CONSUMER_BASKET_HELPER = '\\CannyDain\\Shorty\\Consumers\\BasketHelperConsumer';
     const CONSUMER_PRODUCT_MANAGER = '\\CannyDain\\Shorty\\Consumers\\ProductManagerConsumer';
+    const CONSUMER_OBJECT_PERMISSIONS = '\\CannyDain\\Shorty\\Consumers\\ObjectPermissionsConsumer';
 
     /**
      * @var DependencyInjector
@@ -88,7 +91,16 @@ class BaseDependencyFactory implements DependencyFactoryInterface
             self::CONSUMER_INVOICE_MANAGER,
             self::CONSUMER_BASKET_HELPER,
             self::CONSUMER_PRODUCT_MANAGER,
+            self::CONSUMER_OBJECT_PERMISSIONS,
         );
+    }
+
+    /**
+     * @return ObjectPermissionsManagerInterface
+     */
+    protected function _factory_objectPermissions()
+    {
+        return new NullObjectPermissionsManager();
     }
 
     protected function _factory_productManager()
@@ -292,6 +304,9 @@ class BaseDependencyFactory implements DependencyFactoryInterface
                 break;
             case self::CONSUMER_PRODUCT_MANAGER:
                 $this->_cachedDependenciesByInterface[$consumerInterface] = $this->_factory_productManager();
+                break;
+            case self::CONSUMER_OBJECT_PERMISSIONS:
+                $this->_cachedDependenciesByInterface[$consumerInterface] = $this->_factory_objectPermissions();
                 break;
             default:
                 $object = $this->_createOtherInstance($consumerInterface);

@@ -11,6 +11,8 @@ interface DataMapperInterface
 
     public function dataStructureCheck();
 
+    public function createObjectFromData($class, $data);
+
     public function registerModelFactory($objectName, ModelFactoryInterface $factory);
 
     public function addObjectDefinition(ObjectDefinition $def);

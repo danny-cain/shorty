@@ -3,6 +3,7 @@
 namespace CannyDain\Shorty\Execution;
 
 use CannyDain\Lib\DependencyInjection\DependencyInjector;
+use CannyDain\Lib\Exceptions\CannyLibException;
 use CannyDain\Lib\Execution\Interfaces\ControllerInterface;
 use CannyDain\Lib\Routing\Interfaces\RouterInterface;
 use CannyDain\Lib\UI\Response\Layouts\NullLayout;
@@ -41,6 +42,11 @@ class ShortyMain implements AppMainInterface, DependencyConsumer, RouterConsumer
         try
         {
             $view = $this->_executeRouteAndGetView();
+        }
+        catch(CannyLibException $e)
+        {
+            $e->display();
+            $view = new PageNotFoundView();
         }
         catch(\Exception $e)
         {
