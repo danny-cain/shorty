@@ -22,6 +22,7 @@ class TasksAPIController extends TasksBaseController implements ObjectPermission
 
     public function getProjectPermissionsManagement($projectID)
     {
+        //todo check permissions
         $project = $this->_api()->loadProject($projectID);
         $view = $this->_permissions->getPermissionsViewForObject($project->getGUID(), true);
 
@@ -33,6 +34,7 @@ class TasksAPIController extends TasksBaseController implements ObjectPermission
 
     public function getTaskPermissionsManagement($taskID)
     {
+        //todo check permissions
         $task = $this->_api()->loadTask($taskID);
         $view = $this->_permissions->getPermissionsViewForObject($task->getGUID(), true);
 
@@ -108,7 +110,9 @@ class TasksAPIController extends TasksBaseController implements ObjectPermission
 
         foreach ($this->_api()->searchTasks($searchTerm) as $task)
         {
-            $data[] = $this->_getTaskJSON($task);
+            $jsonTask = $this->_getTaskJSON($task);
+            if ($jsonTask != null)
+                $data[] = $jsonTask;
         }
 
         return new JSONView($data);
@@ -116,6 +120,7 @@ class TasksAPIController extends TasksBaseController implements ObjectPermission
 
     public function editTask($id)
     {
+        //todo check permissions
         $ret = array('status' => 'Fail', 'message' => 'Must POST to edit');
         $task = $this->_api()->loadTask($id);
 
@@ -134,6 +139,7 @@ class TasksAPIController extends TasksBaseController implements ObjectPermission
 
     public function editProject($id)
     {
+        //todo check permissions
         $ret = array('status' => 'Fail', 'message' => 'Must POST to edit');
         $project = $this->_api()->loadProject($id);
 
@@ -157,6 +163,7 @@ class TasksAPIController extends TasksBaseController implements ObjectPermission
 
     public function createProject()
     {
+        //todo check permissions
         $project = $this->_api()->createProject('');
         $this->_updateProjectFromPost($project);
 
@@ -168,6 +175,7 @@ class TasksAPIController extends TasksBaseController implements ObjectPermission
 
     public function createTask()
     {
+        //todo check permissions
         $title = $this->_request->getParameter('title');
         $project = $this->_request->getParameter('project');
 
@@ -190,7 +198,11 @@ class TasksAPIController extends TasksBaseController implements ObjectPermission
         $data = array();
 
         foreach ($this->_api()->getAllProjects() as $project)
-            $data[] = $this->_getProjectJSON($project);
+        {
+            $jsonProject = $this->_getProjectJSON($project);
+            if ($jsonProject != null)
+                $data[] = $jsonProject;
+        }
 
         return new JSONView($data);
     }
@@ -200,7 +212,11 @@ class TasksAPIController extends TasksBaseController implements ObjectPermission
         $data = array();
 
         foreach ($this->_api()->getTasksByProjectID($project) as $task)
-            $data[] = $this->_getTaskJSON($task);
+        {
+            $jsonTask = $this->_getTaskJSON($task);
+            if ($jsonTask != null)
+                $data[] = $jsonTask;
+        }
 
         return new JSONView($data);
     }
@@ -227,6 +243,10 @@ class TasksAPIController extends TasksBaseController implements ObjectPermission
 
     protected function _getProjectJSON(ProjectModel $project)
     {
+        if ($project == null)
+            return $project;
+
+        //todo check permissions
         return array
         (
             'id' => $project->getId(),
@@ -237,6 +257,7 @@ class TasksAPIController extends TasksBaseController implements ObjectPermission
 
     protected function _getTaskJSON(TaskModel $task)
     {
+        //todo check permissions
         return array
         (
             'id' => $task->getId(),

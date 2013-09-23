@@ -20,7 +20,13 @@
                 "type":"varchar",
                 "property":"_name",
                 "size":500
-            }
+            },
+			{
+				"column":"owner",
+				"type":"int",
+				"property":"_owner",
+				"size":11
+			}
         ]
     },
 	{

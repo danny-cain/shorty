@@ -17,6 +17,7 @@ use CannyDain\ShortyModules\ShortyBasket\ShortyBasketModule;
 use CannyDain\ShortyModules\SimpleShop\Providers\SimpleShopProductProvider;
 use CannyDain\ShortyModules\SimpleShop\SimpleShopModule;
 use CannyDain\ShortyModules\Tasks\Providers\TasksObjectRegistryProvider;
+use CannyDain\ShortyModules\Tasks\Providers\TasksPermissionsInfoProvider;
 use CannyDain\ShortyModules\Tasks\TasksModule;
 use CannyDain\ShortyModules\Comments\Providers\CommentsObjectRegistryProvider;
 use CannyDain\ShortyModules\Content\Providers\ContentObjectRegistryProvider;
@@ -59,7 +60,11 @@ class DevDependencyFactory extends BaseDependencyFactory
 
     protected function _factory_objectPermissions()
     {
-        return new ObjectPermissionsManager();
+        $manager = new ObjectPermissionsManager();
+
+        $manager->registerProvider(new TasksPermissionsInfoProvider());
+
+        return $manager;
     }
 
     protected function _factory_productManager()

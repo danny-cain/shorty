@@ -101,10 +101,12 @@ class TasksView extends ShortyView
             $('[name="status"]', containers.taskEditPane).val(task.status);
 
             var parts;
-            if (task.completed == '')
+            if (task.completed == '' || task.completed == undefined)
                 parts = ["1970", "1", "1"];
             else
+            {
                 parts = task.completed.split("-");
+            }
 
             $('[name="completed_day"]', containers.taskEditPane).val(parts[2]);
             $('[name="completed_month"]', containers.taskEditPane).val(parts[1]);
@@ -301,11 +303,11 @@ class TasksView extends ShortyView
 
         <div class="editPane">
             <div class="editProject" style="display: none;">
-                <div class="row">
-                    <div class="caption">
+                <div class="fieldRow">
+                    <div class="fieldCaption">
                         Name:
                     </div>
-                    <div class="field">
+                    <div class="fieldInput">
                         <input type="text" name="name" />
                     </div>
                 </div>
@@ -325,65 +327,65 @@ class TasksView extends ShortyView
 
             <div class="editTask" style="display: none;">
                 <input type="hidden" name="project" />
-                <div class="row">
-                    <div class="caption">
+                <div class="fieldRow">
+                    <div class="fieldCaption">
                         Title:
                     </div>
-                    <div class="field">
+                    <div class="fieldInput">
                         <input type="text" name="title" />
                     </div>
                 </div>
 
-                <div class="row">
-                    <div class="caption">
+                <div class="fieldRow">
+                    <div class="fieldCaption">
                         Short Description:
                     </div>
-                    <div class="field">
+                    <div class="fieldInput">
                         <input type="text" name="shortDesc" />
                     </div>
                 </div>
 
-                <div class="row">
-                    <div class="caption">
+                <div class="fieldRow">
+                    <div class="fieldCaption">
                         Long Description:
                     </div>
-                    <div class="field">
+                    <div class="fieldInput">
                         <textarea name="longDesc"></textarea>
                     </div>
                 </div>
 
-                <div class="row">
-                    <div class="caption">
+                <div class="fieldRow">
+                    <div class="fieldCaption">
                         Completed:
                     </div>
-                    <div class="field">
+                    <div class="fieldInput">
                         {$completedDateSelector}
                     </div>
                 </div>
 
-                <div class="row">
-                    <div class="caption">
+                <div class="fieldRow">
+                    <div class="fieldCaption">
                         Created:
                     </div>
-                    <div class="field">
+                    <div class="fieldInput">
                         <input type="text" readonly="readonly" name="created" />
                     </div>
                 </div>
 
-                <div class="row">
-                    <div class="caption">
+                <div class="fieldRow">
+                    <div class="fieldCaption">
                         Cost (in pence):
                     </div>
-                    <div class="field">
+                    <div class="fieldInput">
                         <input type="text" name="cost" />
                     </div>
                 </div>
 
-                <div class="row">
-                    <div class="caption">
+                <div class="fieldRow">
+                    <div class="fieldCaption">
                         Estimate:
                     </div>
-                    <div class="field">
+                    <div class="fieldInput">
                         <select name="estimate">
                             <option value="1">Small</option>
                             <option value="3">Medium</option>
@@ -392,11 +394,11 @@ class TasksView extends ShortyView
                     </div>
                 </div>
 
-                <div class="row">
-                    <div class="caption">
+                <div class="fieldRow">
+                    <div class="fieldCaption">
                         Priority:
                     </div>
-                    <div class="field">
+                    <div class="fieldInput">
                         <select name="priority">
                             <option value="1">Low</option>
                             <option value="3">Medium</option>
@@ -405,11 +407,11 @@ class TasksView extends ShortyView
                     </div>
                 </div>
 
-                <div class="row">
-                    <div class="caption">
+                <div class="fieldRow">
+                    <div class="fieldCaption">
                         Status:
                     </div>
-                    <div class="field">
+                    <div class="fieldInput">
                         <select name="status">
                             <option value="0">To be Specified</option>
                             <option value="1">To be Developed</option>
@@ -436,7 +438,7 @@ HTML;
     protected function _getDataSelector($fieldname)
     {
         ob_start();
-            echo '<select name="'.$fieldname.'_day">';
+            echo '<select class="dateField" name="'.$fieldname.'_day">';
                 for ($i = 1; $i <= 31; $i ++)
                 {
                     $suffix = date('S', strtotime('2000-01-'.$i));
@@ -444,7 +446,7 @@ HTML;
                 }
             echo '</select>';
 
-            echo '<select name="'.$fieldname.'_month">';
+            echo '<select class="dateField" name="'.$fieldname.'_month">';
                 for ($i = 1; $i <= 12; $i ++)
                 {
                     $month = date('F', strtotime('2000-'.$i.'-01'));
@@ -452,7 +454,7 @@ HTML;
                 }
             echo '</select>';
 
-            echo '<input type="text" name="year" />';
+            echo '<input class="dateField" type="text" name="year" />';
         return ob_get_clean();
     }
 

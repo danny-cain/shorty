@@ -16,6 +16,14 @@ class UsersModuleUserHelper extends UserHelper implements ModuleConsumer
      */
     protected $_userModule;
 
+    public function getUserGUID($id)
+    {
+        $user = $this->_userModule->getDatasource()->loadUser($id);
+
+        return $user->getGUID();
+    }
+
+
     /**
      * @param $term
      * @return UserInfo[]

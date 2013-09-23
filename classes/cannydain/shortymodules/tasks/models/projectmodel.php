@@ -10,6 +10,7 @@ class ProjectModel extends ShortyGUIDModel
 
     protected $_id = 0;
     protected $_name = '';
+    protected $_owner = 0;
 
     /**
      * @return array
@@ -22,6 +23,16 @@ class ProjectModel extends ShortyGUIDModel
     protected function _getObjectTypeName()
     {
         return self::PROJECT_OBJECT_TYPE;
+    }
+
+    public function setOwner($owner)
+    {
+        $this->_owner = $owner;
+    }
+
+    public function getOwner()
+    {
+        return $this->_owner;
     }
 
     public function setName($name)

@@ -2,6 +2,8 @@
 
 namespace CannyDain\Shorty\Helpers;
 
+use CannyDain\Lib\GUIDS\GUIDManagerInterface;
+use CannyDain\Shorty\Consumers\GUIDConsumer;
 use CannyDain\Shorty\Helpers\Models\UserInfo;
 
 class UserHelper
@@ -22,6 +24,11 @@ class UserHelper
     public function searchGroups($term)
     {
         return array();
+    }
+
+    public function getUserGUID($id)
+    {
+        return '';
     }
 
     public function getUsernameFromID($id)
