@@ -34,7 +34,9 @@ window.shorty.controllers.ProjectManagement = function(data)
 		getProjectURI : "#getProjectURI#",
 		listProjectsURI : "#listProjectsURI#",
 		listAllTasks : "#listAllTasks#",
-		searchTaskURI : "#searchTasks#"
+		searchTaskURI : "#searchTasks#",
+		getTaskPermissionsURI : "#getTaskPermissions#",
+		getProjectPermissionsURI : "#getProjectPermissions#"
 	};
 
 	data = $.extend(
@@ -46,7 +48,9 @@ window.shorty.controllers.ProjectManagement = function(data)
 		editTaskCallback : function(task) {},
 		editProjectCallback : function(project) {},
 		startRequestCallback : function(uri) {},
-		endRequestCallback : function(uri) {}
+		endRequestCallback : function(uri) {},
+		taskPermissionsCallback : function(permissionsMarkup) {},
+		projectPermissionsCallback : function(permissionsMarkup) {}
 	}, data);
 
 	this.callbacks =
@@ -58,7 +62,9 @@ window.shorty.controllers.ProjectManagement = function(data)
 		editTask : data.editTaskCallback,
 		editProject : data.editProjectCallback,
 		startRequest : data.startRequestCallback,
-		endRequest : data.endRequestCallback
+		endRequest : data.endRequestCallback,
+		taskPermissions : data.taskPermissionsCallback,
+		projectPermissions : data.projectPermissionsCallback
 	};
 
 	this._get = function(uri, data, callback)
@@ -92,6 +98,32 @@ window.shorty.controllers.ProjectManagement = function(data)
 		{
 			self.callbacks.endRequest(uri);
 			callback(response);
+		});
+	};
+
+	this.getEditTaskPermissions = function(id, callback)
+	{
+		var self = this;
+		var uri = self.config.getTaskPermissionsURI.replace('#id#', id);
+
+		self._get(uri, {},function(data)
+		{
+			self.callbacks.taskPermissions(data);
+			if (callback != null)
+				callback(data);
+		});
+	};
+
+	this.getEditProjectPermissions = function(id, callback)
+	{
+		var self = this;
+		var uri = self.config.getProjectPermissionsURI.replace('#id#', id);
+
+		self._get(uri, {},function(data)
+		{
+			self.callbacks.projectPermissions(data);
+			if (callback != null)
+				callback(data);
 		});
 	};
 

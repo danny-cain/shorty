@@ -15,6 +15,12 @@ interface ObjectRegistryProvider
     public function searchObjects($searchTerm, $typeLimit = null, $limit = 0);
 
     /**
+     * @param $guid
+     * @return string
+     */
+    public function getNameOfObject($guid);
+
+    /**
      * @return array
      */
     public function getKnownTypes();

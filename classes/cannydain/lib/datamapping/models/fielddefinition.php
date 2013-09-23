@@ -40,6 +40,7 @@ class FieldDefinition
     public function getSQLDataType()
     {
         $type = $this->getDataType();
+
         switch($type)
         {
             case self::DATA_TYPE_ARRAY:

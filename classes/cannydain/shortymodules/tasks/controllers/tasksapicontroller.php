@@ -2,15 +2,45 @@
 
 namespace CannyDain\ShortyModules\Tasks\Controllers;
 
+use CannyDain\Lib\ObjectPermissions\ObjectPermissionsManagerInterface;
 use CannyDain\Lib\Routing\Models\Route;
+use CannyDain\Lib\UI\Views\HTMLView;
 use CannyDain\Lib\UI\Views\JSONView;
 use CannyDain\Lib\UI\Views\PlainTextView;
+use CannyDain\Shorty\Consumers\ObjectPermissionsConsumer;
 use CannyDain\ShortyModules\Tasks\Models\ProjectModel;
 use CannyDain\ShortyModules\Tasks\Models\TaskModel;
 
-class TasksAPIController extends TasksBaseController
+class TasksAPIController extends TasksBaseController implements ObjectPermissionsConsumer
 {
     const TASKS_API_CONTROLLER = __CLASS__;
+
+    /**
+     * @var ObjectPermissionsManagerInterface
+     */
+    protected $_permissions;
+
+    public function getProjectPermissionsManagement($projectID)
+    {
+        $project = $this->_api()->loadProject($projectID);
+        $view = $this->_permissions->getPermissionsViewForObject($project->getGUID(), true);
+
+        if ($view instanceof HTMLView)
+            $view->setIsAjax(true);
+
+        return $view;
+    }
+
+    public function getTaskPermissionsManagement($taskID)
+    {
+        $task = $this->_api()->loadTask($taskID);
+        $view = $this->_permissions->getPermissionsViewForObject($task->getGUID(), true);
+
+        if ($view instanceof HTMLView)
+            $view->setIsAjax(true);
+
+        return $view;
+    }
 
     public static function getLatestAPIVersion()
     {
@@ -65,6 +95,8 @@ class TasksAPIController extends TasksBaseController
             '#listProjectsURI#' => $this->_router->getURI(new Route(__CLASS__, 'listProjects')),
             '#listAllTasks#' => $this->_router->getURI(new Route(__CLASS__, 'listAllTasks', array('#project#'))),
             '#searchTasks#' => $this->_router->getURI(new Route(__CLASS__, 'searchTasks', array('#term#'))),
+            '#getTaskPermissions#' => $this->_router->getURI(new Route(__CLASS__, 'getTaskPermissionsManagement', array('#id#'))),
+            '#getProjectPermissions#' => $this->_router->getURI(new Route(__CLASS__, 'getProjectPermissionsManagement', array('#id#'))),
         ));
 
         return new PlainTextView($data, 'application/javascript');
@@ -220,5 +252,10 @@ class TasksAPIController extends TasksBaseController
             'shortDesc' => $task->getShortDesc(),
             'project' => $task->getProjectID(),
         );
+    }
+
+    public function consumeObjectPermissionsManager(ObjectPermissionsManagerInterface $manager)
+    {
+        $this->_permissions = $manager;
     }
 }

@@ -12,12 +12,12 @@ class NullObjectPermissionsManager implements ObjectPermissionsManagerInterface
 
     }
 
-    public function grant($consumerGUID, $objectGUID)
+    public function grant($consumerGUID, $objectGUID, $permissions)
     {
 
     }
 
-    public function revoke($consumerGUID, $objectGUID)
+    public function revoke($consumerGUID, $objectGUID, $permissions)
     {
 
     }

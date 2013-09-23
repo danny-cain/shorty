@@ -5,6 +5,25 @@ namespace CannyDain\Lib\UI\Views;
 abstract class HTMLView implements ViewInterface
 {
     protected $_breadcrumbs = array();
+    protected $_isAjax = false;
+
+    /**
+     * Todo: promote this to the ViewInterface
+     * @param bool $isAjax
+     */
+    public function setIsAjax($isAjax)
+    {
+        $this->_isAjax = $isAjax;
+    }
+
+    /**
+     * Todo: promote this to the ViewInterface
+     * @return bool
+     */
+    public function getIsAjax()
+    {
+        return $this->_isAjax;
+    }
 
     public function isPrintableView()
     {

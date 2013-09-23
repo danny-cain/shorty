@@ -1,20 +1,18 @@
 <?php
 
-namespace CannyDain\Lib\GUIDS\Models;
+namespace CannyDain\Shorty\Helpers\Models;
 
-class ObjectInfoModel
+class UserInfo
 {
     protected $_id = 0;
-    protected $_type = '';
-    protected $_name = '';
     protected $_guid = '';
+    protected $_name = '';
 
-    public function __construct($_id, $_guid, $_name, $_type)
+    function __construct($_guid, $_id, $_name)
     {
-        $this->_id = $_id;
         $this->_guid = $_guid;
+        $this->_id = $_id;
         $this->_name = $_name;
-        $this->_type = $_type;
     }
 
     public function setGuid($guid)
@@ -45,15 +43,5 @@ class ObjectInfoModel
     public function getName()
     {
         return $this->_name;
-    }
-
-    public function setType($type)
-    {
-        $this->_type = $type;
-    }
-
-    public function getType()
-    {
-        return $this->_type;
     }
 }

@@ -20,9 +20,21 @@ class BaseBootstrap
      */
     protected $_config;
 
+    protected $_checkDatastructures = false;
+
     protected function _dependencyFactory()
     {
         return new BaseDependencyFactory();
+    }
+
+    public function setCheckDatastructures($checkDatastructures)
+    {
+        $this->_checkDatastructures = $checkDatastructures;
+    }
+
+    public function getCheckDatastructures()
+    {
+        return $this->_checkDatastructures;
     }
 
     /**
@@ -69,7 +81,8 @@ class BaseBootstrap
 
     protected function _checkDatabase(DataMapperInterface $datamapper)
     {
-        $datamapper->dataStructureCheck();
+        if ($this->_checkDatastructures)
+            $datamapper->dataStructureCheck();
     }
 
     protected function _bootstrapComplete(EventManager $events)

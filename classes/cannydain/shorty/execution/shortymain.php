@@ -7,6 +7,7 @@ use CannyDain\Lib\Exceptions\CannyLibException;
 use CannyDain\Lib\Execution\Interfaces\ControllerInterface;
 use CannyDain\Lib\Routing\Interfaces\RouterInterface;
 use CannyDain\Lib\UI\Response\Layouts\NullLayout;
+use CannyDain\Lib\UI\Views\HTMLView;
 use CannyDain\Lib\UI\Views\ViewInterface;
 use CannyDain\Lib\Web\Server\Request;
 use CannyDain\Shorty\Config\ShortyConfiguration;
@@ -64,10 +65,17 @@ class ShortyMain implements AppMainInterface, DependencyConsumer, RouterConsumer
 
     protected function _layoutFactory(ViewInterface $view)
     {
-        if ($view->getContentType() == 'text/html')
-            return new ShortyLayout();
+        if ($view->getContentType() != 'text/html')
+        {
+            return new NullLayout($view->getContentType());
+        }
 
-        return new NullLayout($view->getContentType());
+        if ($view instanceof HTMLView && $view->getIsAjax())
+        {
+            return new NullLayout($view->getContentType());
+        }
+
+        return new ShortyLayout();
     }
 
     protected function _getDefaultPage()

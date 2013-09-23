@@ -70,6 +70,7 @@ class DataDiff
 
             $field = $objectFields[$name];
             unset($objectFields[$name]);
+
             if ($field->getSQLDataType() != $type || $field->getSize() != $size)
             {
                 $ret[] = new DiffEntry(DiffEntry::ACTION_CHANGE, $name, $name, $field->getSize(), $field->getSQLDataType());
@@ -78,7 +79,7 @@ class DataDiff
         }
 
         foreach ($objectFields as $field)
-            $ret[] = new DiffEntry(DiffEntry::ACTION_ADD, $field->getColumnName(), $field->getColumnName(), $field->getSize(), $field->getDataType());
+            $ret[] = new DiffEntry(DiffEntry::ACTION_ADD, $field->getColumnName(), $field->getColumnName(), $field->getSize(), $field->getSQLDataType());
 
         return $ret;
     }

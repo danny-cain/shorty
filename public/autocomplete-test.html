@@ -1,0 +1,43 @@
+<html>
+    <head>
+        <script type="text/javascript" src="scripts/jquery.min.js"></script>
+        <script type="text/javascript" src="scripts/shorty.autocomplete.js"></script>
+        <script type="text/javascript">
+            $(document).ready(function()
+            {
+                $('#autocomplete').shortyAutocomplete(
+                {
+                    fetchData : function(query, callback)
+                    {
+                        var possibles =
+                        [
+                            { caption : "Danny", id : 1 },
+                            { caption : "Adam", id : 2 },
+                            { caption : "Daniel", id : 3}
+                        ];
+                        var ret = [];
+
+                        for (var i = 0; i < possibles.length; i ++)
+                        {
+                            if(possibles[i].caption.indexOf(query) >= 0)
+                                ret.push(possibles[i]);
+                        }
+
+                        callback(ret);
+                    },
+			        selectItem : function(data)
+                    {
+                        console.log(data);
+                    },
+			        createResultItem : function(data)
+                    {
+                        return "(" + data.id +") " + data.caption;
+                    }
+                });
+            });
+        </script>
+    </head>
+    <body>
+        <input id="autocomplete" type="text" />
+    </body>
+</html>

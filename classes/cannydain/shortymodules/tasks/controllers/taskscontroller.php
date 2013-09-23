@@ -9,7 +9,7 @@ class TasksController extends TasksBaseController
 {
     public function Index()
     {
-        return $this->View(1);
+        return $this->View(TasksAPIController::getLatestAPIVersion());
     }
 
     public function View($version)

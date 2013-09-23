@@ -50,6 +50,21 @@ class UsersDatasource extends ShortyDatasource
     }
 
     /**
+     * @param $term
+     * @return User[]
+     */
+    public function searchUsers($term)
+    {
+        return $this->_datamapper->getObjectsWithCustomClauses(User::USER_OBJECT_NAME, array
+        (
+            'username LIKE :username'
+        ), array
+        (
+            'username' => '%'.$term.'%'
+        ));
+    }
+
+    /**
      * @param $id
      * @return User
      */

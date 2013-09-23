@@ -3,6 +3,7 @@
 namespace CannyDain\ShortyModules\Tasks\Views;
 
 use CannyDain\Lib\Routing\Models\Route;
+use CannyDain\Lib\UI\Views\ViewInterface;
 use CannyDain\Shorty\Views\ShortyView;
 
 class TasksView extends ShortyView
@@ -29,6 +30,12 @@ class TasksView extends ShortyView
         containers.taskListPane = $('.taskListingPane', containers.container);
         containers.taskEditPane = $('.editTask', containers.container);
         containers.projectEditPane = $('.editProject', containers.container);
+        containers.projectPermissionsContainer = $('.editPermissions', containers.container);
+
+        $('.toggleTitle', containers.container).click(function()
+        {
+            $(this).next().toggle();
+        });
 
         function updateProjectFromEditPane(project)
         {
@@ -72,6 +79,9 @@ class TasksView extends ShortyView
         function updateProjectEditPane(project)
         {
             containers.projectEditPane.attr('data-id', project.id);
+            containers.projectPermissionsContainer.hide();
+
+            pmController.getEditProjectPermissions(project.id);
 
             $('[name="name"]', containers.projectEditPane).val(project.name);
         }
@@ -144,6 +154,10 @@ class TasksView extends ShortyView
         var requestCount = 0;
         var pmController = new shorty.controllers.ProjectManagement(
         {
+            projectPermissionsCallback : function(html)
+            {
+                containers.projectPermissionsContainer.html(html);
+            },
             listProjectsCallback : function(projects)
             {
                 containers.projectListPane.empty();
@@ -299,6 +313,13 @@ class TasksView extends ShortyView
                 <div class="buttonRow">
                     <button class="saveButton">Save</button>
                     <button class="cancelButton">Cancel</button>
+                </div>
+
+                <div>
+                    <div class="toggleTitle">Permissions</div>
+                    <div class="editPermissions" style="display: none; ">
+
+                    </div>
                 </div>
             </div>
 

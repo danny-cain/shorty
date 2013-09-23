@@ -11,6 +11,7 @@ use CannyDain\Shorty\Consumers\ModuleConsumer;
 use CannyDain\Shorty\Consumers\UserConsumer;
 use CannyDain\Shorty\Helpers\UserHelper;
 use CannyDain\Shorty\Modules\ModuleManager;
+use CannyDain\ShortyModules\ObjectPermissions\Controllers\PermissionsAPIController;
 use CannyDain\ShortyModules\ObjectPermissions\Datasource\ObjectPermissionsDatasource;
 use CannyDain\ShortyModules\ObjectPermissions\Models\PermissionModel;
 use CannyDain\ShortyModules\ObjectPermissions\ObjectPermissionsModule;
@@ -124,11 +125,16 @@ class ObjectPermissionsManager implements ObjectPermissionsManagerInterface, GUI
         $view = new PermissionsView();
 
         if ($canEdit)
-            $view->setSaveRoute(new Route()); // todo set save route
+        {
+            $view->setSaveRoute(new Route(PermissionsAPIController::PERMISSIONS_API_CONTROLLER_NAME, 'SaveObjectPermissions', array($objectGUID)));
+            $view->setSearchRoute(new Route(PermissionsAPIController::PERMISSIONS_API_CONTROLLER_NAME, 'SearchConsumers'));
+        }
         else
             $view->setSaveRoute(null);
 
         $view->setPermissions($this->_datasource->getAllPermissionsForObject($objectGUID));
+        $view->setSubjectGUID($objectGUID);
+        $view->subjectIsConsumer(false);
 
         return $view;
     }

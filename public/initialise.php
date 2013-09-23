@@ -88,6 +88,13 @@ class ShortyInit
         $bootstrap = $this->_getBootstrap();
 
         $bootstrap->setConfig($this->_getConfig());
+
+        if (strtolower(substr($_SERVER['SERVER_NAME'], 0, 6)) == 'danny.')
+            $bootstrap->setCheckDatastructures(true);
+
+        if (isset($_GET['dsCheck']) && $_GET['dsCheck'] == 1)
+            $bootstrap->setCheckDatastructures(true);
+
         $bootstrap->executeBootstrap($dependentObjects);
     }
 
