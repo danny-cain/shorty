@@ -8,10 +8,12 @@ use CannyDain\Lib\Routing\Models\Route;
 use CannyDain\Lib\UI\Response\Layouts\Layout;
 use CannyDain\Shorty\Consumers\DependencyConsumer;
 use CannyDain\Shorty\Consumers\RouterConsumer;
+use CannyDain\Shorty\Consumers\SessionConsumer;
+use CannyDain\Shorty\Helpers\SessionHelper;
 use CannyDain\ShortyModules\Minifier\Controllers\MinifierController;
 use CannyDain\ShortyModules\SimpleShop\Views\MiniBasketView;
 
-class ShortyLayout extends Layout implements DependencyConsumer, RouterConsumer
+class ShortyLayout extends Layout implements DependencyConsumer, RouterConsumer, SessionConsumer
 {
     /**
      * @var DependencyInjector
@@ -23,6 +25,11 @@ class ShortyLayout extends Layout implements DependencyConsumer, RouterConsumer
      */
     protected $_router;
 
+    /**
+     * @var SessionHelper
+     */
+    protected $_session;
+
     protected function _displayDocumentHead()
     {
         echo '<!DOCTYPE html>';
@@ -31,6 +38,18 @@ class ShortyLayout extends Layout implements DependencyConsumer, RouterConsumer
                 echo '<title>Shorty Mk II</title>';
                 $this->_outputStylesheets();
                 $this->_outputScripts();
+                echo <<<HTML
+<script type="text/javascript">
+    $(document).ready(function()
+    {
+        $('body').on('mutation', function(e)
+        {
+            console.log(e);
+        })
+    });
+</script>
+HTML;
+
             echo '</head>';
 
             echo '<body>';
@@ -63,9 +82,48 @@ class ShortyLayout extends Layout implements DependencyConsumer, RouterConsumer
         echo '</a>';
     }
 
+    protected function _canDisplayLink($link)
+    {
+        if ($this->_isAdmin())
+            return true;
+
+        switch($link)
+        {
+            case '/cannydain-shortymodules-tasks-controllers-taskscontroller':
+                if ($this->_session->getUserID() == 0)
+                    return false;
+                break;
+            case '/cannydain-shortymodules-simpleshop-controllers-simpleshopadmincontroller':
+            case '/cannydain-shortymodules-content-controllers-contentadmincontroller':
+                return false;
+                break;
+        }
+
+        return true;
+    }
+
     protected function _displayNavigation()
     {
+        $nav = array
+        (
+            '/' => 'Home',
+            '/cannydain-shortymodules-users-controllers-usercontroller/login' => 'Login',
+            '/cannydain-shortymodules-content-controllers-contentcontroller/view/1' => 'About',
+            '/cannydain-shortymodules-simpleshop-controllers-simpleshopadmincontroller' => 'Shop Admin',
+            '/cannydain-shortymodules-content-controllers-contentadmincontroller' => 'Content Admin',
+            '/cannydain-shortymodules-tasks-controllers-taskscontroller' => 'Project Management',
+        );
+
         echo '<nav id="mainNav">';
+            foreach ($nav as $uri => $caption)
+            {
+                if (!$this->_canDisplayLink($uri))
+                    continue;
+
+                echo '<a href="'.$uri.'">'.$caption.'</a>';
+            }
+
+        /*
             echo '<a href="/">Home</a>';
             echo '<a href="/cannydain-shortymodules-todo-controllers-todocontroller">Todo</a>';
             echo '<a href="/cannydain-shortymodules-users-controllers-usercontroller/login">Login</a>';
@@ -73,6 +131,7 @@ class ShortyLayout extends Layout implements DependencyConsumer, RouterConsumer
             echo '<a href="/cannydain-shortymodules-simpleshop-controllers-simpleshopadmincontroller">Shop Admin</a>';
             echo '<a href="/cannydain-shortymodules-content-controllers-contentadmincontroller">Content Admin</a>';
             echo '<a href="/cannydain-shortymodules-tasks-controllers-taskscontroller">Project Management</a>';
+        */
         echo '</nav>';
     }
 
@@ -100,6 +159,11 @@ class ShortyLayout extends Layout implements DependencyConsumer, RouterConsumer
         echo '</div>';
     }
 
+    protected function _isAdmin()
+    {
+        return $this->_session->getUserID() == 1 || $this->_session->getUserID() == 2;
+    }
+
     protected function _displayDocumentFoot()
     {
             echo '</body>';
@@ -119,5 +183,10 @@ class ShortyLayout extends Layout implements DependencyConsumer, RouterConsumer
     public function consumeRouter(RouterInterface $router)
     {
         $this->_router = $router;
+    }
+
+    public function consumeSession(SessionHelper $session)
+    {
+        $this->_session = $session;
     }
 }

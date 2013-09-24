@@ -15,7 +15,7 @@ class TasksView extends ShortyView
 
     public function display()
     {
-        $completedDateSelector = $this->_getDataSelector('completed');
+        $completedDateSelector = $this->_getDateSelector('completed');
 
         $uri = $this->_router->getURI($this->_jsRoute);
         echo <<<HTML
@@ -23,6 +23,25 @@ class TasksView extends ShortyView
 <script type="text/javascript">
     $(document).ready(function()
     {
+        $('.pmLeftPane').on('contextmenu', function(e)
+        {
+            var context = $('<div>Context Menu</div>');
+
+            console.log(e);
+
+            context.css('position', 'absolute');
+            context.css('left', e.pageX);
+            context.css('top', e.pageY);
+            var body = $('body').append(context);
+
+            body.on('click', function()
+            {
+                context.remove();
+            });
+
+            e.preventDefault();
+        });
+
         var containers = {};
 
         containers.container = $('#tasksContainer');
@@ -52,7 +71,7 @@ class TasksView extends ShortyView
             task.cost = $('[name="cost"]', containers.taskEditPane).val();
             task.created = $('[name="created"]', containers.taskEditPane).val();
             task.estimate = $('[name="estimate"]', containers.taskEditPane).val();
-            task.priority = $('[name="priority"]', container.taskEditPane).val();
+            task.priority = $('[name="priority"]', containers.taskEditPane).val();
             task.status = $('[name="status"]', containers.taskEditPane).val();
 
             task.id = containers.taskEditPane.attr('data-id');
@@ -64,8 +83,13 @@ class TasksView extends ShortyView
             var month = $('[name="' + fieldname + '_month"]', container).val();
             var year = $('[name="' + fieldname + '_year"]', container).val();
 
+            console.log(year + "-" + month + "-" + day);
+            if (day == '' || month == '' || year == '')
+                return null;
+
             if (year == '')
                 return null;
+
 
             year = parseInt(year);
             if (year > 70 && year < 100)
@@ -244,14 +268,14 @@ class TasksView extends ShortyView
             startRequestCallback : function(uri)
             {
                 requestCount ++;
-                console.log("++" + uri);
+                //console.log("++" + uri);
                 if (requestCount == 1)
                     $('.loadingIcon', containers.container).show();
             },
             endRequestCallback : function(uri)
             {
                 requestCount --;
-                console.log("--" + uri);
+                //console.log("--" + uri);
                 if (requestCount == 0)
                     $('.loadingIcon', containers.container).hide();
             }
@@ -435,7 +459,7 @@ HTML;
 
     }
 
-    protected function _getDataSelector($fieldname)
+    protected function _getDateSelector($fieldname)
     {
         ob_start();
             echo '<select class="dateField" name="'.$fieldname.'_day">';
@@ -454,7 +478,7 @@ HTML;
                 }
             echo '</select>';
 
-            echo '<input class="dateField" type="text" name="year" />';
+            echo '<input class="dateField" type="text" name="'.$fieldname.'_year" />';
         return ob_get_clean();
     }
 

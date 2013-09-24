@@ -57,8 +57,10 @@ class ShortyInit
         {
             case 'danny.shorty2.goblin':
             case 'danny.shorty.goblin':
-            default:
                 $path .= 'shorty2/config.json';
+                break;
+            default:
+                $path .= 'shorty2/live.json';
                 break;
         }
 
