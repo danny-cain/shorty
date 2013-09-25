@@ -7,6 +7,8 @@ use CannyDain\ShortyModules\Comments\CommentsModule;
 use CannyDain\ShortyModules\Comments\EventHandlers\NewCommentEmailHandler;
 use CannyDain\ShortyModules\Comments\Managers\CommentsManager;
 use CannyDain\ShortyModules\Content\ContentModule;
+use CannyDain\ShortyModules\Finance\FinanceModule;
+use CannyDain\ShortyModules\Finance\Providers\FinanceObjectProvider;
 use CannyDain\ShortyModules\Invoice\Controllers\InvoiceController;
 use CannyDain\ShortyModules\Invoice\InvoiceModule;
 use CannyDain\ShortyModules\Invoice\Manager\InvoiceManager;
@@ -43,6 +45,8 @@ class DevDependencyFactory extends BaseDependencyFactory
         $manager->registerObjectRegistry(new TasksObjectRegistryProvider());
         $manager->registerObjectRegistry(new TodoObjectRegistryProvider());
         $manager->registerObjectRegistry(new UserObjectRegistryProvider());
+        $manager->registerObjectRegistry(new FinanceObjectProvider());
+        // todo turn this into an event, have modulemanager listen to event and auto-subscribe module object registries
 
         return $manager;
     }
@@ -63,6 +67,7 @@ class DevDependencyFactory extends BaseDependencyFactory
         $manager = new ObjectPermissionsManager();
 
         $manager->registerProvider(new TasksPermissionsInfoProvider());
+        // todo turn this into an event, have modulemanager listen to event and auto-subscribe module permissions managers
 
         return $manager;
     }
@@ -142,6 +147,7 @@ class DevDependencyFactory extends BaseDependencyFactory
         $moduleManager->loadModule(new ShortyBasketModule());
         $moduleManager->loadModule(new TasksModule());
         $moduleManager->loadModule(new ObjectPermissionsModule());
+        $moduleManager->loadModule(new FinanceModule());
 
         return $moduleManager;
     }
