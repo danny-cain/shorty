@@ -90,6 +90,7 @@ HTML;
         switch($link)
         {
             case '/cannydain-shortymodules-tasks-controllers-taskscontroller':
+            case '/cannydain-shortymodules-tasks-cvlibrary-cvlibrarycontroller':
                 if ($this->_session->getUserID() == 0)
                     return false;
                 break;
@@ -112,6 +113,7 @@ HTML;
             '/cannydain-shortymodules-simpleshop-controllers-simpleshopadmincontroller' => 'Shop Admin',
             '/cannydain-shortymodules-content-controllers-contentadmincontroller' => 'Content Admin',
             '/cannydain-shortymodules-tasks-controllers-taskscontroller' => 'Project Management',
+            '/cannydain-shortymodules-cvlibrary-controllers-cvlibrarycontroller' => 'CV Library',
         );
 
         echo '<nav id="mainNav">';

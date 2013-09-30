@@ -3,6 +3,7 @@
 namespace CannyDain\Shorty\Bootstrap;
 
 use CannyDain\Lib\Database\Listeners\FileLoggerQueryListener;
+use CannyDain\ShortyModules\CVLibrary\CVLibraryModule;
 use CannyDain\ShortyModules\Comments\CommentsModule;
 use CannyDain\ShortyModules\Comments\EventHandlers\NewCommentEmailHandler;
 use CannyDain\ShortyModules\Comments\Managers\CommentsManager;
@@ -148,6 +149,7 @@ class DevDependencyFactory extends BaseDependencyFactory
         $moduleManager->loadModule(new TasksModule());
         $moduleManager->loadModule(new ObjectPermissionsModule());
         $moduleManager->loadModule(new FinanceModule());
+        $moduleManager->loadModule(new CVLibraryModule());
 
         return $moduleManager;
     }

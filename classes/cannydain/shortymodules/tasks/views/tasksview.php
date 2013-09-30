@@ -23,25 +23,6 @@ class TasksView extends ShortyView
 <script type="text/javascript">
     $(document).ready(function()
     {
-        $('.pmLeftPane').on('contextmenu', function(e)
-        {
-            var context = $('<div>Context Menu</div>');
-
-            console.log(e);
-
-            context.css('position', 'absolute');
-            context.css('left', e.pageX);
-            context.css('top', e.pageY);
-            var body = $('body').append(context);
-
-            body.on('click', function()
-            {
-                context.remove();
-            });
-
-            e.preventDefault();
-        });
-
         var containers = {};
 
         containers.container = $('#tasksContainer');
@@ -203,6 +184,26 @@ class TasksView extends ShortyView
                     containers.projectEditPane.hide();
 
                     setTimeout(refreshTasksList, 5000);
+                });
+
+                $('.projectName', containers.projectListPane).on('contextmenu', function(e)
+                {
+                    var projectLink = $(this);
+
+                    window.contextMenu.drawMenu(e.pageX, e.pageY,
+                    [
+                        new MenuInfo("Edit", function()
+                        {
+                            projectLink.next().trigger("click.PM");
+                        }),
+                        new MenuInfo("View Tasks", function()
+                        {
+                            projectLink.trigger("click.PM");
+                        })
+                    ]);
+
+                    e.preventDefault();
+                    e.stopPropagation();
                 });
 
                 $('.editProjectButton', containers.projectListPane).unbind('click.PM').bind('click.PM', function()
