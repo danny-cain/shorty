@@ -3,6 +3,7 @@
 namespace CannyDain\Shorty\Bootstrap;
 
 use CannyDain\Lib\Database\Listeners\FileLoggerQueryListener;
+use CannyDain\Lib\Routing\Models\Route;
 use CannyDain\ShortyModules\CVLibrary\CVLibraryModule;
 use CannyDain\ShortyModules\Comments\CommentsModule;
 use CannyDain\ShortyModules\Comments\EventHandlers\NewCommentEmailHandler;
@@ -19,6 +20,7 @@ use CannyDain\ShortyModules\ShortyBasket\Helpers\ShortyBasketHelper;
 use CannyDain\ShortyModules\ShortyBasket\ShortyBasketModule;
 use CannyDain\ShortyModules\SimpleShop\Providers\SimpleShopProductProvider;
 use CannyDain\ShortyModules\SimpleShop\SimpleShopModule;
+use CannyDain\ShortyModules\Tasks\Controllers\TasksController;
 use CannyDain\ShortyModules\Tasks\Providers\TasksObjectRegistryProvider;
 use CannyDain\ShortyModules\Tasks\Providers\TasksPermissionsInfoProvider;
 use CannyDain\ShortyModules\Tasks\TasksModule;
@@ -140,7 +142,7 @@ class DevDependencyFactory extends BaseDependencyFactory
         $moduleManager = parent::_factory_modules();
 
         $moduleManager->loadModule(new TodoModule());
-        $moduleManager->loadModule(new UsersModule());
+        $moduleManager->loadModule(new UsersModule(new Route(TasksController::CONTROLLER_NAME)));
         $moduleManager->loadModule(new CommentsModule());
         $moduleManager->loadModule(new ContentModule());
         $moduleManager->loadModule(new SimpleShopModule());

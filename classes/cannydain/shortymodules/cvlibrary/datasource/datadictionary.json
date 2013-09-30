@@ -56,6 +56,24 @@
                 "type":"text",
                 "property":"_hobbiesAndInterests",
                 "size":0
+            },
+			{
+                "column":"name",
+                "type":"varchar",
+                "property":"_fullName",
+                "size":100
+            },
+			{
+                "column":"number",
+                "type":"varchar",
+                "property":"_contactNumber",
+                "size":50
+            },
+			{
+                "column":"address",
+                "type":"text",
+                "property":"_address",
+                "size":0
             }
         ]
     },

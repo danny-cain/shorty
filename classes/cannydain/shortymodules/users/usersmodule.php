@@ -2,14 +2,43 @@
 
 namespace CannyDain\ShortyModules\Users;
 
+use CannyDain\Lib\Routing\Models\Route;
 use CannyDain\Shorty\Modules\Base\ShortyModule;
 use CannyDain\Shorty\Modules\Models\ModuleInfoModel;
-use CannyDain\ShortyModules\Todo\Datasource\TodoDatasource;
 use CannyDain\ShortyModules\Users\Datasource\UsersDatasource;
 
 class UsersModule extends ShortyModule
 {
     const USERS_MODULE_CLASS = __CLASS__;
+
+    /**
+     * @var Route
+     */
+    protected $_loginRedirectRoute = null;
+
+    /**
+     * @param Route $loginRoute
+     */
+    public function __construct($loginRoute = null)
+    {
+        $this->_loginRedirectRoute = $loginRoute;
+    }
+
+    /**
+     * @param \CannyDain\Lib\Routing\Models\Route $loginRedirectRoute
+     */
+    public function setLoginRedirectRoute($loginRedirectRoute)
+    {
+        $this->_loginRedirectRoute = $loginRedirectRoute;
+    }
+
+    /**
+     * @return \CannyDain\Lib\Routing\Models\Route
+     */
+    public function getLoginRedirectRoute()
+    {
+        return $this->_loginRedirectRoute;
+    }
 
     /**
      * @return UsersDatasource

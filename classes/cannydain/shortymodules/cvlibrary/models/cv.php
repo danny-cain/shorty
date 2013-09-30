@@ -14,9 +14,43 @@ class CV extends ShortyModel
     protected $_created = 0;
     protected $_modified = 0;
 
+    protected $_fullName = '';
+    protected $_contactNumber = '';
+    protected $_address = '';
+
     protected $_pageTitle = 'Curriculum Vitae';
     protected $_aboutMe = '';
     protected $_hobbiesAndInterests = '';
+
+    public function setAddress($address)
+    {
+        $this->_address = $address;
+    }
+
+    public function getAddress()
+    {
+        return $this->_address;
+    }
+
+    public function setContactNumber($contactNumber)
+    {
+        $this->_contactNumber = $contactNumber;
+    }
+
+    public function getContactNumber()
+    {
+        return $this->_contactNumber;
+    }
+
+    public function setFullName($fullName)
+    {
+        $this->_fullName = $fullName;
+    }
+
+    public function getFullName()
+    {
+        return $this->_fullName;
+    }
 
     public function setAboutMe($aboutMe)
     {

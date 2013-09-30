@@ -101,7 +101,7 @@ class PDFWriter extends FPDF
             if ($isBreak)
             {
                 $tempLine = $lineBuffer.$wordBuffer;
-                $width = $this->GetStringWidth(trim($tempLine));
+                $width = $this->GetStringWidth($tempLine);
 
 
                 if ($width >= $maxWidth)
@@ -118,27 +118,30 @@ class PDFWriter extends FPDF
         }
 
         $tempLine = $lineBuffer.$wordBuffer;
-        $width = $this->GetStringWidth(trim($tempLine));
+        $width = $this->GetStringWidth($tempLine);
         if ($width >= $maxWidth)
-            return trim($lineBuffer);
+            return $lineBuffer;
 
-        return trim($tempLine);
+        return $tempLine;
     }
 
     function Write($h, $txt, $link = '')
     {
-        $txt = trim($txt);
-
+        $firstLine = true;
         while (strlen($txt) > 0)
         {
-            $line = trim($this->_extractStringOfMaxWidth($txt, $this->getRemainingWidth()));
+            $line = $this->_extractStringOfMaxWidth($txt, $this->getRemainingWidth());
             if (strlen($line) >= strlen($txt))
                 $txt = '';
             else
                 $txt = substr($txt, strlen($line) + 1);
 
+            if (!$firstLine)
+                $this->lineBreak(false);
+
+            $firstLine = true;
+
             parent::Write($h, $line, $link);
-            $this->lineBreak(false);
         }
     }
 

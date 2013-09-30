@@ -108,6 +108,9 @@ class CVLibraryAPIController extends ShortyModuleController implements SessionCo
             'pageTitle' => $cv->getPageTitle(),
             'hobbies' => $cv->getHobbiesAndInterests(),
             'about' => $cv->getAboutMe(),
+            'name' => $cv->getFullName(),
+            'number' => $cv->getContactNumber(),
+            'address' => $cv->getAddress()
         );
     }
 
@@ -132,6 +135,9 @@ class CVLibraryAPIController extends ShortyModuleController implements SessionCo
         $cv->setPageTitle($this->_request->getParameterOrDefault('pageTitle', $cv->getPageTitle()));
         $cv->setHobbiesAndInterests($this->_request->getParameterOrDefault('hobbies', $cv->getHobbiesAndInterests()));
         $cv->setAboutMe($this->_request->getParameterOrDefault('about', $cv->getAboutMe()));
+        $cv->setFullName($this->_request->getParameterOrDefault('name', $cv->getFullName()));
+        $cv->setContactNumber($this->_request->getParameterOrDefault('number', $cv->getContactNumber()));
+        $cv->setAddress($this->_request->getParameterOrDefault('address', $cv->getAddress()));
 
         return $cv;
     }

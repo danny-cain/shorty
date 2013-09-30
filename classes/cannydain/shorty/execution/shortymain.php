@@ -53,6 +53,8 @@ class ShortyMain implements AppMainInterface, DependencyConsumer, RouterConsumer
         {
             echo $e->getMessage();
             echo '<div>'.get_class($e).'</div>';
+            
+            echo '<pre>'.print_r($e->getTraceAsString(), true).'</pre>';
             $view = new PageNotFoundView();
         }
 

@@ -41,6 +41,19 @@ class CVLibraryView extends ShortyView
             </div>
 
             <div>
+                Full Name: <input type="text" class="name" />
+            </div>
+
+            <div>
+                Contact Number: <input type="text" class="number" />
+            </div>
+
+            <div>
+                Your Address:
+                <textarea style="width: 100%;" class="address"></textarea>
+            </div>
+
+            <div>
                 Hobbies and Interests:
                 <textarea style="width: 100%;" class="hobbies"></textarea>
             </div>
@@ -216,6 +229,9 @@ HTML;
             hobbies : $('.hobbies', this.container),
             pageTitle : $('.pageTitle', this.container),
             save : $('.saveCV', this.container),
+            name : $('.name', this.container),
+            number : $('.number', this.container),
+            address : $('.address', this.container),
             cancelEdit : $('.cancelCVEdit', this.container)
         };
         this.addQualificationButton = $('.addQualification', this.container);
@@ -249,6 +265,9 @@ HTML;
             this.fields.pageTitle.val(cv.pageTitle);
             this.fields.about.val(cv.about);
             this.fields.hobbies.val(cv.hobbies);
+            this.fields.name.val(cv.name);
+            this.fields.number.val(cv.number);
+            this.fields.address.val(cv.address);
 
             var experienceContainer = $('.experience', this.container);
             var experienceTemplate = $('.experienceTemplate', this.container);
@@ -313,6 +332,9 @@ HTML;
             view.currentCV.about = view.fields.about.val();
             view.currentCV.hobbies = view.fields.hobbies.val();
             view.currentCV.pageTitle = view.fields.pageTitle.val();
+            view.currentCV.name = view.fields.name.val();
+            view.currentCV.number = view.fields.number.val();
+            view.currentCV.address = view.fields.address.val();
 
             view.saveCallback(view.currentCV, qualifications, experience);
         });

@@ -7,6 +7,8 @@ use CannyDain\ShortyModules\Tasks\Views\TasksView;
 
 class TasksController extends TasksBaseController
 {
+    const CONTROLLER_NAME = __CLASS__;
+
     public function Index()
     {
         return $this->View(TasksAPIController::getLatestAPIVersion());

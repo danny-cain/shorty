@@ -23,11 +23,24 @@ class UserController extends ShortyModuleController
 
         if ($view->updateFromPostAndReturnTrueIfPostedAndValid())
         {
-            return new RedirectView($this->_router->getURI(new Route(__CLASS__, 'Dashboard')));
+            $route = $this->_getModule()->getLoginRedirectRoute();
+            if ($route == null)
+                $route = new Route();
+
+            return new RedirectView($this->_router->getURI($route));
         }
 
         return $view;
     }
+
+    /**
+     * @return UsersModule
+     */
+    protected function _getModule()
+    {
+        return parent::_getModule();
+    }
+
 
     protected function _getModuleClassname()
     {

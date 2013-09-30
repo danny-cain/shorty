@@ -16,6 +16,9 @@ if (window.shorty.models.CV == undefined)
 		this.about = "";
 		this.hobbies = "";
 		this.pageTitle = "";
+		this.name = "";
+		this.number = "";
+		this.address = "";
 	};
 
 	window.shorty.models.WorkExperience = function(id, cv, description, start, end, company, title)

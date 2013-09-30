@@ -10,6 +10,7 @@ use CannyDain\Shorty\Helpers\UserHelper;
 use CannyDain\ShortyModules\CVLibrary\Models\CV;
 use CannyDain\ShortyModules\CVLibrary\Models\Experience;
 use CannyDain\ShortyModules\CVLibrary\Models\Qualification;
+use ThirdParty\FPDF\MakePDFFont;
 
 class PDFView implements ViewInterface, UserConsumer
 {
@@ -43,12 +44,35 @@ class PDFView implements ViewInterface, UserConsumer
      */
     protected $_tableHelper;
 
+    protected $_fontFiles = array();
+    protected $_defaultFont = 'josefinsans';
+
     public function __construct()
     {
         $this->_writer = new PDFWriter();
         $this->_tableHelper = new PDFTableHelper();
         $this->_tableHelper->setWriter($this->_writer);
         $this->_writer->AddPage();
+
+        $this->_fontFiles['josefinsans'] = array
+        (
+            'regular' => dirname((dirname(__FILE__))).'/fonts/JosefinSans-Regular.ttf',
+            'italic' => dirname((dirname(__FILE__))).'/fonts/JosefinSans-Italic.ttf',
+            'bold' => dirname((dirname(__FILE__))).'/fonts/JosefinSans-Bold.ttf',
+            'bold-italic' => dirname((dirname(__FILE__))).'/fonts/JosefinSans-BoldItalic.ttf',
+        );
+
+        $fontMaker = new MakePDFFont();
+        foreach ($this->_fontFiles as $name => $files)
+        {
+            $files = $fontMaker->createFontFileSet($name, $files['regular'], $files['bold'], $files['italic'], $files['bold-italic']);
+            $this->_writer->AddFont($name, '', $files['regular']);
+            $this->_writer->AddFont($name, 'B', $files['bold']);
+            $this->_writer->AddFont($name, 'I', $files['italic']);
+            $this->_writer->AddFont($name, 'BI', $files['bold-italic']);
+        }
+
+        $this->_writer->SetFont($this->_defaultFont, '', 12);
     }
 
     public function display()
@@ -72,10 +96,40 @@ class PDFView implements ViewInterface, UserConsumer
         $this->_writer->Underline(false);
         $this->_writer->SetFontSize(12);
 
+        $this->_writePersonalDetails();
         $this->_writeAboutMe();
         $this->_writeQualifications();
         $this->_writeExperience();
         $this->_writeHobbiesAndInterests();
+    }
+
+    protected function _writePersonalDetails()
+    {
+        $this->_writeSectionTitle('Personal Details');
+
+        $this->_writer->beginBlockElement();
+            $this->_writer->Bold();
+            $this->_writer->Write(5, 'Name: ');
+            $this->_writer->Bold(false);
+            $this->_writer->write(5, $this->_cv->getFullName());
+        $this->_writer->endBlockElement();
+
+        $this->_writer->beginBlockElement();
+            $this->_writer->Bold();
+            $this->_writer->Write(5, 'Contact Number: ');
+            $this->_writer->Bold(false);
+            $this->_writer->write(5, $this->_cv->getContactNumber());
+        $this->_writer->endBlockElement();
+
+        $this->_writer->beginBlockElement();
+            $this->_writer->Bold();
+            $this->_writer->Write(5, 'Address: ');
+            $this->_writer->Bold(false);
+        $this->_writer->endBlockElement();
+
+        $this->_writer->beginBlockElement();
+            $this->_writer->write(5, $this->_cv->getAddress());
+        $this->_writer->endBlockElement();
     }
 
     protected function _writeHobbiesAndInterests()
