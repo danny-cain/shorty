@@ -16,6 +16,8 @@ use CannyDain\ShortyModules\Todo\Views\TodoListView;
 
 class ContentController extends ShortyModuleController
 {
+    const CONTROLLER_NAME = __CLASS__;
+
     public function View($pageID)
     {
         $view = new ContentPageView();

@@ -17,11 +17,35 @@ class UsersModule extends ShortyModule
     protected $_loginRedirectRoute = null;
 
     /**
+     * @var Route
+     */
+    protected $_registerRedirectRoute = null;
+
+    /**
      * @param Route $loginRoute
      */
     public function __construct($loginRoute = null)
     {
         $this->_loginRedirectRoute = $loginRoute;
+    }
+
+    /**
+     * @param \CannyDain\Lib\Routing\Models\Route $registerRedirectRoute
+     */
+    public function setRegisterRedirectRoute($registerRedirectRoute)
+    {
+        $this->_registerRedirectRoute = $registerRedirectRoute;
+    }
+
+    /**
+     * @return \CannyDain\Lib\Routing\Models\Route
+     */
+    public function getRegisterRedirectRoute()
+    {
+        if ($this->_registerRedirectRoute == null)
+            return new Route();
+
+        return $this->_registerRedirectRoute;
     }
 
     /**

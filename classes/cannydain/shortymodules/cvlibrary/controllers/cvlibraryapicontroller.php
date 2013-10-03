@@ -3,6 +3,7 @@
 namespace CannyDain\ShortyModules\CVLibrary\Controllers;
 
 use CannyDain\Lib\Routing\Models\Route;
+use CannyDain\Lib\TypeWrappers\ArrayWrapper;
 use CannyDain\Lib\UI\Views\JSONView;
 use CannyDain\Lib\UI\Views\PlainTextView;
 use CannyDain\Shorty\Consumers\SessionConsumer;
@@ -24,16 +25,65 @@ class CVLibraryAPIController extends ShortyModuleController implements SessionCo
 
     protected function _convertExperienceToAssociativeArray(Experience $experience)
     {
+        $end = date('Y-m', $experience->getEmploymentEnd());
+        if ($experience->getEmploymentEnd() < $experience->getEmploymentStart())
+            $end = "";
+
         return array
         (
             'id' => $experience->getId(),
             'cv' => $experience->getCv(),
             'description' => $experience->getDescription(),
             'start' => date('Y-m', $experience->getEmploymentStart()),
-            'end' => date('Y-m', $experience->getEmploymentEnd()),
+            'end' => $end,
             'company' => $experience->getCompany(),
             'title' => $experience->getJobTitle(),
         );
+    }
+
+    /**
+     * @return Experience[]
+     */
+    protected function _getMultipleExperiencesFromPost()
+    {
+        $ret = array();
+        $experiences = $this->_request->getParameterOrDefault('experience', array());
+
+        foreach ($experiences as $experienceArray)
+        {
+            $id = ArrayWrapper::getValueByKeyOrDefault($experienceArray, 'id', null);
+            $experience = null;
+
+            if ($id != null)
+                $experience = $this->_getModule()->getDatasource()->getExperience($id);
+
+            if ($experience == null)
+            {
+                $experience = new Experience();
+                $this->_dependencies->applyDependencies($experience);
+            }
+
+            $experience->setCv(ArrayWrapper::getValueByKeyOrDefault($experienceArray, 'cv', $experience->getCv()));
+            $experience->setDescription(ArrayWrapper::getValueByKeyOrDefault($experienceArray, 'description', $experience->getDescription()));
+            $experience->setCompany(ArrayWrapper::getValueByKeyOrDefault($experienceArray, 'company', $experience->getCompany()));
+            $experience->setJobTitle(ArrayWrapper::getValueByKeyOrDefault($experienceArray, 'title', $experience->getJobTitle()));
+
+            $start = ArrayWrapper::getValueByKeyOrDefault($experienceArray, 'start', $experience->getEmploymentStart());
+            $end = ArrayWrapper::getValueByKeyOrDefault($experienceArray, 'end', $experience->getEmploymentStart());
+
+            $start = strtotime($start."-01");
+            if ($end == '')
+                $end = 0;
+            else
+                $end = strtotime($end."-01");
+
+            $experience->setEmploymentStart($start);
+            $experience->setEmploymentEnd($end);
+
+            $ret[] = $experience;
+        }
+
+        return $ret;
     }
 
     protected function _getExperienceFromPost($prefix = '')
@@ -53,7 +103,14 @@ class CVLibraryAPIController extends ShortyModuleController implements SessionCo
         $experience->setCv($this->_request->getParameterOrDefault($prefix.'cv', $experience->getCv()));
         $experience->setDescription($this->_request->getParameterOrDefault($prefix.'description', $experience->getDescription()));
         $experience->setEmploymentStart(strtotime($this->_request->getParameterOrDefault($prefix.'start', date('Y-m', $experience->getEmploymentStart()))."-01"));
-        $experience->setEmploymentEnd(strtotime($this->_request->getParameterOrDefault($prefix.'end', date('Y-m', $experience->getEmploymentEnd()))."-01"));
+
+        $end = $this->_request->getParameterOrDefault($prefix.'end', date('Y-m', $experience->getEmploymentEnd()));
+        if ($end == '')
+            $end = 0;
+        else
+            $end = strtotime($end."-01");
+
+        $experience->setEmploymentEnd($end);
         $experience->setCompany($this->_request->getParameterOrDefault($prefix.'company', $experience->getCompany()));
         $experience->setJobTitle($this->_request->getParameterOrDefault($prefix.'title', $experience->getJobTitle()));
 
@@ -71,6 +128,40 @@ class CVLibraryAPIController extends ShortyModuleController implements SessionCo
             'level' => $qualification->getLevel(),
             'year' => $qualification->getYear(),
         );
+    }
+
+    /**
+     * @return Qualification[]
+     */
+    protected function _getMultipleQualificationsFromPost()
+    {
+        $ret = array();
+        $qualifications = $this->_request->getParameterOrDefault('qualifications', array());
+
+        foreach ($qualifications as $qualArray)
+        {
+            $id = ArrayWrapper::getValueByKeyOrDefault($qualArray, 'id', null);
+            $qualification = null;
+
+            if ($id != null)
+                $qualification = $this->_getModule()->getDatasource()->getQualification($id);
+
+            if ($qualification == null)
+            {
+                $qualification = new Qualification();
+                $this->_dependencies->applyDependencies($qualification);
+            }
+
+            $qualification->setCourse(ArrayWrapper::getValueByKeyOrDefault($qualArray, 'course', $qualification->getCourse()));
+            $qualification->setCv(ArrayWrapper::getValueByKeyOrDefault($qualArray, 'cv', $qualification->getCv()));
+            $qualification->setGrade(ArrayWrapper::getValueByKeyOrDefault($qualArray, 'grade', $qualification->getGrade()));
+            $qualification->setLevel(ArrayWrapper::getValueByKeyOrDefault($qualArray, 'level', $qualification->getLevel()));
+            $qualification->setYear(ArrayWrapper::getValueByKeyOrDefault($qualArray, 'year', $qualification->getYear()));
+
+            $ret[] = $qualification;
+        }
+
+        return $ret;
     }
 
     protected function _getQualificationFromPost($prefix = '')
@@ -157,6 +248,7 @@ class CVLibraryAPIController extends ShortyModuleController implements SessionCo
             '#deleteExperienceURI#' => $this->_router->getURI(new Route(__CLASS__, 'deleteExperience', array('#id#'))),
             '#deleteQualificationURI#' => $this->_router->getURI(new Route(__CLASS__, 'deleteQualification', array('#id#'))),
             '#downloadURI#' => $this->_router->getURI(new Route(CVLibraryController::CONTROLLER_NAME, 'PDF', array('#id#'))),
+            '#setQualificationsAndExperienceURI#' => $this->_router->getURI(new Route(__CLASS__, 'setQualificationsAndExperience', array('#cv#'))),
         );
 
         $data = file_get_contents(dirname(dirname(__FILE__)).'/data/apiclient.js');
@@ -164,6 +256,57 @@ class CVLibraryAPIController extends ShortyModuleController implements SessionCo
         $data = strtr($data, $replacements);
 
         return new PlainTextView($data, 'application/javascript');
+    }
+
+    public function setQualificationsAndExperience($cvID)
+    {
+        if (!$this->_request->isPost())
+            return new JSONView(array('status' => 'failed', 'message' => 'Not a post'));
+
+        $cv = $this->_getModule()->getDatasource()->getCV($cvID);
+        if ($cv == null || $cv->getUser() != $this->_session->getUserID())
+            return new JSONView(array('status' => 'failed', 'message' => 'Not your CV'));
+
+
+        $qualifications = $this->_getMultipleQualificationsFromPost();
+        $experience = $this->_getMultipleExperiencesFromPost();
+        $savedQualifications = array();
+        $savedExperiences = array();
+
+        $existingQualifications = $this->_getModule()->getDatasource()->getQualificationsByCV($cvID);
+        $existingExperiences = $this->_getModule()->getDatasource()->getWorkExperienceByCV($cvID);
+
+        foreach ($qualifications as $qual)
+        {
+            $qual->setCv($cvID);
+            $qual->save();
+            $savedQualifications[] = $qual->getId();
+        }
+
+        foreach ($experience as $exp)
+        {
+            $exp->setCv($cvID);
+            $exp->save();
+            $savedExperiences[] = $exp->getId();
+        }
+
+        foreach ($existingQualifications as $qual)
+        {
+            if (in_array($qual->getId(), $savedQualifications))
+                continue;
+
+            $this->_getModule()->getDatasource()->deleteQualification($qual->getId());
+        }
+
+        foreach ($existingExperiences as $exp)
+        {
+            if (in_array($exp->getId(), $savedExperiences))
+                continue;
+
+            $this->_getModule()->getDatasource()->deleteExperience($exp->getId());
+        }
+
+        return new JSONView(array('status' => 'ok'));
     }
 
     public function deleteCV($id)

@@ -26,6 +26,21 @@ class UsersDatasource extends ShortyDatasource
     }
 
     /**
+     * @param $email
+     * @return User
+     */
+    public function loadUserByEmail($email)
+    {
+        return array_shift($this->_datamapper->getObjectsWithCustomClauses(User::USER_OBJECT_NAME, array
+        (
+            'email LIKE :email'
+        ), array
+        (
+            'email' => strtr($email, array('%' => '\%', '_' => '\_', '\\' => '\\\\'))
+        )));
+    }
+
+    /**
      * @param $username
      * @return User
      */

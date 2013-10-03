@@ -2,18 +2,27 @@
 
 namespace CannyDain\ShortyModules\Users\Models;
 
+use CannyDain\Shorty\Consumers\ModuleConsumer;
 use CannyDain\Shorty\Models\ShortyGUIDModel;
+use CannyDain\Shorty\Modules\ModuleManager;
+use CannyDain\ShortyModules\Users\UsersModule;
 
-class User extends ShortyGUIDModel
+class User extends ShortyGUIDModel implements ModuleConsumer
 {
     const USER_OBJECT_NAME = __CLASS__;
 
+    const FIELD_EMAIL = 'email';
     const FIELD_USERNAME = 'username';
     const FIELD_PASSWORD = 'password';
 
     protected $_username = '';
     protected $_email = '';
     protected $_hashedPassword = '';
+
+    /**
+     * @var UsersModule
+     */
+    protected $_module;
 
     public function checkPassword($password)
     {
@@ -44,8 +53,22 @@ class User extends ShortyGUIDModel
         if ($this->_username == '')
             $errors[self::FIELD_USERNAME] = 'Username cannot be blank';
 
-        if ($this->_hashedPassword == '')
+        if ($this->_hashedPassword == $this->_hashPassword(''))
             $errors[self::FIELD_PASSWORD] = 'Password cannot be blank';
+
+        if ($this->_username != '')
+        {
+            $user = $this->_module->getDatasource()->loadUserByUsername($this->_username);
+            if ($user != null)
+                $errors[self::FIELD_USERNAME] = 'This username is already taken';
+        }
+
+        if ($this->_email != '')
+        {
+            $user = $this->_module->getDatasource()->loadUserByEmail($this->_email);
+            if ($user != null)
+                $errors[self::FIELD_EMAIL] = 'This email address is already in use';
+        }
 
         return $errors;
     }
@@ -83,5 +106,10 @@ class User extends ShortyGUIDModel
     public function getUsername()
     {
         return $this->_username;
+    }
+
+    public function consumeModuleManager(ModuleManager $manager)
+    {
+        $this->_module = $manager->getModuleByClassname(UsersModule::USERS_MODULE_CLASS);
     }
 }

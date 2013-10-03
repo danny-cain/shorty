@@ -47,6 +47,9 @@ if (window.shorty.apiClients.CVLibrary == undefined)
 {
 	window.shorty.apiClients.CVLibrary = function()
 	{
+		this.requestStartCallbacks = [];
+		this.requestFinishCallbacks = [];
+
 		this.endpoints =
 		{
 			'saveCV' : '#saveCVURI#',
@@ -59,7 +62,29 @@ if (window.shorty.apiClients.CVLibrary == undefined)
 			'deleteCV' : '#deleteCVURI#',
 			'deleteExperience' : '#deleteExperienceURI#',
 			'deleteQualification' : '#deleteQualificationURI#',
-			'download' : "#downloadURI#"
+			'download' : "#downloadURI#",
+			'bulkSaveQandE' : "#setQualificationsAndExperienceURI#"
+		};
+
+		this.bulkSaveQAndE = function(cvId, qualifications, experience, callback)
+		{
+			var uri =this.endpoints.bulkSaveQandE.replace("#cv#", cvId);
+			var data =
+			{
+				qualifications : qualifications,
+				experience : experience
+			};
+
+			this._post(uri, data, function(e)
+			{
+				if (e.status != "ok")
+					this._notifyFailure(e.message);
+				else
+					callback();
+			}, function()
+			{
+
+			});
 		};
 
 		this.getCVDownloadURI = function(id)
@@ -79,12 +104,14 @@ if (window.shorty.apiClients.CVLibrary == undefined)
 
 		this._notifyStartRequest = function(uri)
 		{
-
+			for (var i = 0; i < this.requestStartCallbacks.length; i ++)
+				this.requestStartCallbacks[i](uri);
 		};
 
 		this._notifyFinishRequest = function(uri)
 		{
-
+			for (var i = 0; i < this.requestFinishCallbacks.length; i ++)
+				this.requestFinishCallbacks[i](uri);
 		};
 
 		this._get = function(uri, data, successCallback, failCallback)

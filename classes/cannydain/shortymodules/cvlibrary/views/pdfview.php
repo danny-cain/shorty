@@ -128,7 +128,12 @@ class PDFView implements ViewInterface, UserConsumer
         $this->_writer->endBlockElement();
 
         $this->_writer->beginBlockElement();
-            $this->_writer->write(5, $this->_cv->getAddress());
+            $lines = explode("\n", $this->_cv->getAddress());
+            foreach ($lines as $line)
+            {
+                $this->_writer->writeText("\t\t\t\t\t\t\t\t\t\t\t\t\t\t".$line."\n");
+            }
+            //$this->_writer->write(5, $address);
         $this->_writer->endBlockElement();
     }
 
@@ -146,17 +151,21 @@ class PDFView implements ViewInterface, UserConsumer
 
     protected function _writeSectionTitle($title)
     {
-        $this->_writer->beginBlockElement(2);
+        $this->_writer->beginBlockElement(4);
         $this->_writer->Bold(true);
         $this->_writer->Underline(true);
         $this->_writer->SetFontSize(16);
         $this->_writer->writeText($title);
         $this->_writer->SetFont('', '', 12);
         $this->_writer->lineBreak(true);
+        $this->_writer->lineBreak(true);
     }
 
     protected function _writeQualifications()
     {
+        if (count($this->_qualifications) == 0)
+            return;
+
         $headers = array
         (
             'Course',
@@ -167,7 +176,7 @@ class PDFView implements ViewInterface, UserConsumer
 
         $widths = array
         (
-            40,40,40,40
+            '25%', '25%', '25%', '25%'
         );
 
         $rowData = array();
@@ -186,6 +195,9 @@ class PDFView implements ViewInterface, UserConsumer
 
     protected function _writeExperience()
     {
+        if (count($this->_experience) == 0)
+            return;
+
         $headers = array
         (
             'Title',
@@ -197,7 +209,7 @@ class PDFView implements ViewInterface, UserConsumer
 
         $widths = array
         (
-            35,35,35,35,35
+            '20%', '20%', '20%', '20%', '20%'
         );
 
         $rowData = array();

@@ -6,74 +6,31 @@ $file = dirname(__FILE__).'/test.pdf';
 if (file_exists($file))
     unlink($file);
 
-$writer = new \CannyDain\Lib\SimplePDFWriter\PDFWriter();
-$tableHelper = new \CannyDain\Lib\SimplePDFWriter\Helpers\PDFTableHelper();
+$writer = new \CannyDain\Lib\SimplePDFWriter\PDFWriter2();;
+$xmlWriter = new \CannyDain\Lib\SimplePDFWriter\Helpers\XMLToPDF($writer);
+$parser = new \CannyDain\Lib\Markup\XML\InMemoryXMLParser();
 
-$data = getData();
+$writer->SetFont('Arial', '', 12);
+$writer->AddPage();
 
-$writer->pageBreak();
-$writer->SetFont('Arial','', 12);
+$markup = getMarkup();
+$parser->parse($markup);
 
-$tableHelper->setWriter($writer);
-
-$writer->Bold();
-$writer->centredText('Danny\'s Test PDF');
-$writer->Bold(false);
-
-$writer->AddFont('josefinsans', '', 'josefinsans.php');
-$writer->AddFont('josefinsans', 'B', 'josefinsansb.php');
-$writer->AddFont('josefinsans', 'I', 'josefinsansi.php');
-$writer->AddFont('josefinsans', 'BI', 'josefinsansbi.php');
-
-foreach ($writer->FontFiles as $fontFile)
-{
-    $writer->Write(5, print_r($fontFile, true));
-    $writer->lineBreak();
-}
-
-foreach ($writer->CoreFonts as $font)
-{
-    $writer->SetFont($font);
-    $writer->Write(5, $font);
-    $writer->lineBreak();
-}
-
-$writer->SetFont('josefinsans', '');
-
-$writer->writeText('This is danny cain\'s test pdf ');
-$writer->writeLink('http://www.dannycain.com', '(dannycain.com) ');
-$writer->writeText('it is written using SimplePDFWriter, an extension to FPDF that allows me to easily create PDF\'s, even ones with tables!');
-
-$tableHelper->table($data['headers'], $data['columns'], $data['rows']);
+$xmlWriter->writeXML($parser->getRootNode());
 $writer->Output($file, 'F');
 
-function getData()
+function getMarkup()
 {
-    return array
-    (
-        'headers' => array
-        (
-            'Name',
-            'Age',
-            'Info'
-        ),
-        'columns' => array
-        (
-            30,
-            30,
-            60
-        ),
-        'rows' => array
-        (
-            array("Danny Cain", "29", "Senior Developer and Programmer Extraordinaire"),
-            array("Danny Cain", "29", "Senior Developer and Programmer Extraordinaire"),
-            array("Danny Cain", "29", "Senior Developer and Programmer Extraordinaire"),
-            array("Danny Cain", "29", "Senior Developer and Programmer Extraordinaire"),
-            array("Danny Cain", "29", "Senior Developer and Programmer Extraordinaire"),
-            array("Danny Cain", "29", "Senior Developer and Programmer Extraordinaire"),
-            array("Danny Cain", "29", "Senior Developer and Programmer Extraordinaire"),
-            array("Danny Cain", "29", "Senior Developer and Programmer Extraordinaire"),
-            array("Danny Cain", "29", "Senior Developer and Programmer Extraordinaire"),
-        )
-    );
+    return <<<HTML
+<html>
+    <style>
+        // currently unused
+    </style>
+
+    <body>
+        <p>This is my first paragraph, it has a lot of text in it because it is a very, very, very, very fucking long paragraph.</p>
+        <p>This is my second paragraph, and guess what? It contains <a href="http://www.dannycain.com">a link</a></p>
+    </body>
+</html>
+HTML;
 }

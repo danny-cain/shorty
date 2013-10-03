@@ -4,6 +4,7 @@ namespace CannyDain\Shorty\Bootstrap;
 
 use CannyDain\Lib\Database\Listeners\FileLoggerQueryListener;
 use CannyDain\Lib\Routing\Models\Route;
+use CannyDain\Shorty\Config\ShortyConfiguration;
 use CannyDain\ShortyModules\CVLibrary\CVLibraryModule;
 use CannyDain\ShortyModules\Comments\CommentsModule;
 use CannyDain\ShortyModules\Comments\EventHandlers\NewCommentEmailHandler;
@@ -58,7 +59,7 @@ class DevDependencyFactory extends BaseDependencyFactory
     {
         $database = parent::_factory_database();
 
-        $logFile = dirname(dirname(dirname(dirname(dirname(__FILE__))))).'/sql.log';
+        $logFile = $this->_config->getValue(ShortyConfiguration::KEY_PRIVATE_DATA_ROOT).'/sql.log';
 
         $database->registerQueryListener(new FileLoggerQueryListener($logFile, true));
 

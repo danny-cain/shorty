@@ -14,6 +14,20 @@ class PDFTableHelper
 
     public function table($columnHeaders = array(), $columnWidths = array(), $rowData = array())
     {
+        $colWidths = array();
+        $onePercentWidth = ($this->_writer->w - $this->_writer->lMargin - $this->_writer->rMargin) / 100;
+        foreach($columnWidths as $width)
+        {
+            if (substr($width, strlen($width) - 1) == '%')
+            {
+                $percentage = floatval(substr($width, 0, strlen($width) - 1));
+                $width = $onePercentWidth * $percentage;
+            }
+
+            $colWidths[] = $width;
+        }
+
+        $columnWidths = $colWidths;
         $this->_writer->beginBlockElement();
             $headers = $this->_convertTableDataToElements($columnWidths, array($columnHeaders));
             $content = $this->_convertTableDataToElements($columnWidths, $rowData);

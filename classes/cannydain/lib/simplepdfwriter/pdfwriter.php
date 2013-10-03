@@ -214,11 +214,17 @@ class PDFWriter extends FPDF
                 $lineBuffer = '';
             }
         }
-        if (trim($wordBuffer) != '')
-            $lineBuffer .= $wordBuffer;
 
-        if (trim($lineBuffer) != '')
-            $ret[] = trim($lineBuffer);
+        $tempLine = $lineBuffer.$wordBuffer;
+        if ($this->GetStringWidth($tempLine) > $containerWidth)
+        {
+            $ret[] = $lineBuffer;
+            $ret[] = $wordBuffer;
+        }
+        else
+        {
+            $ret[] = $lineBuffer.$wordBuffer;
+        }
 
         return $ret;
     }

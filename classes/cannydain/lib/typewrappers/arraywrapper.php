@@ -4,6 +4,14 @@ namespace CannyDain\Lib\TypeWrappers;
 
 class ArrayWrapper
 {
+    public static function getValueByKeyOrDefault($array, $key, $default = null)
+    {
+        if (!isset($array[$key]))
+            return $default;
+
+        return $array[$key];
+    }
+
     public static function getFieldFromDeepAssociativeArray($array, $keys = array())
     {
         $key = array_shift($keys);

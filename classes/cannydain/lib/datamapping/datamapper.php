@@ -34,10 +34,22 @@ class DataMapper implements DataMapperInterface
      */
     protected $_dependencyInjector;
 
+    protected $_prefix = '';
+
     public function __construct(DatabaseConnection $database, DependencyInjector $dependencyInjector)
     {
         $this->_database = $database;
         $this->_dependencyInjector = $dependencyInjector;
+    }
+
+    public function setPrefix($prefix)
+    {
+        $this->_prefix = $prefix;
+    }
+
+    public function getPrefix()
+    {
+        return $this->_prefix;
     }
 
     public function dataStructureCheckForObject($type)
@@ -136,6 +148,7 @@ class DataMapper implements DataMapperInterface
 
     public function addObjectDefinition(ObjectDefinition $def)
     {
+        $def->setTableName($this->_prefix.$def->getTableName());
         $this->_objects[$def->getClassName()] = $def;
     }
 

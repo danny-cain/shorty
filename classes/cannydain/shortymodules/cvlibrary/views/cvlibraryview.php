@@ -15,125 +15,146 @@ class CVLibraryView extends ShortyView
         echo <<<HTML
         <div style="display: none; " class="cvListPane">
             <div class="panelButtons">
-                <div class="addCV">Add CV</div>
+                <div class="button addCV">Add CV</div>
             </div>
 
             <div style="display: none;" class="cvViewTemplate">
                 <span class="name"></span>
-                <span class="edit">Edit</span>
-                <span class="delete">Delete</span>
-                <span class="download">Download</span>
+                <span class="button edit">Edit</span>
+                <span class="button delete">Delete</span>
+                <span class="button download">Download</span>
             </div>
         </div>
 
         <div style="display: none; " class="editCVPane">
             <div class="panelButtons">
-                <button class="saveCV">Save</button>
-                <button class="cancelCVEdit">Cancel</button>
+                <button class="button saveCV">Save</button>
+                <button class="button cancelCVEdit">Cancel</button>
             </div>
 
             <div>
-                Title: <input type="text" class="cvTitle" />
+                <div class="fieldCaption">Title:</div>
+                <div class="fieldInput"><input type="text" class="cvTitle" /></div>
             </div>
 
             <div>
-                Page Title: <input type="text" class="pageTitle" />
+                <div class="fieldCaption">Page Title:</div>
+                <div class="fieldInput"><input type="text" class="pageTitle" /></div>
             </div>
 
             <div>
-                Full Name: <input type="text" class="name" />
+                <div class="fieldCaption">Full Name:</div>
+                <div class="fieldInput"><input type="text" class="name" /></div>
             </div>
 
             <div>
-                Contact Number: <input type="text" class="number" />
+                <div class="fieldCaption">Contact Number:</div>
+                <div class="fieldInput"><input type="text" class="number" /></div>
             </div>
 
             <div>
-                Your Address:
-                <textarea style="width: 100%;" class="address"></textarea>
+                <div class="fieldCaption">Address:</div>
+                <div class="fieldInput"><textarea class="address" ></textarea></div>
             </div>
 
             <div>
-                Hobbies and Interests:
-                <textarea style="width: 100%;" class="hobbies"></textarea>
+                <div class="fieldCaption">Hobbies and Interests:</div>
+                <div class="fieldInput"><textarea class="hobbies" ></textarea></div>
             </div>
 
             <div>
-                About You:
-                <textarea style="width: 100%;" class="about"></textarea>
+                <div class="fieldCaption">About Yourself:</div>
+                <div class="fieldInput"><textarea class="about" ></textarea></div>
             </div>
 
-            <table class="qualifications">
-                <tr>
-                    <th>Course</th>
-                    <th>Grade</th>
-                    <th>Level</th>
-                    <th>Year</th>
-                </tr>
-                <tr style="display: none" class="editQualificationTemplate">
-                    <td><input type="text" class="course" /></td>
-                    <td><input type="text" class="grade" /></td>
-                    <td><input type="text" class="level" /></td>
-                    <td><input type="text" class="year" /></td>
-                </tr>
-            </table>
-            <div class="addQualification">Add Qualification</div>
+            <div>
+                <div class="fieldCaption">
+                    Qualifications:
+                    <div class="button addQualification">Add Qualification</div>
+                </div>
 
-            <table class="experience">
-                <tr>
-                    <th>Company</th>
-                    <th>From</th>
-                    <th>To</th>
-                    <th>Job Title</th>
-                    <th>Description</th>
-                </tr>
+                <div class="fieldInput">
+                    <table class="qualifications">
+                        <tr>
+                            <th class="courseName">Course</th>
+                            <th class="courseGrade">Grade</th>
+                            <th class="courseLevel">Level</th>
+                            <th class="courseYear">Year</th>
+                        </tr>
+                        <tr style="display: none" class="editQualificationTemplate">
+                            <td class="courseName"><input type="text" class="course" /></td>
+                            <td class="courseGrade"><input type="text" class="grade" /></td>
+                            <td class="courseLevel"><input type="text" class="level" /></td>
+                            <td class="courseYear"><input type="text" class="year" /></td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
 
-                <tr class="experienceTemplate" style="display: none;">
-                    <td><input type="text" class="company" /></td>
-                    <td>
-                        <select class="start_month">
-                            <option value="01">January</option>
-                            <option value="02">February</option>
-                            <option value="03">March</option>
-                            <option value="04">April</option>
-                            <option value="05">May</option>
-                            <option value="06">June</option>
-                            <option value="07">July</option>
-                            <option value="08">August</option>
-                            <option value="09">September</option>
-                            <option value="10">October</option>
-                            <option value="11">November</option>
-                            <option value="12">December</option>
-                        </select>
-                        <input type="text" class="start_year" />
-                    </td>
-                    <td>
-                        <select class="end_month">
-                            <option value="01">January</option>
-                            <option value="02">February</option>
-                            <option value="03">March</option>
-                            <option value="04">April</option>
-                            <option value="05">May</option>
-                            <option value="06">June</option>
-                            <option value="07">July</option>
-                            <option value="08">August</option>
-                            <option value="09">September</option>
-                            <option value="10">October</option>
-                            <option value="11">November</option>
-                            <option value="12">December</option>
-                        </select>
-                        <input type="text" class="end_year" />
-                    </td>
-                    <td><input type="text" class="title" /></td>
-                    <td><textarea class="description"></textarea></td>
-                </tr>
+            <div>
+                <div class="fieldCaption">
+                    Work Experience:
+                    <div class="button addExperience">Add Experience</div>
+                </div>
 
-            </table>
-            <div class="addExperience">Add Experience</div>
+                <div class="fieldInput">
+                    <table class="experience">
+                        <tr>
+                            <th class="experienceCompany">Company</th>
+                            <th class="experienceStart">From</th>
+                            <th class="experienceFinish">To</th>
+                            <th class="experienceTitle">Job Title</th>
+                            <th class="experienceDescription">Description</th>
+                        </tr>
+
+                        <tr class="experienceTemplate" style="display: none;">
+                            <td class="experienceCompany"><input type="text" class="company" /></td>
+                            <td class="experienceStart">
+                                <select class="start_month">
+                                    <option value="01">Jan</option>
+                                    <option value="02">Feb</option>
+                                    <option value="03">Mar</option>
+                                    <option value="04">Apr</option>
+                                    <option value="05">May</option>
+                                    <option value="06">Jun</option>
+                                    <option value="07">Jul</option>
+                                    <option value="08">Aug</option>
+                                    <option value="09">Sept</option>
+                                    <option value="10">Oct</option>
+                                    <option value="11">Nov</option>
+                                    <option value="12">Dec</option>
+                                </select>
+                                <input type="text" class="start_year" />
+                            </td>
+                            <td class="experienceFinish">
+                                <select class="end_month">
+                                    <option value=""></option>
+                                    <option value="01">Jan</option>
+                                    <option value="02">Feb</option>
+                                    <option value="03">Mar</option>
+                                    <option value="04">Apr</option>
+                                    <option value="05">May</option>
+                                    <option value="06">Jun</option>
+                                    <option value="07">Jul</option>
+                                    <option value="08">Aug</option>
+                                    <option value="09">Sept</option>
+                                    <option value="10">Oct</option>
+                                    <option value="11">Nov</option>
+                                    <option value="12">Dec</option>
+                                </select>
+                                <input type="text" class="end_year" />
+                            </td>
+                            <td class="experienceTitle"><input type="text" class="title" /></td>
+                            <td class="experienceDescription"><textarea class="description"></textarea></td>
+                        </tr>
+
+                    </table>
+                </div>
+            </div>
 
             <div class="panelButtons">
-                <button class="saveCV">Save</button>
-                <button class="cancelCVEdit">Cancel</button>
+                <button class="button saveCV">Save</button>
+                <button class="button cancelCVEdit">Cancel</button>
             </div>
         </div>
 HTML;
@@ -431,11 +452,16 @@ HTML;
 
 
         if (experience.end == "")
-            experience.end = "2013-01";
-
-        var endDate = experience.end.split("-");
-        this.fields.end_year.val(endDate[0]);
-        this.fields.end_month.val(endDate[1]);
+        {
+            this.fields.end_year.val("");
+            this.fields.end_month.val("");
+        }
+        else
+        {
+            var endDate = experience.end.split("-");
+            this.fields.end_year.val(endDate[0]);
+            this.fields.end_month.val(endDate[1]);
+        }
 
 
         this.show = function() { this.container.show(); };
@@ -448,6 +474,10 @@ HTML;
             var description = this.fields.description.val();
             var start = this.fields.start_year.val() + "-" + this.fields.start_month.val();
             var end = this.fields.end_year.val() + "-" + this.fields.end_month.val();
+
+            if (end == "-")
+                end = "";
+
             var company = this.fields.company.val();
             var title = this.fields.title.val();
 
@@ -473,45 +503,37 @@ HTML;
         {
             client.controller.deleteCV(id, function(succeeded)
             {
-                client.listCVs();
+                $.history.load("/");
             });
         };
 
         this.listView.addCVCallback = function()
         {
-            var cv = new window.shorty.models.CV(0, "");
-
-            client.editView.editCV(cv);
-            client.editView.show();
-            client.listView.hide();
+            $.history.load("/addCV");
         };
 
         this.editView.saveCallback = function(cv, qualifications, experience)
         {
             client.controller.saveCV(cv, function(succeeded, cv)
             {
-                for(var i = 0; i < qualifications.length; i ++)
+                client.controller.bulkSaveQAndE(cv.id, qualifications, experience, function()
                 {
-                    qualifications[i].cv = cv.id;
-                    client.controller.saveQualification(qualifications[i]);
-                }
-
-                for (i = 0; i < experience.length; i ++)
-                {
-                    experience[i].cv = cv.id;
-                    client.controller.saveWorkExperience(experience[i]);
-                }
-
-                client.listCVs();
+                    $.history.load("/");
+                });
             });
         };
 
         this.editView.cancelCallback = function()
         {
-            client.listCVs();
+            $.history.load("/");
         };
 
         this.listView.editCVCallback = function(id)
+        {
+            $.history.load("/editCV/" + id);
+        };
+
+        this.editCV = function(id)
         {
             client.controller.getCV(id, function(cv)
             {
@@ -527,8 +549,18 @@ HTML;
             });
         };
 
+        this.addCV = function()
+        {
+            var cv = new window.shorty.models.CV(0, "");
+
+            client.editView.editCV(cv, [], []);
+            client.editView.show();
+            client.listView.hide();
+        };
+
         this.listCVs = function()
         {
+            //$.history.load("");
             this.controller.listCVs(function(cvs)
             {
                 client.listView.display(cvs);
@@ -541,8 +573,56 @@ HTML;
     $(document).ready(function()
     {
         var client = new CVLibraryClient();
+        var contentWindow = $('.cvListPane').parent();
+        var requestCount = 0;
 
-        client.listCVs();
+        contentWindow.shortyLoadScreen(
+        {
+            content : "Loading"
+        });
+
+        client.controller.requestStartCallbacks.push(function(uri)
+        {
+            requestCount ++;
+
+            if (requestCount > 1)
+                return;
+
+            contentWindow.shortyLoadScreen(
+            {
+                method : "show"
+            });
+        });
+
+        client.controller.requestFinishCallbacks.push(function(uri)
+        {
+            requestCount --;
+            if (requestCount > 0)
+                return;
+
+            contentWindow.shortyLoadScreen(
+            {
+                method : "hide"
+            });
+        });
+
+        $.history.init(function(hash)
+        {
+            if (hash.substr(0, 8) == '/editCV/')
+            {
+                var id = parseInt(hash.substr(8));
+
+                client.editCV(id);
+            }
+            else if (hash == "/addCV")
+            {
+                client.addCV();
+            }
+            else
+            {
+                client.listCVs();
+            }
+        }, { unescape : ",/"});
     });
 </script>
 HTML;
