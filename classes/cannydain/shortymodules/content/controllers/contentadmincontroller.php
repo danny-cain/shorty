@@ -5,12 +5,18 @@ namespace CannyDain\ShortyModules\Content\Controllers;
 use CannyDain\Lib\Routing\Models\Route;
 use CannyDain\Lib\UI\Views\RedirectView;
 use CannyDain\Shorty\Controllers\ShortyModuleController;
+use CannyDain\Shorty\RouteAccessControl\RouteAccessControlInterface;
 use CannyDain\ShortyModules\Content\ContentModule;
 use CannyDain\ShortyModules\Content\Views\ContentAdminListView;
 use CannyDain\ShortyModules\Content\Views\EditContentView;
 
 class ContentAdminController extends ShortyModuleController
 {
+    public function getDefaultMinimumAccessLevel()
+    {
+        return RouteAccessControlInterface::ACCESS_LEVEL_ADMIN;
+    }
+
     public function Index()
     {
         $view = new ContentAdminListView();

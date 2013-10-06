@@ -6,6 +6,6 @@ require dirname(__FILE__) . '/initialise.php';
 header("Content-Type: application/javascript", true);
 
 $minifier = new \CannyDain\Lib\Performance\Minifier\MinifyJS();
-$code = $minifier->bundleDirectory(dirname(__FILE__).'/scripts/');
+$code = $minifier->bundleDirectory(dirname(__FILE__).'/scripts/', array('jquery.min.js'));
 
 echo $code;

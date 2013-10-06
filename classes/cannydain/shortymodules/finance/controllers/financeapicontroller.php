@@ -6,6 +6,7 @@ use CannyDain\Lib\Routing\Models\Route;
 use CannyDain\Lib\UI\Views\JSONView;
 use CannyDain\Lib\UI\Views\PlainTextView;
 use CannyDain\Shorty\Controllers\ShortyModuleController;
+use CannyDain\Shorty\RouteAccessControl\RouteAccessControlInterface;
 use CannyDain\ShortyModules\Finance\FinanceModule;
 use CannyDain\ShortyModules\Finance\Models\Account;
 use CannyDain\ShortyModules\Finance\Models\Transaction;
@@ -13,6 +14,11 @@ use CannyDain\ShortyModules\Finance\Models\Transaction;
 class FinanceAPIController extends ShortyModuleController
 {
     const CONTROLLER_NAME = __CLASS__;
+
+    public function getDefaultMinimumAccessLevel()
+    {
+        return RouteAccessControlInterface::ACCESS_LEVEL_MEMBER;
+    }
 
     protected function _convertAccountToAssociativeArray(Account $account)
     {

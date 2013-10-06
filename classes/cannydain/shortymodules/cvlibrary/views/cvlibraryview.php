@@ -13,6 +13,24 @@ class CVLibraryView extends ShortyView
         echo '<script type="text/javascript" src="'.$this->_scriptURI.'"></script>';
 
         echo <<<HTML
+        <div style="display: none; " class="cvSearchPane">
+            <div class="categories">
+
+            </div>
+            <div class="button search">Search</div>
+
+            <div class="results">
+                <div style="display: none;" class="cvSearchResultTemplate">
+                    <span class="title"></span>
+                    <span class="experience button">E</span>
+                    <span class="qualifications button">Q</span>
+                    <span class="personalStatement button">P</span>
+                    <span class="hobbies button">H</span>
+                    <span class="download button">Download</span>
+                </div>
+            </div>
+        </div>
+
         <div style="display: none; " class="cvListPane">
             <div class="panelButtons">
                 <div class="button addCV">Add CV</div>
@@ -30,6 +48,11 @@ class CVLibraryView extends ShortyView
             <div class="panelButtons">
                 <button class="button saveCV">Save</button>
                 <button class="button cancelCVEdit">Cancel</button>
+            </div>
+
+            <div>
+                <div class="fieldCaption">Categories:</div>
+                <div class="fieldInput categories"></div>
             </div>
 
             <div>
@@ -161,6 +184,165 @@ HTML;
 
         echo <<<HTML
 <script type="text/javascript">
+    function SearchCVsView(controller)
+    {
+        var view = this;
+        this.resultsViews = [];
+        this.controller = controller;
+        this.container = $('.cvSearchPane');
+        this.elements =
+        {
+            "categoryList" : $('.categories', this.container),
+            "searchButton" : $(".search", this.container),
+            "resultsPane" : $('.results', this.container),
+            "resultTemplate" : $('.cvSearchResultTemplate', this.container)
+        };
+
+        this.elements.searchButton.hide();
+        this.selectCVCallback = function(id) {};
+        this.downloadCVCallback = function(id) {};
+        this.searchCallback = function(categories, resultsCallback) {};
+        this.tooltip = $('<div style="display: none;" class="tooltip"></div>');
+
+        $('body').append(this.tooltip);
+
+        this.clear = function() {};
+        this.setCategories = function(categories)
+        {
+            this.elements.categoryList.empty();
+
+            for (var i = 0; i < categories.length; i ++)
+            {
+                var cat = $('<span class="category"><input class="categorySelect" type="checkbox" name="categories[]" value="' + categories[i].id + '" /> ' + categories[i].name + '</span>');
+                this.elements.categoryList.append(cat);
+            }
+
+            this.elements.searchButton.show();
+        };
+
+        this.show = function() { this.container.show(); };
+        this.hide = function() { this.container.hide(); };
+
+        this.elements.searchButton.click(function()
+        {
+            var categories = [];
+            $('.categorySelect:checked', view.elements.categoryList).each(function()
+            {
+                categories.push($(this).val());
+            });
+
+            view.searchCallback(categories, function(results)
+            {
+                view.displayResults(results);
+            });
+        });
+
+        this.displayResults = function(results)
+        {
+            for (var i = 0; i < view.resultsViews.length; i ++)
+            {
+                view.resultsViews[i].getContainer().remove();
+            }
+
+            for (i = 0; i < results.length; i ++)
+            {
+                var resultView = new CVSearchResultRowView(view, view.elements.resultTemplate, view.elements.resultsPane, results[i]);
+                view.elements.resultsPane.append(resultView.getContainer());
+                resultView.getContainer().show();
+
+                view.resultsViews.push(resultView);
+            }
+        };
+    }
+
+    function CVSearchResultRowView(searchView, template, parent, cv)
+    {
+        this.template = template;
+        this.parent = parent;
+        this.container = this.template.clone();
+        var view = this;
+
+        this.container.attr('data-id', cv.id);
+        this.container.removeClass('cvSearchResultTemplate').addClass('cvSearchResult');
+        $('.title', this.container).text(cv.name);
+        $('.title', this.container).attr('data-cvid', cv.id);
+        $('.title', this.container).on('click', function()
+        {
+            searchView.selectCVCallback($(this).attr('data-cvid'));
+        });
+
+        $('.download', this.container).attr('data-cvid', cv.id);
+        $('.download', this.container).on('click', function()
+        {
+            searchView.downloadCVCallback($(this).attr('data-cvid'));
+        });
+
+        $('.personalStatement', this.container).attr('data-content', cv.about);
+        $('.hobbies', this.container).attr('data-content', cv.hobbies);
+        $('.qualifications', this.container).attr('data-content', '<em>Loading</em>');
+        $('.experience', this.container).attr('data-content', '<em>Loading</em>');
+
+        $('.personalStatement, .hobbies, .qualifications, .experience', this.container).hover(function()
+        {
+            var hotspot = $(this);
+            var position = hotspot.position();
+
+            searchView.tooltip.css('position', 'absolute');
+            searchView.tooltip.css('left', position.left);
+            searchView.tooltip.css('top', position.top + hotspot.outerHeight());
+            searchView.tooltip.html(hotspot.attr('data-content'));
+            searchView.tooltip.show();
+        }, function()
+        {
+            searchView.tooltip.hide();
+        });
+
+        searchView.controller.getQualifications(cv.id, function(results)
+        {
+            var element = $('.qualifications', view.container);
+            var table = $('<table></table>');
+
+            for (var i = 0; i < results.length; i ++)
+            {
+                var row = $('<tr></tr>');
+
+                row.append('<th>' + results[i].course + '</th>');
+                row.append('<td>' + results[i].level + '</td>');
+                row.append('<td>' + results[i].grade + '</td>');
+                table.append(row);
+            }
+
+            element.attr('data-content', "<table>"+ table.html() + "</table>");
+        });
+
+        searchView.controller.getWorkExperience(cv.id, function(results)
+        {
+            var element = $('.experience', view.container);
+            var table = $('<table></table>');
+
+            for (var i = 0; i < results.length; i ++)
+            {
+                var row = $('<tr></tr>');
+                var end = results[i].end;
+
+                if (end == '')
+                    end = 'current';
+
+                var dates = results[i].start + " to " + end;
+
+                row.append('<th>' + results[i].title + '</th>');
+                row.append('<td>' + results[i].company + '</td>');
+                row.append('<td>' + dates + '</td>');
+                table.append(row);
+            }
+
+            element.attr('data-content', "<table>" + table.html() + "</table>");
+        });
+
+        this.getContainer = function() { return this.container;}
+
+    }
+
     function ListCVsView()
     {
         this.cvRows = [];
@@ -253,16 +435,27 @@ HTML;
             name : $('.name', this.container),
             number : $('.number', this.container),
             address : $('.address', this.container),
-            cancelEdit : $('.cancelCVEdit', this.container)
+            cancelEdit : $('.cancelCVEdit', this.container),
+            categoryContainer : $('.categories', this.container)
         };
         this.addQualificationButton = $('.addQualification', this.container);
         this.addExperienceButton = $('.addExperience', this.container);
 
-        this.saveCallback = function(cv, qualifications) {};
+        this.saveCallback = function(cv, qualifications, experience, categories) {};
         this.cancelCallback = function() {};
         this.currentCV = {};
 
         var view = this;
+
+        this.setCategories = function(categories)
+        {
+            for (var i = 0; i < categories.length; i ++)
+            {
+                var cat = $('<span class="category"><input type="checkbox" name="categories[]" value="' + categories[i].id + '" /> ' + categories[i].name + '</span>');
+
+                this.fields.categoryContainer.append(cat);
+            }
+        };
 
         this.clear = function()
         {
@@ -277,7 +470,7 @@ HTML;
             this.qualificationViews = [];
         };
 
-        this.editCV = function(cv, qualifications, experience)
+        this.editCV = function(cv, qualifications, experience, categories)
         {
             this.clear();
 
@@ -296,7 +489,13 @@ HTML;
             var qualificationContainer = $('.qualifications', this.container);
             var qualificationTemplate = $('.editQualificationTemplate', qualificationContainer);
 
-            for (var i = 0; i < qualifications.length; i ++)
+            $('[type="checkbox"]', this.fields.categoryContainer).removeAttr('checked');
+            for (var i = 0; i < categories.length; i ++)
+            {
+                $('[value="' + categories[i] + '"]', this.fields.categoryContainer).attr('checked', 'checked');
+            }
+
+            for (i = 0; i < qualifications.length; i ++)
             {
                 var view = new EditQualificationView(qualifications[i], qualificationTemplate, qualificationContainer);
 
@@ -357,7 +556,13 @@ HTML;
             view.currentCV.number = view.fields.number.val();
             view.currentCV.address = view.fields.address.val();
 
-            view.saveCallback(view.currentCV, qualifications, experience);
+            var categories = [];
+            $('[type="checkbox"]:checked', view.fields.categoryContainer).each(function()
+            {
+                categories.push($(this).val());
+            });
+
+            view.saveCallback(view.currentCV, qualifications, experience, categories);
         });
 
         this.fields.cancelEdit.on('click', function()
@@ -487,11 +692,39 @@ HTML;
 
     function CVLibraryClient()
     {
-        this.listView = new ListCVsView();
         this.controller = new window.shorty.apiClients.CVLibrary();
+
+        this.listView = new ListCVsView();
         this.editView = new EditCVView();
+        this.searchView = new SearchCVsView(this.controller);
 
         var client = this;
+
+        this.controller.getCategories(function(categories)
+        {
+            client.editView.setCategories(categories);
+        });
+
+        client.controller.getCategories(function(categories)
+        {
+            client.searchView.setCategories(categories);
+        });
+
+        this.searchView.searchCallback = function(categories, resultsCallback)
+        {
+            client.controller.searchByCategories(categories, resultsCallback);
+        };
+
+        this.searchView.downloadCVCallback = function(id)
+        {
+            var uri = client.controller.getCVDownloadURI(id);
+            window.open(uri);
+        };
+
+        this.searchView.selectCVCallback = function(id)
+        {
+            console.log("selected " + id);
+        };
 
         this.listView.downloadCVCallback = function(id)
         {
@@ -512,13 +745,16 @@ HTML;
             $.history.load("/addCV");
         };
 
-        this.editView.saveCallback = function(cv, qualifications, experience)
+        this.editView.saveCallback = function(cv, qualifications, experience, categories)
         {
             client.controller.saveCV(cv, function(succeeded, cv)
             {
                 client.controller.bulkSaveQAndE(cv.id, qualifications, experience, function()
                 {
-                    $.history.load("/");
+                    client.controller.setCategoriesForCV(cv.id, categories, function()
+                    {
+                        $.history.load("/");
+                    });
                 });
             });
         };
@@ -541,21 +777,32 @@ HTML;
                 {
                     client.controller.getWorkExperience(id, function(experience)
                     {
-                        client.editView.editCV(cv, qualifications, experience);
-                        client.editView.show();
-                        client.listView.hide();
+                        client.controller.getCategoriesForCV(id, function(categories)
+                        {
+                            client.editView.editCV(cv, qualifications, experience, categories);
+                            client.editView.show();
+                            client.listView.hide();
+                        });
                     });
                 });
             });
+        };
+
+        this.search = function()
+        {
+            client.editView.hide();
+            client.listView.hide();
+            client.searchView.show();
         };
 
         this.addCV = function()
         {
             var cv = new window.shorty.models.CV(0, "");
 
-            client.editView.editCV(cv, [], []);
+            client.editView.editCV(cv, [], [], []);
             client.editView.show();
             client.listView.hide();
+            client.searchView.hide();
         };
 
         this.listCVs = function()
@@ -566,6 +813,7 @@ HTML;
                 client.listView.display(cvs);
                 client.listView.show();
                 client.editView.hide();
+                client.searchView.hide();
             });
         };
     }
@@ -617,6 +865,10 @@ HTML;
             else if (hash == "/addCV")
             {
                 client.addCV();
+            }
+            else if (hash == "/search")
+            {
+                client.search();
             }
             else
             {

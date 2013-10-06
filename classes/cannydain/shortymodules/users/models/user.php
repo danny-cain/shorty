@@ -18,11 +18,16 @@ class User extends ShortyGUIDModel implements ModuleConsumer
     protected $_username = '';
     protected $_email = '';
     protected $_hashedPassword = '';
+    protected $_isAdmin = false;
 
     /**
      * @var UsersModule
      */
     protected $_module;
+
+    public function isAdmin() { return $this->_isAdmin; }
+    public function grantAdminRights() { $this->_isAdmin = true; }
+    public function revokeAdminRights() { $this->_isAdmin = false; }
 
     public function checkPassword($password)
     {

@@ -23,6 +23,12 @@ class UsersModuleUserHelper extends UserHelper implements ModuleConsumer
         return $user->getGUID();
     }
 
+    public function isAdmin($userID)
+    {
+        $user = $this->_userModule->getDatasource()->loadUser($userID);
+
+        return $user->isAdmin();
+    }
 
     /**
      * @param $term

@@ -11,6 +11,7 @@ use CannyDain\Shorty\Controllers\ShortyModuleController;
 use CannyDain\Shorty\Helpers\SessionHelper;
 use CannyDain\ShortyModules\CVLibrary\CVLibraryModule;
 use CannyDain\ShortyModules\CVLibrary\Models\CV;
+use CannyDain\ShortyModules\CVLibrary\Models\CVCategory;
 use CannyDain\ShortyModules\CVLibrary\Models\Experience;
 use CannyDain\ShortyModules\CVLibrary\Models\Qualification;
 
@@ -22,6 +23,50 @@ class CVLibraryAPIController extends ShortyModuleController implements SessionCo
      * @var SessionHelper
      */
     protected $_session;
+
+    public function getCategoriesForCV($cv)
+    {
+        $ret = array();
+        foreach ($this->_getModule()->getDatasource()->getCategoriesForCV($cv) as $cat)
+        {
+            $ret[] = $cat->getId();
+        }
+
+        return new JSONView($ret);
+    }
+
+    public function setCategoriesForCV($cvID)
+    {
+        $cv = $this->_getModule()->getDatasource()->getCV($cvID);
+        if ($cv == null || $cv->getId() != $this->_session->getUserID())
+            return new JSONView(array('status' => 'failed', 'message' => 'Not your CV'));
+
+        $categories = $this->_request->getParameter('categories');
+
+        $this->_getModule()->getDatasource()->setCategoriesForCV($cvID, $categories);
+        return new JSONView(array('status' => 'ok'));
+    }
+
+    public function searchByCategories()
+    {
+        $categories = func_get_args();
+        if (count($categories) == 0)
+            $categories = $this->_request->getParameter('categories');
+
+        if (!is_array($categories))
+            $categories = array($categories);
+
+        /**
+         * @var CV[] $cvs
+         */
+        $cvs = $this->_getModule()->getDatasource()->getCVsByCategories($categories);
+
+        $ret = array();
+        foreach ($cvs as $cv)
+            $ret[] = $this->_convertCVToAssociativeArray($cv);
+
+        return new JSONView($ret);
+    }
 
     protected function _convertExperienceToAssociativeArray(Experience $experience)
     {
@@ -249,6 +294,10 @@ class CVLibraryAPIController extends ShortyModuleController implements SessionCo
             '#deleteQualificationURI#' => $this->_router->getURI(new Route(__CLASS__, 'deleteQualification', array('#id#'))),
             '#downloadURI#' => $this->_router->getURI(new Route(CVLibraryController::CONTROLLER_NAME, 'PDF', array('#id#'))),
             '#setQualificationsAndExperienceURI#' => $this->_router->getURI(new Route(__CLASS__, 'setQualificationsAndExperience', array('#cv#'))),
+            '#searchByCategoriesURI#' => $this->_router->getURI(new Route(__CLASS__, 'searchByCategories')),
+            '#getCategoriesURI#' => $this->_router->getURI(new Route(__CLASS__, 'getAllCategories')),
+            '#getCategoriesForCVURI#' => $this->_router->getURI(new Route(__CLASS__, 'getCategoriesForCV', array('#id#'))),
+            '#setCategoriesForCVURI#' => $this->_router->getURI(new Route(__CLASS__, 'setCategoriesForCV', array('#id#'))),
         );
 
         $data = file_get_contents(dirname(dirname(__FILE__)).'/data/apiclient.js');
@@ -256,6 +305,21 @@ class CVLibraryAPIController extends ShortyModuleController implements SessionCo
         $data = strtr($data, $replacements);
 
         return new PlainTextView($data, 'application/javascript');
+    }
+
+    public function getAllCategories()
+    {
+        $ret = array();
+
+        /**
+         * @var CVCategory $cat
+         */
+        foreach ($this->_getModule()->getDatasource()->getAllCategories() as $cat)
+        {
+            $ret[] = array('id' => $cat->getId(), 'name' => $cat->getName());
+        }
+
+        return new JSONView($ret);
     }
 
     public function setQualificationsAndExperience($cvID)
@@ -435,9 +499,6 @@ class CVLibraryAPIController extends ShortyModuleController implements SessionCo
     {
         $cv = $this->_getModule()->getDatasource()->getCV($cvID);
 
-        if ($cv->getUser() != $this->_session->getUserID())
-            return new JSONView(array());
-
         $ret = array();
 
         foreach ($this->_getModule()->getDatasource()->getQualificationsByCV($cvID) as $qual)
@@ -450,11 +511,6 @@ class CVLibraryAPIController extends ShortyModuleController implements SessionCo
 
     public function getWorkExperience($cvID)
     {
-        $cv = $this->_getModule()->getDatasource()->getCV($cvID);
-
-        if ($cv->getUser() != $this->_session->getUserID())
-            return new JSONView(array());
-
         $ret = array();
 
         foreach ($this->_getModule()->getDatasource()->getWorkExperienceByCV($cvID) as $experience)

@@ -41,6 +41,12 @@ if (window.shorty.models.CV == undefined)
 		this.level = level;
 		this.year = year;
 	};
+
+	window.shorty.models.CVCategory = function(id, name)
+	{
+		this.id = id;
+		this.name = name;
+	};
 }
 
 if (window.shorty.apiClients.CVLibrary == undefined)
@@ -63,7 +69,59 @@ if (window.shorty.apiClients.CVLibrary == undefined)
 			'deleteExperience' : '#deleteExperienceURI#',
 			'deleteQualification' : '#deleteQualificationURI#',
 			'download' : "#downloadURI#",
-			'bulkSaveQandE' : "#setQualificationsAndExperienceURI#"
+			'bulkSaveQandE' : "#setQualificationsAndExperienceURI#",
+			"categorySearch" : "#searchByCategoriesURI#",
+			"getCategories" : "#getCategoriesURI#",
+			"getCategoriesForCV" : "#getCategoriesForCVURI#",
+            "setCategoriesForCV" : "#setCategoriesForCVURI#"
+		};
+
+		this.setCategoriesForCV = function(cv, categories, callback)
+		{
+			var uri = this.endpoints.setCategoriesForCV.replace("#id#", cv);
+
+			this._post(uri,
+			{
+				categories : categories
+			}, function(data)
+			{
+				console.log("Setting categories for " + cv);
+				console.log(categories);
+				callback();
+			});
+		};
+
+		this.getCategoriesForCV = function(cv, callback)
+		{
+			var uri = this.endpoints.getCategoriesForCV.replace("#id#", cv);
+
+			this._get(uri, {}, function(data)
+			{
+				callback(data);
+			});
+		};
+
+		this.getCategories = function(callback)
+		{
+			var uri = this.endpoints.getCategories;
+
+			this._get(uri, {}, function(data)
+			{
+				callback(data);
+			});
+		};
+
+		this.searchByCategories = function(categories, callback)
+		{
+			var uri = this.endpoints.categorySearch;
+
+			this._get(uri,
+			{
+				"categories" : categories
+			}, function(data)
+			{
+				callback(data);
+			});
 		};
 
 		this.bulkSaveQAndE = function(cvId, qualifications, experience, callback)

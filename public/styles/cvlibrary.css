@@ -32,3 +32,18 @@
 	text-align: center;
 	margin: 5px 0;
 }
+
+.tooltip
+{
+	width: 20%;
+	background-color: #E0EE91;
+	border-radius: 10px;
+	padding: 10px;
+	border: 1px solid black;
+}
+
+.qualifications.button,
+.experience.button
+{
+	width: auto;
+}

@@ -2,10 +2,32 @@
 
 namespace CannyDain\Shorty\RouteAccessControl;
 
+use CannyDain\Lib\Execution\Interfaces\ControllerFactoryInterface;
 use CannyDain\Lib\Routing\Models\Route;
+use CannyDain\Shorty\Consumers\ControllerFactoryConsumer;
+use CannyDain\Shorty\Consumers\SessionConsumer;
+use CannyDain\Shorty\Consumers\UserConsumer;
+use CannyDain\Shorty\Controllers\ShortyController;
+use CannyDain\Shorty\Helpers\SessionHelper;
+use CannyDain\Shorty\Helpers\UserHelper;
 
-class DefaultRouteAccessControl implements RouteAccessControlInterface
+class DefaultRouteAccessControl implements RouteAccessControlInterface, ControllerFactoryConsumer, SessionConsumer, UserConsumer
 {
+    /**
+     * @var ControllerFactoryInterface
+     */
+    protected $_controllerFactory;
+
+    /**
+     * @var UserHelper
+     */
+    protected $_users;
+
+    /**
+     * @var SessionHelper
+     */
+    protected $_session;
+
     protected $_defaultAccess = false;
 
     /**
@@ -30,9 +52,37 @@ class DefaultRouteAccessControl implements RouteAccessControlInterface
         $this->_deniedRoutes = $_deniedRoutes;
     }
 
+    protected function _getDefaultAccess(Route $route)
+    {
+        $controller = $this->_controllerFactory->getControllerByName($route->getController());
+        if ($controller == null || !($controller instanceof ShortyController))
+            return $this->_defaultAccess;
+
+        /**
+         * @var ShortyController $controller
+         */
+        switch($controller->getDefaultMinimumAccessLevel())
+        {
+            case self::ACCESS_LEVEL_PUBLIC:
+                return true;
+                break;
+            case self::ACCESS_LEVEL_MEMBER:
+                return $this->_session->getUserID() > 0;
+                break;
+            case self::ACCESS_LEVEL_ADMIN:
+                if ($this->_session->getUserID() == 0)
+                    return false;
+
+                return $this->_users->isAdmin($this->_session->getUserID());
+                break;
+        }
+
+        return false;
+    }
+
     public function canAccessRoute(Route $route)
     {
-        $access = $this->_defaultAccess;
+        $access = $this->_getDefaultAccess($route);
         $strongestGrant = $this->_getStrongestRouteMatchFromArray($route, $this->_grantedRoutes);
         $strongestDeny = $this->_getStrongestRouteMatchFromArray($route, $this->_deniedRoutes);
 
@@ -81,5 +131,20 @@ class DefaultRouteAccessControl implements RouteAccessControlInterface
         }
 
         return $matchingRoute;
+    }
+
+    public function consumeControllerFactory(ControllerFactoryInterface $controllerFactory)
+    {
+        $this->_controllerFactory = $controllerFactory;
+    }
+
+    public function consumeSession(SessionHelper $session)
+    {
+        $this->_session = $session;
+    }
+
+    public function consumerUserHelper(UserHelper $helper)
+    {
+        $this->_users = $helper;
     }
 }

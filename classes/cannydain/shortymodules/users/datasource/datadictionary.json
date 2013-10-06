@@ -32,7 +32,13 @@
                 "type":"varchar",
                 "property":"_hashedPassword",
                 "size":200
-            }
+            },
+			{
+				"column" : "admin",
+				"type" : "int",
+				"property" : "_isAdmin",
+				"size" : 1
+			}
         ]
     },
 	{

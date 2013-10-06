@@ -9,6 +9,7 @@ use CannyDain\Shorty\Consumers\UserConsumer;
 use CannyDain\Shorty\Controllers\ShortyModuleController;
 use CannyDain\Shorty\Helpers\Models\UserInfo;
 use CannyDain\Shorty\Helpers\UserHelper;
+use CannyDain\Shorty\RouteAccessControl\RouteAccessControlInterface;
 use CannyDain\ShortyModules\ObjectPermissions\ObjectPermissionsModule;
 use CannyDain\ShortyModules\Users\Models\User;
 
@@ -25,6 +26,11 @@ class PermissionsAPIController extends ShortyModuleController implements GUIDCon
      * @var UserHelper
      */
     protected $_users;
+
+    public function getDefaultMinimumAccessLevel()
+    {
+        return RouteAccessControlInterface::ACCESS_LEVEL_ADMIN;
+    }
 
     public function saveObjectPermissions()
     {

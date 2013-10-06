@@ -7,6 +7,7 @@ use CannyDain\Lib\UI\Views\RedirectView;
 use CannyDain\Shorty\Consumers\SessionConsumer;
 use CannyDain\Shorty\Controllers\ShortyModuleController;
 use CannyDain\Shorty\Helpers\SessionHelper;
+use CannyDain\Shorty\RouteAccessControl\RouteAccessControlInterface;
 use CannyDain\ShortyModules\Todo\Models\TodoEntry;
 use CannyDain\ShortyModules\Todo\TodoModule;
 use CannyDain\ShortyModules\Todo\Views\TodoEditView;
@@ -18,6 +19,11 @@ class TodoController extends ShortyModuleController implements SessionConsumer
      * @var SessionHelper
      */
     protected $_session;
+
+    public function getDefaultMinimumAccessLevel()
+    {
+        return RouteAccessControlInterface::ACCESS_LEVEL_MEMBER;
+    }
 
     protected function _getUserID()
     {

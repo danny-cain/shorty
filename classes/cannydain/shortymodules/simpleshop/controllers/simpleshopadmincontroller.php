@@ -5,6 +5,7 @@ namespace CannyDain\ShortyModules\SimpleShop\Controllers;
 use CannyDain\Lib\Routing\Models\Route;
 use CannyDain\Lib\UI\Views\RedirectView;
 use CannyDain\Shorty\Controllers\ShortyModuleController;
+use CannyDain\Shorty\RouteAccessControl\RouteAccessControlInterface;
 use CannyDain\ShortyModules\SimpleShop\SimpleShopModule;
 use CannyDain\ShortyModules\SimpleShop\Views\EditProductView;
 use CannyDain\ShortyModules\SimpleShop\Views\ProductAdminListView;
@@ -13,6 +14,11 @@ use CannyDain\ShortyModules\SimpleShop\Views\SingleProductView;
 
 class SimpleShopAdminController extends ShortyModuleController
 {
+    public function getDefaultMinimumAccessLevel()
+    {
+        return RouteAccessControlInterface::ACCESS_LEVEL_ADMIN;
+    }
+
     public function Index()
     {
         $view = new ProductAdminListView();

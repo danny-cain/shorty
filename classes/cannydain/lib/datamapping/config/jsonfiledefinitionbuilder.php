@@ -5,6 +5,8 @@ namespace CannyDain\Lib\DataMapping\Config;
 use CannyDain\Lib\DataMapping\DataMapper;
 use CannyDain\Lib\DataMapping\DataMapperInterface;
 use CannyDain\Lib\DataMapping\Models\FieldDefinition;
+use CannyDain\Lib\DataMapping\Models\LinkDefinition;
+use CannyDain\Lib\DataMapping\Models\LinkFieldDefinition;
 use CannyDain\Lib\DataMapping\Models\ObjectDefinition;
 
 class JSONFileDefinitionBuilder
@@ -22,7 +24,35 @@ class JSONFileDefinitionBuilder
             return;
 
         foreach ($data as $objectDef)
-            $this->_processObjectDef($objectDef, $datamapper);
+        {
+            if (isset($objectDef['type']))
+                $type = $objectDef['type'];
+            else
+                $type = 'object';
+
+            switch($type)
+            {
+                case 'object':
+                    $this->_processObjectDef($objectDef, $datamapper);
+                    break;
+                case 'link':
+                    $this->_processLinkDefinition($objectDef, $datamapper);
+                    break;
+            }
+
+        }
+    }
+
+    protected function _processLinkDefinition($definition, DataMapperInterface $datamapper)
+    {
+        $def = new LinkDefinition($definition['object1'], $definition['object2'], $definition['table']);
+
+        foreach ($definition['fields'] as $field)
+        {
+            $def->addLinkField(new LinkFieldDefinition($field['object'], $field['objectField'], $field['linkName']));
+        }
+
+        $datamapper->addLinkDefinition($def);
     }
 
     protected function _processObjectDef($def, DataMapperInterface $datamapper)

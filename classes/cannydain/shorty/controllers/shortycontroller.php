@@ -9,6 +9,7 @@ use CannyDain\Lib\Web\Server\Request;
 use CannyDain\Shorty\Consumers\DependencyConsumer;
 use CannyDain\Shorty\Consumers\RequestConsumer;
 use CannyDain\Shorty\Consumers\RouterConsumer;
+use CannyDain\Shorty\RouteAccessControl\RouteAccessControlInterface;
 
 abstract class ShortyController implements ControllerInterface, DependencyConsumer, RouterConsumer, RequestConsumer
 {
@@ -32,6 +33,11 @@ abstract class ShortyController implements ControllerInterface, DependencyConsum
      * (missing dependency etc)
      */
     public function _validateState() {}
+
+    public function getDefaultMinimumAccessLevel()
+    {
+        return RouteAccessControlInterface::ACCESS_LEVEL_PUBLIC;
+    }
 
     public function consumeDependencies(DependencyInjector $dependencies)
     {

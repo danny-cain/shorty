@@ -2,13 +2,14 @@
 
 namespace CannyDain\Shorty\Views\Errors;
 
+use CannyDain\Lib\Exceptions\CannyLibException;
 use CannyDain\Lib\UI\Views\HTMLView;
-use CannyDain\Shorty\Exceptions\RoutingException;
+use Exception;
 
-class PageNotFoundView extends HTMLView
+class ExceptionView extends HTMLView
 {
     /**
-     * @var RoutingException
+     * @var Exception
      */
     protected $_exception;
 
@@ -19,9 +20,13 @@ class PageNotFoundView extends HTMLView
 
     public function display()
     {
-        echo '<h1>Not Found</h1>';
-        echo '<p>The page you requested could not be found.</p>';
-        $this->_exception->display();
+        echo '<h1>Internal Server Error</h1>';
+        echo '<p>An error has occured with the server.</p>';
+
+        if ($this->_exception instanceof CannyLibException)
+            $this->_exception->display();
+        else
+            echo '<p>'.$this->_exception->getMessage().'</p>';
     }
 
     public function setException($route)

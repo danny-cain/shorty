@@ -3,6 +3,7 @@
 namespace CannyDain\Lib\DataMapping;
 
 use CannyDain\Lib\DataMapping\Interfaces\ModelFactoryInterface;
+use CannyDain\Lib\DataMapping\Models\LinkDefinition;
 use CannyDain\Lib\DataMapping\Models\ObjectDefinition;
 
 interface DataMapperInterface
@@ -17,7 +18,13 @@ interface DataMapperInterface
 
     public function addObjectDefinition(ObjectDefinition $def);
 
+    public function addLinkDefinition(LinkDefinition $def);
+
     public function countObjects($className);
+
+    public function getLinkTableName($object1, $object2);
+
+    public function getObjectsViaLink($selectObject, $linkObject, $clauses = array(), $parameters = array(), $orderBy = '', $startAt = 0, $maxRecords = null, $extraSelects = array());
 
     public function getObjectsWithCustomClauses($className, $clauses = array(), $parameters = array(), $orderBy = '', $startAt = 0, $maxRecords = null, $extraSelects = array());
 

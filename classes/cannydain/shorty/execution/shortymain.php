@@ -4,6 +4,8 @@ namespace CannyDain\Shorty\Execution;
 
 use CannyDain\Lib\DependencyInjection\DependencyInjector;
 use CannyDain\Lib\Exceptions\CannyLibException;
+use CannyDain\Lib\Execution\Exceptions\NotAuthorisedException;
+use CannyDain\Lib\Execution\Interfaces\ControllerFactoryInterface;
 use CannyDain\Lib\Execution\Interfaces\ControllerInterface;
 use CannyDain\Lib\Routing\Interfaces\RouterInterface;
 use CannyDain\Lib\UI\Response\Layouts\NullLayout;
@@ -11,22 +13,37 @@ use CannyDain\Lib\UI\Views\HTMLView;
 use CannyDain\Lib\UI\Views\ViewInterface;
 use CannyDain\Lib\Web\Server\Request;
 use CannyDain\Shorty\Config\ShortyConfiguration;
+use CannyDain\Shorty\Consumers\ControllerFactoryConsumer;
 use CannyDain\Shorty\Consumers\DependencyConsumer;
 use CannyDain\Shorty\Consumers\RequestConsumer;
+use CannyDain\Shorty\Consumers\RouteAccessControlConsumer;
 use CannyDain\Shorty\Consumers\RouterConsumer;
 use CannyDain\Shorty\Controllers\ShortyController;
 use CannyDain\Shorty\Exceptions\ControllerNotFoundException;
 use CannyDain\Shorty\Exceptions\MethodNotFoundException;
 use CannyDain\Shorty\Exceptions\RoutingException;
+use CannyDain\Shorty\RouteAccessControl\RouteAccessControlInterface;
 use CannyDain\Shorty\UI\ShortyLayout;
+use CannyDain\Shorty\Views\Errors\ExceptionView;
+use CannyDain\Shorty\Views\Errors\NotAuthorisedView;
 use CannyDain\Shorty\Views\Errors\PageNotFoundView;
 
-class ShortyMain implements AppMainInterface, DependencyConsumer, RouterConsumer, RequestConsumer
+class ShortyMain implements AppMainInterface, DependencyConsumer, RouterConsumer, RequestConsumer, ControllerFactoryConsumer, RouteAccessControlConsumer
 {
     /**
      * @var DependencyInjector
      */
     protected $_dependencies;
+
+    /**
+     * @var RouteAccessControlInterface
+     */
+    protected $_routeAccessControl;
+
+    /**
+     * @var ControllerFactoryInterface
+     */
+    protected $_controllerFactory;
 
     /**
      * @var RouterInterface
@@ -44,22 +61,22 @@ class ShortyMain implements AppMainInterface, DependencyConsumer, RouterConsumer
         {
             $view = $this->_executeRouteAndGetView();
         }
-        catch(CannyLibException $e)
+        catch(RoutingException $e)
         {
-            $e->display();
-            $view = new PageNotFoundView();
+            $view = new PageNotFoundView($e);
+        }
+        catch(NotAuthorisedException $e)
+        {
+            $view = new NotAuthorisedView($e);
         }
         catch(\Exception $e)
         {
-            echo $e->getMessage();
-            echo '<div>'.get_class($e).'</div>';
-            
-            echo '<pre>'.print_r($e->getTraceAsString(), true).'</pre>';
-            $view = new PageNotFoundView();
+            $view = new ExceptionView($e);
         }
 
         $layout = $this->_layoutFactory($view);
 
+        $this->_dependencies->applyDependencies($view);
         $this->_dependencies->applyDependencies($layout);
 
         $layout->display($view);
@@ -86,10 +103,11 @@ class ShortyMain implements AppMainInterface, DependencyConsumer, RouterConsumer
     }
 
     /**
-     * @return ViewInterface
-     * @throws \CannyDain\Shorty\Exceptions\ControllerNotFoundException
-     * @throws \CannyDain\Shorty\Exceptions\RoutingException
+     *
+     * @throws \CannyDain\Lib\Execution\Exceptions\NotAuthorisedException
      * @throws \CannyDain\Shorty\Exceptions\MethodNotFoundException
+     * @throws \CannyDain\Shorty\Exceptions\RoutingException
+     * @return ViewInterface
      */
     protected function _executeRouteAndGetView()
     {
@@ -104,13 +122,10 @@ class ShortyMain implements AppMainInterface, DependencyConsumer, RouterConsumer
         if ($route->getMethod() == '')
             $route->setMethod('Index');
 
-        if (!class_exists($route->getController()))
-            throw new ControllerNotFoundException($route);
+        if (!$this->_routeAccessControl->canAccessRoute($route))
+            throw new NotAuthorisedException();
 
-        $controllerClass = $route->getController();
-        $controller = new $controllerClass();
-        if (!$controller instanceof ControllerInterface)
-            throw new ControllerNotFoundException($route);
+        $controller = $this->_controllerFactory->getControllerByName($route->getController());
 
         if (!method_exists($controller, $route->getMethod()))
             throw new MethodNotFoundException($route);
@@ -123,8 +138,6 @@ class ShortyMain implements AppMainInterface, DependencyConsumer, RouterConsumer
         $view = call_user_func_array(array($controller, $route->getMethod()), $route->getParams());
         if (!$view instanceof ViewInterface)
             throw new RoutingException($route, 'Invalid View');
-
-        $this->_dependencies->applyDependencies($view);
 
         return $view;
     }
@@ -142,5 +155,15 @@ class ShortyMain implements AppMainInterface, DependencyConsumer, RouterConsumer
     public function consumeRequest(Request $request)
     {
         $this->_request = $request;
+    }
+
+    public function consumeControllerFactory(ControllerFactoryInterface $controllerFactory)
+    {
+        $this->_controllerFactory = $controllerFactory;
+    }
+
+    public function consumeRouteAccessControl(RouteAccessControlInterface $rac)
+    {
+        $this->_routeAccessControl = $rac;
     }
 }

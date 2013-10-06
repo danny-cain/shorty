@@ -17,6 +17,11 @@ class UserHelper
         return array();
     }
 
+    public function isAdmin($userID)
+    {
+        return false;
+    }
+
     /**
      * @param $term
      * @return UserInfo[]

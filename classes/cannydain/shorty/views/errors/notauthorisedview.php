@@ -2,13 +2,13 @@
 
 namespace CannyDain\Shorty\Views\Errors;
 
+use CannyDain\Lib\Execution\Exceptions\NotAuthorisedException;
 use CannyDain\Lib\UI\Views\HTMLView;
-use CannyDain\Shorty\Exceptions\RoutingException;
 
-class PageNotFoundView extends HTMLView
+class NotAuthorisedView extends HTMLView
 {
     /**
-     * @var RoutingException
+     * @var NotAuthorisedException
      */
     protected $_exception;
 
@@ -19,8 +19,8 @@ class PageNotFoundView extends HTMLView
 
     public function display()
     {
-        echo '<h1>Not Found</h1>';
-        echo '<p>The page you requested could not be found.</p>';
+        echo '<h1>Denied</h1>';
+        echo '<p>You do not have permission to access this page.</p>';
         $this->_exception->display();
     }
 

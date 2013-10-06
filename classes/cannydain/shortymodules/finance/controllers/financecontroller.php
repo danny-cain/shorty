@@ -4,11 +4,17 @@ namespace CannyDain\ShortyModules\Finance\Controllers;
 
 use CannyDain\Lib\Routing\Models\Route;
 use CannyDain\Shorty\Controllers\ShortyModuleController;
+use CannyDain\Shorty\RouteAccessControl\RouteAccessControlInterface;
 use CannyDain\ShortyModules\Finance\FinanceModule;
 use CannyDain\ShortyModules\Finance\Views\FinanceClientView;
 
 class FinanceController extends ShortyModuleController
 {
+    public function getDefaultMinimumAccessLevel()
+    {
+        return RouteAccessControlInterface::ACCESS_LEVEL_MEMBER;
+    }
+
     public function Index()
     {
         $route = new Route(FinanceAPIController::CONTROLLER_NAME, 'jsClient');

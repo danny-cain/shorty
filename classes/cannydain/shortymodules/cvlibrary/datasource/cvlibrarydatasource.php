@@ -3,19 +3,83 @@
 namespace CannyDain\ShortyModules\CVLibrary\Datasource;
 
 use CannyDain\Lib\DataMapping\Config\JSONFileDefinitionBuilder;
+use CannyDain\Lib\Database\Interfaces\DatabaseConnection;
+use CannyDain\Shorty\Consumers\DatabaseConsumer;
 use CannyDain\Shorty\Consumers\SessionConsumer;
 use CannyDain\Shorty\DataAccess\ShortyDatasource;
 use CannyDain\Shorty\Helpers\SessionHelper;
 use CannyDain\ShortyModules\CVLibrary\Models\CV;
+use CannyDain\ShortyModules\CVLibrary\Models\CVCategory;
 use CannyDain\ShortyModules\CVLibrary\Models\Experience;
 use CannyDain\ShortyModules\CVLibrary\Models\Qualification;
 
-class CVLibraryDatasource extends ShortyDatasource implements SessionConsumer
+class CVLibraryDatasource extends ShortyDatasource implements SessionConsumer, DatabaseConsumer
 {
+    /**
+     * @var DatabaseConnection
+     */
+    protected $_database;
+
     /**
      * @var SessionHelper
      */
     protected $_session;
+
+    /**
+     * @param $categories
+     * @return CV[]
+     */
+    public function getCVsByCategories($categories = array())
+    {
+        $params = array();
+        $placeholders = array();
+
+        foreach ($categories as $index => $cat)
+        {
+            $placeholders[] = ':cat'.$index;
+            $params['cat'.$index] = $cat;
+        }
+        return $this->_datamapper->getObjectsViaLink(CV::OBJECT_TYPE_CV, CVCategory::OBJECT_TYPE_CV_CATEGORY, array
+        (
+            'link.id IN ('.implode(', ', $placeholders).')'
+        ), $params);
+    }
+
+    public function setCategoriesForCV($cvID, $categories)
+    {
+        // todo - this needs to be moved to the datamapper class
+        //        (functionality needs proper planning first)
+
+        $table = $this->_datamapper->getLinkTableName(CV::OBJECT_TYPE_CV, CVCategory::OBJECT_TYPE_CV_CATEGORY);
+        $sql = 'DELETE FROM `'.$table.'` WHERE cvID = :cv';
+        $this->_database->statement($sql, array('cv' => $cvID));
+
+        foreach ($categories as $cat)
+        {
+            $sql = 'INSERT INTO `'.$table.'` SET cvID = :cv, catID = :cat';
+            $this->_database->statement($sql, array('cv' => $cvID, 'cat' => $cat));
+        }
+    }
+
+    /**
+     * @param $cvID
+     * @return CVCategory[]
+     */
+    public function getCategoriesForCV($cvID)
+    {
+        return $this->_datamapper->getObjectsViaLink(CVCategory::OBJECT_TYPE_CV_CATEGORY, CV::OBJECT_TYPE_CV, array
+        (
+            'link.id = :cv'
+        ), array('cv' => $cvID));
+    }
+
+    /**
+     * @return CVCategory
+     */
+    public function getAllCategories()
+    {
+        return $this->_datamapper->getObjectsWithCustomClauses(CVCategory::OBJECT_TYPE_CV_CATEGORY, array(), array(), 'name ASC');
+    }
 
     public function deleteQualification($id)
     {
@@ -125,5 +189,10 @@ class CVLibraryDatasource extends ShortyDatasource implements SessionConsumer
     public function consumeSession(SessionHelper $session)
     {
         $this->_session = $session;
+    }
+
+    public function consumeDatabase(DatabaseConnection $database)
+    {
+        $this->_database = $database;
     }
 }

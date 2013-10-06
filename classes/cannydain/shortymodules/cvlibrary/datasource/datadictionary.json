@@ -178,5 +178,48 @@
                 "size":11
             }
         ]
-    }
+    },
+	{
+        "class":"CannyDain\\ShortyModules\\CVLibrary\\Models\\CVCategory",
+        "auto_id":"id",
+        "id":
+        [
+            "id"
+        ],
+        "table":"cvcategories",
+        "fields":
+        [
+            {
+                "column":"id",
+                "type":"int",
+                "property":"_id",
+                "size":11
+            },
+			{
+                "column":"name",
+                "type":"varchar",
+                "property":"_name",
+                "size":100
+            }
+        ]
+    },
+	{
+		"type" : "link",
+		"object1" : "CannyDain\\ShortyModules\\CVLibrary\\Models\\CV",
+		"object2":"CannyDain\\ShortyModules\\CVLibrary\\Models\\CVCategory",
+		"table" : "cvCategoryLink",
+		"fields" :
+		[
+			{
+				"object" : "1",
+				"objectField" : "id",
+				"linkName" : "cvID"
+			},
+			{
+				"object" : "2",
+				"objectField" : "id",
+				"linkName" : "catID"
+			}
+		]
+	}
 ]

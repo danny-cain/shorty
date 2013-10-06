@@ -8,6 +8,7 @@ use CannyDain\Lib\DataMapping\Exceptions\InvalidIDException;
 use CannyDain\Lib\DataMapping\Exceptions\ObjectDefinitionNotFoundException;
 use CannyDain\Lib\DataMapping\Interfaces\ModelFactoryInterface;
 use CannyDain\Lib\DataMapping\Models\FieldDefinition;
+use CannyDain\Lib\DataMapping\Models\LinkDefinition;
 use CannyDain\Lib\DataMapping\Models\ObjectDefinition;
 use CannyDain\Lib\Database\Interfaces\DatabaseConnection;
 use CannyDain\Lib\DependencyInjection\DependencyInjector;
@@ -18,6 +19,11 @@ class DataMapper implements DataMapperInterface
      * @var ObjectDefinition[]
      */
     protected $_objects = array();
+
+    /**
+     * @var LinkDefinition[]
+     */
+    protected $_linkDefinitions = array();
 
     /**
      * @var ModelFactoryInterface[]
@@ -75,11 +81,34 @@ class DataMapper implements DataMapperInterface
             if (count($diff) > 0)
                 $this->_applyDiff($object, $diff);
         }
+
+        foreach ($this->_linkDefinitions as $link)
+        {
+            if (!$this->_doesTableExist($link->getLinkTableName()))
+                $this->_installObject($this->_createObjectDefForLink($link));
+
+            $diff = $this->_extractDataStructureDiffForLink($link);
+            if (count($diff) > 0)
+                $this->_applyLinkDiff($link, $diff);
+        }
     }
 
     public function registerModelFactory($objectName, ModelFactoryInterface $factory)
     {
         $this->_modelFactories[$objectName] = $factory;
+    }
+
+    /**
+     * @param LinkDefinition $link
+     * @param DiffEntry[] $diff
+     */
+    protected function _applyLinkDiff(LinkDefinition $link, $diff)
+    {
+        $object = $this->_createObjectDefForLink($link);
+        $diffBuilder = new DataDiff();
+        $diffBuilder->setDatabase($this->_database);
+
+        $diffBuilder->applyDiff($object, $diff);
     }
 
     /**
@@ -92,6 +121,53 @@ class DataMapper implements DataMapperInterface
         $diffBuilder->setDatabase($this->_database);
 
         $diffBuilder->applyDiff($object, $diff);
+    }
+
+    protected function _createObjectDefForLink(LinkDefinition $linkDefinition)
+    {
+        $object1 = $this->_getDefinitionFromClassName($linkDefinition->getObject1());
+        $object2 = $this->_getDefinitionFromClassName($linkDefinition->getObject2());
+
+        $objectDef = new ObjectDefinition();
+        $objectDef->setTableName($linkDefinition->getLinkTableName());
+
+        $idFields = array();
+        $fieldDefinitions = array();
+        foreach ($linkDefinition->getFields() as $field)
+        {
+            $newField = new FieldDefinition();
+            switch($field->getObject())
+            {
+                case 1:
+                    $fieldDef = $object1->getFieldDefByColumnName($field->getObjectField());
+                    break;
+                case 2:
+                    $fieldDef = $object2->getFieldDefByColumnName($field->getObjectField());
+                    break;
+                default:
+                    throw new \Exception("Unrecognised Object");
+            }
+
+            $newField->setDataType($fieldDef->getDataType());
+            $newField->setSize($fieldDef->getSize());
+            $newField->setColumnName($field->getLinkName());
+            $idFields[] = $field->getLinkName();
+
+            $fieldDefinitions[] = $newField;
+        }
+        $objectDef->setFields($fieldDefinitions);
+        $objectDef->setIdFields($idFields);
+
+        return $objectDef;
+    }
+
+    protected function _extractDataStructureDiffForLink(LinkDefinition $link)
+    {
+        $objectDef = $this->_createObjectDefForLink($link);
+        $diffBuilder = new DataDiff();
+        $diffBuilder->setDatabase($this->_database);
+
+        return $diffBuilder->generateDiff($objectDef);
     }
 
     /**
@@ -146,10 +222,24 @@ class DataMapper implements DataMapperInterface
         $this->_database->statement($sql);
     }
 
+    // todo - move these to database (getActualTableName method)
     public function addObjectDefinition(ObjectDefinition $def)
     {
         $def->setTableName($this->_prefix.$def->getTableName());
         $this->_objects[$def->getClassName()] = $def;
+    }
+
+    public function addLinkDefinition(LinkDefinition $def)
+    {
+        $def->setLinkTableName($this->_prefix.$def->getLinkTableName());
+        $this->_linkDefinitions[] = $def;
+    }
+
+    public function getLinkTableName($object1, $object2)
+    {
+        $linkDef = $this->_getLinkDefinitionFromObjects($object1, $object2);
+
+        return $linkDef->getLinkTableName();
     }
 
     public function countObjects($className)
@@ -162,6 +252,76 @@ class DataMapper implements DataMapperInterface
         $row = $result->nextRow_IndexedArray();
 
         return $row[0];
+    }
+
+    public function getObjectsViaLink($selectObject, $linkObject, $clauses = array(), $parameters = array(), $orderBy = '', $startAt = 0, $maxRecords = null, $extraSelects = array())
+    {
+        $def = $this->_getLinkDefinitionFromObjects($selectObject, $linkObject);
+        $o1Def = $this->_getDefinitionFromClassName($selectObject);
+        $o2Def = $this->_getDefinitionFromClassName($linkObject);
+        if ($def == null)
+            throw new ObjectDefinitionNotFoundException($selectObject.'/'.$linkObject);
+
+        if ($o1Def == null)
+            throw new ObjectDefinitionNotFoundException($selectObject);
+
+        if ($o2Def == null)
+            throw new ObjectDefinitionNotFoundException($linkObject);
+
+        $joinObjectClauses = array();
+        $joinLinkClauses = array();
+
+        $selectObjectIndex = $def->getObject1() == $selectObject ? 1 : 2;
+
+        foreach ($def->getFields() as $field)
+        {
+            if ($field->getObject() == $selectObjectIndex)
+            {
+                $joinObjectClauses[] = 'object.'.$field->getObjectField().' = join.'.$field->getLinkName();
+            }
+            elseif ($field->getObject() != $selectObjectIndex)
+            {
+                $joinLinkClauses[] = 'link.'.$field->getObjectField().' = join.'.$field->getLinkName();
+            }
+        }
+
+        $joins = array
+        (
+            'INNER JOIN `'.$def->getLinkTableName().'` `join` ON '.implode(' AND ', $joinObjectClauses),
+            'INNER JOIN `'.$o2Def->getTableName().'` `link` ON '.implode(' AND ', $joinLinkClauses),
+        );
+
+        $where = '';
+        if (count($clauses) > 0)
+            $where = 'WHERE '.implode(' AND ', $clauses);
+
+        $orderByClause = '';
+        if ($orderBy != '')
+            $orderByClause = 'ORDER BY '.$orderBy;
+
+        $limitClause = '';
+        if ($startAt > 0)
+            $limitClause = 'LIMIT '.$startAt.', '.$maxRecords;
+        elseif ($maxRecords != null)
+            $limitClause = 'LIMIT '.$maxRecords;
+
+        $extraSelects[] = '`object`.*';
+
+        $sql = 'SELECT DISTINCT '.implode(', ', $extraSelects).'
+                FROM `'.$o1Def->getTableName().'` `object`
+                '.implode("\r\n", $joins).'
+                '.$where.'
+                '.$orderByClause.'
+                '.$limitClause;
+
+        $results = $this->_database->query($sql, $parameters);
+
+        $ret = array();
+
+        while ($row = $results->nextRow_AssociativeArray())
+            $ret[] = $this->_createObjectFromRow($o1Def, $row);
+
+        return $ret;
     }
 
     public function getObjectsWithCustomClauses($className, $clauses = array(), $parameters = array(), $orderBy = '', $startAt = 0, $maxRecords = null, $extraSelects = array())
@@ -518,6 +678,20 @@ class DataMapper implements DataMapperInterface
         foreach ($this->_objects as $def)
         {
             if ($def->getClassName() == $object)
+                return $def;
+        }
+
+        return null;
+    }
+
+    protected function _getLinkDefinitionFromObjects($object1, $object2)
+    {
+        foreach ($this->_linkDefinitions as $def)
+        {
+            if ($def->getObject1() == $object1 && $def->getObject2() == $object2)
+                return $def;
+
+            if ($def->getObject1() == $object2 && $def->getObject2() == $object1)
                 return $def;
         }
 
