@@ -9,6 +9,7 @@ use CannyDain\ShortyModules\Tasks\DataLayer\TasksDataLayer;
 class TasksModule extends ShortyModule
 {
     const TASKS_MODULE_NAME = __CLASS__;
+    const CONTROLLER_NAMESPACE = '\\CannyDain\\ShortyModules\\Tasks\\Controllers';
 
     /**
      * Allows the module to perform any initialisation actions (i.e. loading in session etc)

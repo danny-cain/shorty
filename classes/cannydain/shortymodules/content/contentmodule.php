@@ -9,6 +9,7 @@ use CannyDain\ShortyModules\Content\Datasource\ContentDatasource;
 class ContentModule extends ShortyModule
 {
     const CONTENT_MODULE_CLASS = __CLASS__;
+    const CONTROLLER_NAMESPACE = '\\CannyDain\\ShortyModules\\Content\\Controllers';
 
     /**
      * @return ContentDatasource

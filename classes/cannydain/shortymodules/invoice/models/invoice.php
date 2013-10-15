@@ -14,6 +14,17 @@ class Invoice extends ShortyModel implements InvoiceInterface
     protected $_discountCode = '';
     protected $_deliveryAddress = 0;
     protected $_billingAddress = 0;
+    protected $_datePlaced = 0;
+
+    public function setDatePlaced($datePlaced)
+    {
+        $this->_datePlaced = $datePlaced;
+    }
+
+    public function getDatePlaced()
+    {
+        return $this->_datePlaced;
+    }
 
     /**
      * @return array

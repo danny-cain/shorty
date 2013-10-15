@@ -19,6 +19,27 @@ class BasketHelper implements BasketHelperInterface
         return array();
     }
 
+    public function setBillingAddress($id)
+    {
+
+    }
+
+    public function getBillingAddress()
+    {
+        return 0;
+    }
+
+    public function setDeliveryAddress($id)
+    {
+
+    }
+
+    public function getDeliveryAddress()
+    {
+        return 0;
+    }
+
+
     /**
      * @param string $guid
      * @return int

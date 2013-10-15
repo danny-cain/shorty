@@ -12,6 +12,9 @@ interface InvoiceItemInterface
     public function setStatus($status);
     public function getStatus();
 
+    public function getLineTotal();
+    public function getLineTotalWithoutDiscount();
+
     public function setLineDiscountInPence($discount);
     public function getLineDiscountInPence();
 

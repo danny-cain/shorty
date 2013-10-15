@@ -1,0 +1,12 @@
+.articleNavigation
+{
+	padding: 5px 0;
+	text-align: center;
+}
+
+.articleNavigation > a
+{
+	display: inline-block;
+	padding: 0 5px;
+	vertical-align: top;
+}

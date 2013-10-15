@@ -48,6 +48,35 @@ class ShortyBasketHelper implements BasketHelperInterface, ModuleConsumer, Sessi
         $this->_viewBasketRoute = $route;
     }
 
+    public function setBillingAddress($id)
+    {
+        $basket = $this->_datasource->loadBasket($this->getBasketID());
+
+        $basket->setBillingAddress($id);
+        $basket->save();
+    }
+
+    public function getBillingAddress()
+    {
+        $basket = $this->_datasource->loadBasket($this->getBasketID());
+
+        return $basket->getBillingAddress();
+    }
+
+    public function setDeliveryAddress($id)
+    {
+        $basket = $this->_datasource->loadBasket($this->getBasketID());
+
+        $basket->setDeliveryAddress($id);
+        $basket->save();
+    }
+
+    public function getDeliveryAddress()
+    {
+        $basket = $this->_datasource->loadBasket($this->getBasketID());
+
+        return $basket->getDeliveryAddress();
+    }
 
     /**
      * @return array

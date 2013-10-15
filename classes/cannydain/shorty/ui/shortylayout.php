@@ -63,6 +63,33 @@ HTML;
     protected function _outputScripts()
     {
         echo '<script type="application/javascript" src="/scripts.php"></script>';
+        echo '<script type="application/javascript" src="/unbundledscripts/tinymce/tinymce.min.js"></script>';
+        echo '<script type="application/javascript" src="/unbundledscripts/filemanager/filemanager.js"></script>';
+        echo '<script type="application/javascript" src="/unbundledscripts/filemanager/tinymce.filemanager.js"></script>';
+
+        echo <<<HTML
+<script type="text/javascript">
+    tinymce.init(
+    {
+        selector : "textarea.richText",
+        plugins :
+        [
+            "advlist autolink lists link image charmap print preview hr anchor pagebreak",
+            "searchreplace wordcount visualblocks visualchars code fullscreen",
+            "insertdatetime media nonbreaking save table contextmenu directionality",
+            "emoticons template paste textcolor fileManager"
+        ],
+        toolbar1 : "insertfile undo redo | styleselect | bold italic | alignleft aligncnter alignright alignjustify | bullist numlist outdent indent | link image",
+        toolbar2 : "print preview media | forecolor backcolor emoticons",
+        convert_urls : false,
+        fileManager :
+        {
+            //view : filemanagerView
+        }
+    });
+</script>
+HTML;
+
     }
 
     protected function _displayPageHead()
@@ -114,6 +141,7 @@ HTML;
             '/cannydain-shortymodules-content-controllers-contentadmincontroller' => 'Content Admin',
             '/cannydain-shortymodules-tasks-controllers-taskscontroller' => 'Project Management',
             '/cannydain-shortymodules-cvlibrary-controllers-cvlibrarycontroller' => 'CV Library',
+            '/cannydain-shortymodules-stories-controllers-storycontroller' => 'Stories',
         );
 
         echo '<nav id="mainNav">';

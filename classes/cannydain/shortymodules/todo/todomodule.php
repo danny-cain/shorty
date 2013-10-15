@@ -9,6 +9,7 @@ use CannyDain\ShortyModules\Todo\Datasource\TodoDatasource;
 class TodoModule extends ShortyModule
 {
     const TODO_MODULE_CLASS = __CLASS__;
+    const CONTROLLER_NAMESPACE = '\\CannyDain\\ShortyModules\\Todo\\Controllers';
 
     /**
      * @return TodoDatasource

@@ -26,6 +26,16 @@ class InvoiceItem extends ShortyModel implements InvoiceItemInterface
         return array();
     }
 
+    public function getLineTotal()
+    {
+        return $this->getLineTotalWithoutDiscount() - $this->getLineDiscountInPence();
+    }
+
+    public function getLineTotalWithoutDiscount()
+    {
+        return ($this->getQuantity() * $this->getPricePerUnitInPence());
+    }
+
     public function setInvoiceID($invoiceID)
     {
         $this->_invoiceID = $invoiceID;

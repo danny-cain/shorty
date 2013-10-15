@@ -11,6 +11,7 @@ use CannyDain\ShortyModules\SimpleShop\DataLayer\SimpleShopDatalayer;
 class InvoiceModule extends ShortyModule
 {
     const INVOICE_MODULE_NAME = __CLASS__;
+    const CONTROLLER_NAMESPACE = '\\CannyDain\\ShortyModules\\Invoice\\Controllers';
 
     /**
      * Allows the module to perform any initialisation actions (i.e. loading in session etc)

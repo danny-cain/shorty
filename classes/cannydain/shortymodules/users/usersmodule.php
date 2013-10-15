@@ -10,7 +10,7 @@ use CannyDain\ShortyModules\Users\Datasource\UsersDatasource;
 class UsersModule extends ShortyModule
 {
     const USERS_MODULE_CLASS = __CLASS__;
-
+    const CONTROLLER_NAMESPACE = '\\CannyDain\\ShortyModules\\Users\\Controllers';
     /**
      * @var Route
      */

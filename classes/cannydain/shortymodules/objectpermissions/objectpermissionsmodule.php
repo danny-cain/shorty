@@ -9,6 +9,7 @@ use CannyDain\ShortyModules\ObjectPermissions\Datasource\ObjectPermissionsDataso
 class ObjectPermissionsModule extends ShortyModule
 {
     const OBJECT_PERMISSIONS_MODULE_NAME = __CLASS__;
+    const CONTROLLER_NAMESPACE = '\\CannyDain\\ShortyModules\\ObjectPermissions\\Controllers';
 
     /**
      * Allows the module to perform any initialisation actions (i.e. loading in session etc)

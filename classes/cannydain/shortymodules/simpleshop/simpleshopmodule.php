@@ -10,6 +10,7 @@ use CannyDain\ShortyModules\SimpleShop\DataLayer\SimpleShopDatalayer;
 class SimpleShopModule extends ShortyModule
 {
     const SIMPLE_SHOP_MODULE_NAME = __CLASS__;
+    const CONTROLLER_NAMESPACE = '\\CannyDain\\ShortyModules\\SimpleShop\\Controllers';
 
     /**
      * Allows the module to perform any initialisation actions (i.e. loading in session etc)

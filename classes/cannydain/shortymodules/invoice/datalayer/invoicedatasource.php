@@ -16,10 +16,41 @@ class InvoiceDatasource extends ShortyDatasource
         $builder->readFile($file, $this->_datamapper);
     }
 
+    /**
+     * @param $status
+     * @param null $start
+     * @param null $end
+     * @return Invoice
+     */
+    public function getFilteredInvoices($status, $start = null, $end = null)
+    {
+        $clauses = array();
+        $params = array();
+
+        $clauses[] = 'status = :status';
+        $params['status'] = $status;
+
+        if ($start != null)
+        {
+            $clauses[] = 'datePlaced >= :start';
+            $params['start'] = date('Y-m-d', $start);
+        }
+
+        if ($end != null)
+        {
+            $clauses[]= 'datePlaced <= :end';
+            $params['end'] = date('Y-m-d', $end);
+        }
+
+        return $this->_datamapper->getObjectsWithCustomClauses(Invoice::OBJECT_TYPE_INVOICE, $clauses, $params, 'datePlaced DESC');
+    }
+
     public function createInvoice()
     {
         $invoice = new Invoice();
         $this->_dependencies->applyDependencies($invoice);
+
+        $invoice->setDatePlaced(time());
 
         return $invoice;
     }

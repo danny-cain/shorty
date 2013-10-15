@@ -38,7 +38,13 @@
                 "type":"int",
                 "property":"_billingAddress",
                 "size":11
-            }
+            },
+			{
+				"column" : "datePlaced",
+				"type" : "datetime",
+				"property" : "_datePlaced",
+				"size" : 0
+			}
         ]
     },
 	{

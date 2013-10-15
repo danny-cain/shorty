@@ -6,6 +6,12 @@ use CannyDain\Lib\Routing\Models\Route;
 
 interface BasketHelperInterface
 {
+    public function setBillingAddress($id);
+    public function getBillingAddress();
+
+    public function setDeliveryAddress($id);
+    public function getDeliveryAddress();
+
     /**
      * @return array
      */

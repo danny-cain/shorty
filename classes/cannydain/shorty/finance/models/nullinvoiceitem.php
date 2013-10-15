@@ -11,6 +11,17 @@ class NullInvoiceItem implements InvoiceItemInterface
         // TODO: Implement setStatus() method.
     }
 
+    public function getLineTotal()
+    {
+        // TODO: Implement getLineTotal() method.
+    }
+
+    public function getLineTotalWithoutDiscount()
+    {
+        // TODO: Implement getLineTotal() method.
+    }
+
+
     public function getStatus()
     {
         // TODO: Implement getStatus() method.

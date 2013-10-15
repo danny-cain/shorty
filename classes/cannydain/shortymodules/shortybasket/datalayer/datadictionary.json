@@ -14,6 +14,18 @@
                 "type":"int",
                 "property":"_id",
                 "size":11
+            },
+			{
+                "column":"billingAddress",
+                "type":"int",
+                "property":"_billingAddress",
+                "size":11
+            },
+			{
+                "column":"deliveryAddress",
+                "type":"int",
+                "property":"_deliveryAddress",
+                "size":11
             }
         ]
     },

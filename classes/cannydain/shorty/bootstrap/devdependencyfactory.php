@@ -4,7 +4,14 @@ namespace CannyDain\Shorty\Bootstrap;
 
 use CannyDain\Lib\Database\Listeners\FileLoggerQueryListener;
 use CannyDain\Lib\Routing\Models\Route;
+use CannyDain\Lib\Routing\Routers\CompositeRouter;
 use CannyDain\Shorty\Config\ShortyConfiguration;
+use CannyDain\Shorty\Consumers\ModuleConsumer;
+use CannyDain\Shorty\Modules\ModuleManager;
+use CannyDain\Shorty\Routing\MappedModuleRouter;
+use CannyDain\Shorty\Routing\Models\ModuleMap;
+use CannyDain\ShortyModules\AddressManagement\AddressManagementModule;
+use CannyDain\ShortyModules\AddressManagement\Managers\ShortyAddressManager;
 use CannyDain\ShortyModules\CVLibrary\CVLibraryModule;
 use CannyDain\ShortyModules\Comments\CommentsModule;
 use CannyDain\ShortyModules\Comments\EventHandlers\NewCommentEmailHandler;
@@ -21,6 +28,7 @@ use CannyDain\ShortyModules\ShortyBasket\Helpers\ShortyBasketHelper;
 use CannyDain\ShortyModules\ShortyBasket\ShortyBasketModule;
 use CannyDain\ShortyModules\SimpleShop\Providers\SimpleShopProductProvider;
 use CannyDain\ShortyModules\SimpleShop\SimpleShopModule;
+use CannyDain\ShortyModules\Stories\StoriesModule;
 use CannyDain\ShortyModules\Tasks\Controllers\TasksController;
 use CannyDain\ShortyModules\Tasks\Providers\TasksObjectRegistryProvider;
 use CannyDain\ShortyModules\Tasks\Providers\TasksPermissionsInfoProvider;
@@ -54,6 +62,12 @@ class DevDependencyFactory extends BaseDependencyFactory
 
         return $manager;
     }
+
+    protected function _factory_addressManager()
+    {
+        return new ShortyAddressManager();
+    }
+
 
     protected function _factory_database()
     {
@@ -137,11 +151,8 @@ class DevDependencyFactory extends BaseDependencyFactory
         return new UsersModuleUserHelper();
     }
 
-
-    protected function _factory_modules()
+    protected function _initialiseModules(ModuleManager $moduleManager)
     {
-        $moduleManager = parent::_factory_modules();
-
         $moduleManager->loadModule(new TodoModule());
         $moduleManager->loadModule(new UsersModule(new Route(TasksController::CONTROLLER_NAME)));
         $moduleManager->loadModule(new CommentsModule());
@@ -153,8 +164,32 @@ class DevDependencyFactory extends BaseDependencyFactory
         $moduleManager->loadModule(new ObjectPermissionsModule());
         $moduleManager->loadModule(new FinanceModule());
         $moduleManager->loadModule(new CVLibraryModule());
-
-        return $moduleManager;
+        $moduleManager->loadModule(new AddressManagementModule());
+        $moduleManager->loadModule(new StoriesModule());
     }
+
+    protected function _factory_router()
+    {
+        $mappedRouter = new MappedModuleRouter(array
+        (
+            new ModuleMap(TodoModule::TODO_MODULE_CLASS, 'todo', TodoModule::CONTROLLER_NAMESPACE),
+            new ModuleMap(UsersModule::USERS_MODULE_CLASS, 'users', UsersModule::CONTROLLER_NAMESPACE),
+            new ModuleMap(CommentsModule::COMMENTS_MODULE_CLASS, 'comments', CommentsModule::CONTROLLER_NAMESPACE),
+            new ModuleMap(ContentModule::CONTENT_MODULE_CLASS, 'content', ContentModule::CONTROLLER_NAMESPACE),
+            new ModuleMap(SimpleShopModule::SIMPLE_SHOP_MODULE_NAME, 'shop', SimpleShopModule::CONTROLLER_NAMESPACE),
+            new ModuleMap(InvoiceModule::INVOICE_MODULE_NAME, 'invoices', InvoiceModule::CONTROLLER_NAMESPACE),
+            new ModuleMap(ShortyBasketModule::SHORTY_BASKET_MODULE_NAME, 'basket', ShortyBasketModule::CONTROLLER_NAMESPACE),
+            new ModuleMap(TasksModule::TASKS_MODULE_NAME, 'tasks', TasksModule::CONTROLLER_NAMESPACE),
+            new ModuleMap(ObjectPermissionsModule::OBJECT_PERMISSIONS_MODULE_NAME, 'object-permissions', ObjectPermissionsModule::CONTROLLER_NAMESPACE),
+            new ModuleMap(FinanceModule::FINANCE_MODULE_NAME, 'finance', FinanceModule::CONTROLLER_NAMESPACE),
+            new ModuleMap(CVLibraryModule::MODULE_NAME, 'cv', CVLibraryModule::CONTROLLER_NAMESPACE),
+            new ModuleMap(AddressManagementModule::MODULE_NAME, 'addresses', AddressManagementModule::CONTROLLER_NAMESPACE),
+            new ModuleMap(StoriesModule::STORY_MODULE_NAME, 'stories', StoriesModule::CONTROLLER_NAMESPACE),
+        ));
+
+        $fallbackRouter = parent::_factory_router();
+        return new CompositeRouter(array($mappedRouter,$fallbackRouter));
+    }
+
 
 }

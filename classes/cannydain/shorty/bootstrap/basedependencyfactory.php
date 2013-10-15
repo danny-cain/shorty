@@ -179,9 +179,16 @@ class BaseDependencyFactory implements DependencyFactoryInterface
         return new SimpleGuidManager();
     }
 
+    protected function _initialiseModules(ModuleManager $moduleManager)
+    {
+
+    }
+
     protected function _factory_modules()
     {
         $manager = new ModuleManager();
+
+        $this->_initialiseModules($manager);
 
         return $manager;
     }

@@ -34,6 +34,8 @@ class InvoiceManager extends \CannyDain\Shorty\Finance\InvoiceManager implements
     {
         $invoice = $this->_invoiceModule->getDatasource()->createInvoice();
 
+        $invoice->setBillingAddress($basket->getBillingAddress());
+        $invoice->setDeliveryAddress($basket->getDeliveryAddress());
         $invoice->setStatus(InvoiceInterface::STATUS_TO_BE_INVOICED);
         $invoice->save();
 

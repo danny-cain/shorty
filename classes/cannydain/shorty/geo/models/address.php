@@ -4,6 +4,17 @@ namespace CannyDain\Shorty\Geo\Models;
 
 class Address
 {
+    const OBJECT_TYPE_ADDRESS = __CLASS__;
+
+    const FIELD_NAME = 'name';
+    const FIELD_ADDRESS1 = 'address1';
+    const FIELD_ADDRESS2 = 'address2';
+    const FIELD_ADDRESS3 = 'address3';
+    const FIELD_TOWN = 'town';
+    const FIELD_COUNTY = 'county';
+    const FIELD_COUNTRY = 'country';
+    const FIELD_POSTCODE = 'postcode';
+
     protected $_id = 0;
     protected $_name = '';
     protected $_address1 = '';
@@ -14,6 +25,37 @@ class Address
     protected $_country = '';
     protected $_postcode = '';
     protected $_userID = 0;
+
+    public function getFullAddress($delimiter = "\r\n")
+    {
+        $parts = array();
+
+        if ($this->_name != '')
+            $parts[] = $this->_name;
+
+        if ($this->_address1 != '')
+            $parts[] = $this->_address1;
+
+        if ($this->_address2 != '')
+            $parts[] = $this->_address2;
+
+        if ($this->_address3 != '')
+            $parts[] = $this->_address3;
+
+        if ($this->_town != '')
+            $parts[] = $this->_town;
+
+        if ($this->_county != '')
+            $parts[] = $this->_county;
+
+        if ($this->_country != '')
+            $parts[] = $this->_country;
+
+        if ($this->_postcode != '')
+            $parts[] = $this->_postcode;
+
+        return implode($delimiter, $parts);
+    }
 
     public function setUserID($userID)
     {

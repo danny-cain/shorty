@@ -33,6 +33,11 @@ abstract class ShortyModuleController extends ShortyController implements Module
         return $this->_modules->getModuleByClassname($this->_getModuleClassname());
     }
 
+    public function moduleName()
+    {
+        return $this->_getModuleClassname();
+    }
+
     public function consumeModuleManager(ModuleManager $manager)
     {
         $this->_modules = $manager;

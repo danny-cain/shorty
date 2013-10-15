@@ -9,6 +9,7 @@ use CannyDain\ShortyModules\CVLibrary\Datasource\CVLibraryDatasource;
 class CVLibraryModule extends ShortyModule
 {
     const MODULE_NAME = __CLASS__;
+    const CONTROLLER_NAMESPACE = '\\CannyDain\\ShortyModules\\CVLibrary\\Controllers';
 
     /**
      * Allows the module to perform any initialisation actions (i.e. loading in session etc)

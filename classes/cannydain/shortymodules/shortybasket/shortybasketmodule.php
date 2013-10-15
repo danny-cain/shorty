@@ -9,6 +9,7 @@ use CannyDain\ShortyModules\ShortyBasket\DataLayer\ShortyBasketDatalayer;
 class ShortyBasketModule extends ShortyModule
 {
     const SHORTY_BASKET_MODULE_NAME = __CLASS__;
+    const CONTROLLER_NAMESPACE = '\\CannyDain\\ShortyModules\\ShortyBasket\\Controllers';
 
     /**
      * Allows the module to perform any initialisation actions (i.e. loading in session etc)

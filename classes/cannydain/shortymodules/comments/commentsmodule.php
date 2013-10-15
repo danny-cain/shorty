@@ -10,6 +10,7 @@ class CommentsModule extends ShortyModule
 {
     const EVENT_COMMENT_POSTED = '\\CannyDain\\ShortyModules\\Comments\\Events\\CommentPostedEvent';
     const COMMENTS_MODULE_CLASS = __CLASS__;
+    const CONTROLLER_NAMESPACE = '\\CannyDain\\ShortyModules\\Comments\\Controllers';
 
     /**
      * @return CommentsDatasource

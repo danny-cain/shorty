@@ -9,6 +9,7 @@ use CannyDain\Shorty\Modules\Models\ModuleInfoModel;
 class FinanceModule extends ShortyModule
 {
     const FINANCE_MODULE_NAME = __CLASS__;
+    const CONTROLLER_NAMESPACE = '\\CannyDain\\ShortyModules\\Finance\\Controllers';
 
     /**
      * Allows the module to perform any initialisation actions (i.e. loading in session etc)
