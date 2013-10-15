@@ -26,11 +26,21 @@ class Email
 
     protected $_subject = '';
     protected $_body = '';
-
+    protected $_plainTextBody = '';
     /**
      * @var Attachment[]
      */
     protected $_attachments = array();
+
+    public function setPlainTextBody($plainTextBody)
+    {
+        $this->_plainTextBody = $plainTextBody;
+    }
+
+    public function getPlainTextBody()
+    {
+        return $this->_plainTextBody;
+    }
 
     public function setBody($body)
     {
