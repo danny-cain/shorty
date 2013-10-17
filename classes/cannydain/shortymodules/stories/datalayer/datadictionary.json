@@ -32,6 +32,18 @@
                 "type":"varchar",
                 "property":"_description",
                 "size":1000
+            },
+			{
+                "column":"rearCover",
+                "type":"varchar",
+                "property":"_frontCoverImage",
+                "size":1000
+            },
+			{
+                "column":"frontCover",
+                "type":"varchar",
+                "property":"_rearCoverImage",
+                "size":1000
             }
         ]
     },

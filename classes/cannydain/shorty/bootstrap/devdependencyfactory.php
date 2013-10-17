@@ -22,6 +22,8 @@ use CannyDain\ShortyModules\Finance\Providers\FinanceObjectProvider;
 use CannyDain\ShortyModules\Invoice\Controllers\InvoiceController;
 use CannyDain\ShortyModules\Invoice\InvoiceModule;
 use CannyDain\ShortyModules\Invoice\Manager\InvoiceManager;
+use CannyDain\ShortyModules\MailHistory\Emailer\MailHistoryEmailerWrapper;
+use CannyDain\ShortyModules\MailHistory\MailHistoryModule;
 use CannyDain\ShortyModules\ObjectPermissions\Manager\ObjectPermissionsManager;
 use CannyDain\ShortyModules\ObjectPermissions\ObjectPermissionsModule;
 use CannyDain\ShortyModules\ShortyBasket\Helpers\ShortyBasketHelper;
@@ -136,6 +138,12 @@ class DevDependencyFactory extends BaseDependencyFactory
         return $eventManager;
     }
 
+    protected function _factory_emailer()
+    {
+        return new MailHistoryEmailerWrapper(null);
+    }
+
+
     protected function _factory_comments()
     {
         return new CommentsManager();
@@ -165,7 +173,8 @@ class DevDependencyFactory extends BaseDependencyFactory
         $moduleManager->loadModule(new FinanceModule());
         $moduleManager->loadModule(new CVLibraryModule());
         $moduleManager->loadModule(new AddressManagementModule());
-        $moduleManager->loadModule(new StoriesModule());
+        $moduleManager->loadModule(new StoriesModule(''));
+        $moduleManager->loadModule(new MailHistoryModule());
     }
 
     protected function _factory_router()
@@ -185,6 +194,7 @@ class DevDependencyFactory extends BaseDependencyFactory
             new ModuleMap(CVLibraryModule::MODULE_NAME, 'cv', CVLibraryModule::CONTROLLER_NAMESPACE),
             new ModuleMap(AddressManagementModule::MODULE_NAME, 'addresses', AddressManagementModule::CONTROLLER_NAMESPACE),
             new ModuleMap(StoriesModule::STORY_MODULE_NAME, 'stories', StoriesModule::CONTROLLER_NAMESPACE),
+            new ModuleMap(MailHistoryModule::MODULE_NAME, 'mail', MailHistoryModule::CONTROLLER_PATH),
         ));
 
         $fallbackRouter = parent::_factory_router();

@@ -16,6 +16,16 @@ class MailGunAPIClient
         $this->_domain = $_domain;
     }
 
+    public function setApiURL($apiURL)
+    {
+        $this->_apiURL = $apiURL;
+    }
+
+    public function getApiURL()
+    {
+        return $this->_apiURL;
+    }
+
     public function setDomain($domain)
     {
         $this->_domain = $domain;
@@ -32,43 +42,34 @@ class MailGunAPIClient
         if($text== '')
             $text = 'No Text Version';
 
-        $to = array();
-        $cc = array();
-        $bcc = array();
-        $attachments = array();
-
-        foreach ($email->getRecipients() as $recipient)
-            $to[] = $recipient->getEmail();
-
-        foreach ($email->getBlindCarbonCopyRecipients() as $recipient)
-            $bcc[] = $recipient->getEmail();
-
-        foreach ($email->getCarbonCopyRecipients() as $recipient)
-            $cc[] = $recipient->getEmail();
-
-        foreach ($email->getAttachments() as $attachment)
-            $attachments[] = '@'.$attachment->getSourceFile();
-
         $params = array
         (
             'from' => $email->getSender()->getName().' <'.$email->getSender()->getEmail().'>',
             'subject' => $email->getSubject(),
             'html' => $email->getBody(),
             'text'=> $text,
-            'to' => $to,
-            'cc' => $cc,
-            'bcc' => $bcc,
-            'attachment' => $attachments
         );
 
+        foreach ($email->getAttachments() as $index => $attach)
+            $params['attachment['.$index.']'] = '@'.$attach->getSourceFile();
+
+        foreach($email->getRecipients() as $index => $recip)
+            $params['to['.$index.']'] = $recip->getEmail();
+
+        foreach ($email->getCarbonCopyRecipients() as $index => $recip)
+            $params['cc['.$index.']'] = $recip->getEmail();
+
+        foreach ($email->getBlindCarbonCopyRecipients() as $index => $recip)
+            $params['bcc['.$index.']'] = $recip->getEmail();
+
         $curl = curl_init($this->_apiURL.'/'.$this->_domain.'/messages');
-        curl_setopt($curl, CURLOPT_POST, true);
-        curl_setopt($curl, CURLOPT_POSTFIELDS, http_build_query($params));
         curl_setopt($curl, CURLOPT_USERPWD, 'api:'.$this->_apiKey);
         curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
         curl_setopt($curl, CURLOPT_SSL_VERIFYHOST, false);
         curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, false);
         curl_setopt($curl, CURLOPT_HEADER, array("Content-Type: multipart/form-data"));
+        curl_setopt($curl, CURLOPT_POST, true);
+        curl_setopt($curl, CURLOPT_POSTFIELDS, $params);
 
         $response = curl_exec($curl);
         $data = json_decode($response, true);

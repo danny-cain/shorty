@@ -11,10 +11,34 @@ class Story extends ShortyGUIDModel
     const FIELD_NAME = 'name';
     const FIELD_AUTHOR = 'author';
     const FIELD_DESCRIPTION = 'description';
+    const FIELD_FRONT_COVER = 'front-cover';
+    const FIELD_REAR_COVER = 'rear-cover';
 
     protected $_name = '';
     protected $_author = 0;
     protected $_description = '';
+    protected $_frontCoverImage = '';
+    protected $_rearCoverImage = '';
+
+    public function setFrontCoverImage($frontCoverImage)
+    {
+        $this->_frontCoverImage = $frontCoverImage;
+    }
+
+    public function getFrontCoverImage()
+    {
+        return $this->_frontCoverImage;
+    }
+
+    public function setRearCoverImage($rearCoverImage)
+    {
+        $this->_rearCoverImage = $rearCoverImage;
+    }
+
+    public function getRearCoverImage()
+    {
+        return $this->_rearCoverImage;
+    }
 
     public function setAuthor($author)
     {

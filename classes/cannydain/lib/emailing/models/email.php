@@ -32,6 +32,11 @@ class Email
      */
     protected $_attachments = array();
 
+    public function addAttachment(Attachment $attachment)
+    {
+        $this->_attachments[] = $attachment;
+    }
+
     public function setPlainTextBody($plainTextBody)
     {
         $this->_plainTextBody = $plainTextBody;

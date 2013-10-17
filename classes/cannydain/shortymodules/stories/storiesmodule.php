@@ -11,6 +11,19 @@ class StoriesModule extends ShortyModule
     const STORY_MODULE_NAME = __CLASS__;
     const CONTROLLER_NAMESPACE = '\\CannyDain\\ShortyModules\\Stories\\Controllers';
 
+    protected $_imagePath = '';
+
+    function __construct($_imagePath)
+    {
+        $this->_imagePath = $_imagePath;
+    }
+
+
+    public function getImagePath()
+    {
+        return $this->_imagePath;
+    }
+
     /**
      * Allows the module to perform any initialisation actions (i.e. loading in session etc)
      * @return void
