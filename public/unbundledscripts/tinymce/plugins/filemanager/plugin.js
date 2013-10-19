@@ -9,13 +9,13 @@ tinymce.PluginManager.add('filemanager', function(editor, url) {
 		if (content == '')
 			content = prompt("Enter a title for this link");
 
-		editor.insertContent("<a href=\"/" + uri + "\">" + content + "</a>");
+		editor.insertContent("<a href=\"" + uri + "\">" + content + "</a>");
 		return true;
 	};
 
 	var insertImage = function(uri)
 	{
-		editor.insertContent("<img src=\"/" + uri + "\" />");
+		editor.insertContent("<img src=\"" + uri + "\" />");
 	};
 
 	editor.addButton('insertinternalimage',

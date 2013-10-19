@@ -2,14 +2,22 @@
 
 namespace CannyDain\ShortyModules\Content;
 
+use CannyDain\Shorty\Consumers\RouteManagerConsumer;
 use CannyDain\Shorty\Modules\Base\ShortyModule;
 use CannyDain\Shorty\Modules\Models\ModuleInfoModel;
+use CannyDain\Shorty\Routing\RouteManager;
 use CannyDain\ShortyModules\Content\Datasource\ContentDatasource;
+use CannyDain\ShortyModules\Content\Providers\ContentRouteProvider;
 
-class ContentModule extends ShortyModule
+class ContentModule extends ShortyModule implements RouteManagerConsumer
 {
     const CONTENT_MODULE_CLASS = __CLASS__;
     const CONTROLLER_NAMESPACE = '\\CannyDain\\ShortyModules\\Content\\Controllers';
+
+    /**
+     * @var RouteManager
+     */
+    protected $_routeManager;
 
     /**
      * @return ContentDatasource
@@ -33,7 +41,7 @@ class ContentModule extends ShortyModule
      */
     public function initialise()
     {
-
+        $this->_routeManager->addProvider(new ContentRouteProvider($this->getDatasource()));
     }
 
     /**
@@ -42,5 +50,10 @@ class ContentModule extends ShortyModule
     public function getInfo()
     {
         return new ModuleInfoModel('Content Module', 'Danny Cain', '0.1');
+    }
+
+    public function consumeRouteManager(RouteManager $manager)
+    {
+        $this->_routeManager = $manager;
     }
 }

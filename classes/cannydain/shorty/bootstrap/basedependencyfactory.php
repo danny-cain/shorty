@@ -32,6 +32,7 @@ use CannyDain\Shorty\Helpers\UserHelper;
 use CannyDain\Shorty\Helpers\ViewHelper\ViewHelper;
 use CannyDain\Shorty\Modules\ModuleManager;
 use CannyDain\Shorty\RouteAccessControl\DefaultRouteAccessControl;
+use CannyDain\Shorty\Routing\RouteManager;
 
 class BaseDependencyFactory implements DependencyFactoryInterface
 {
@@ -59,6 +60,7 @@ class BaseDependencyFactory implements DependencyFactoryInterface
     const CONSUMER_OBJECT_PERMISSIONS = '\\CannyDain\\Shorty\\Consumers\\ObjectPermissionsConsumer';
     const CONSUMER_CONTROLLER_FACTORY = '\\CannyDain\\Shorty\\Consumers\\ControllerFactoryConsumer';
     const CONSUMER_FILE_MANAGER = '\\CannyDain\\Shorty\\Consumers\\FileManagerConsumer';
+    const CONSUMER_ROUTE_MANAGER = '\\CannyDain\\Shorty\\Consumers\\RouteManagerConsumer';
 
     /**
      * @var DependencyInjector
@@ -100,7 +102,18 @@ class BaseDependencyFactory implements DependencyFactoryInterface
             self::CONSUMER_OBJECT_PERMISSIONS,
             self::CONSUMER_CONTROLLER_FACTORY,
             self::CONSUMER_FILE_MANAGER,
+            self::CONSUMER_ROUTE_MANAGER,
         );
+    }
+
+    /**
+     * @return RouteManager
+     */
+    protected function _factory_routeManager()
+    {
+        $manager = new RouteManager();
+
+        return $manager;
     }
 
     /**
@@ -350,6 +363,9 @@ class BaseDependencyFactory implements DependencyFactoryInterface
                 break;
             case self::CONSUMER_FILE_MANAGER:
                 $this->_cachedDependenciesByInterface[$consumerInterface] = $this->_factory_fileManager();
+                break;
+            case self::CONSUMER_ROUTE_MANAGER:
+                $this->_cachedDependenciesByInterface[$consumerInterface] = $this->_factory_routeManager();
                 break;
             default:
                 $object = $this->_createOtherInstance($consumerInterface);

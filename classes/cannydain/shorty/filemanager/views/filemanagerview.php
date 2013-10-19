@@ -4,11 +4,18 @@ namespace CannyDain\Shorty\FileManager\Views;
 
 use CannyDain\Lib\Routing\Models\Route;
 use CannyDain\Shorty\FileManager\Models\FileModel;
+use CannyDain\Shorty\FileManager\Models\PageTypeModel;
 use CannyDain\Shorty\Views\ShortyView;
 
 class FileManagerView extends ShortyView
 {
     protected $_path = '';
+
+    /**
+     * @var PageTypeModel[]
+     */
+    protected $_pageTypes = array();
+
     /**
      * @var FileModel[]
      */
@@ -28,6 +35,10 @@ class FileManagerView extends ShortyView
         echo '<div class="fileManager">';
             foreach ($this->_listing as $entry)
                 $this->_displayEntry($entry);
+
+            foreach ($this->_pageTypes as $type)
+                $this->_displayType($type);
+
         echo '</div>';
 
         $fileActionStr = json_encode($this->_fileActions);
@@ -141,6 +152,22 @@ JS;
         echo '</script>';
     }
 
+    protected function _displayType(PageTypeModel $type)
+    {
+        echo '<h2>'.$type->getName().'</h2>';
+        foreach ($type->getRoutes() as $route)
+        {
+            $classes = array('directoryChild', 'file');
+            $uri = $this->_router->getURI($route);
+            $path = $uri;
+            $name = $route->getName();
+
+            echo '<div data-webpath="'.$uri.'" data-path="'.$path.'" data-name="'.$name.'" class="'.implode(' ', $classes).'">';
+                echo $route->getName();
+            echo '</div>';
+        }
+    }
+
     protected function _displayEntry(FileModel $entry)
     {
         $classes = array();
@@ -162,6 +189,16 @@ JS;
             else
                 echo $entry->getName();
         echo '</div>';
+    }
+
+    public function setPageTypes($pageTypes)
+    {
+        $this->_pageTypes = $pageTypes;
+    }
+
+    public function getPageTypes()
+    {
+        return $this->_pageTypes;
     }
 
     public function setDirectoryActions($directoryActions)
