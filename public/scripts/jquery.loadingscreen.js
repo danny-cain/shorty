@@ -28,11 +28,34 @@
 					},
 					show : function()
 					{
-						this._loadingScreen.css('position', 'absolute')
-										   .css('left', this._target.position().left)
-										   .css('top', this._target.position().top)
-										   .css('width', this._target.outerWidth())
-										   .css('height', this._target.outerHeight());
+						var width = this._target.width();
+						var height = this._target.height();
+						var left = 0;
+						var top = 0;
+
+						try
+						{
+							left = this._target.position().left;
+							top = this._target.position().top;
+						}
+						catch(error) {}
+
+						if (this._target.outerWidth() != undefined)
+							width = this._target.outerWidth();
+
+						if (this._target.outerHeight() != undefined)
+							height = this._target.outerHeight();
+
+						if (this._target.get(0) == window)
+							this._loadingScreen.css('position', 'fixed');
+						else
+							this._loadingScreen.css('position', 'absolute');
+
+						this._loadingScreen.css('left', left);
+						this._loadingScreen.css('top', top);
+						this._loadingScreen.css('width', width);
+						this._loadingScreen.css('height', height);
+
 						this._loadingScreen.show();
 					},
 					hide : function()

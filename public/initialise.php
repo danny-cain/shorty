@@ -78,8 +78,6 @@ class ShortyInit
 
         $config->setValue(\CannyDain\Shorty\Config\ShortyConfiguration::KEY_FILE_SYSTEM_ROOT, $root);
         $config->setValue(\CannyDain\Shorty\Config\ShortyConfiguration::KEY_PUBLIC_ROOT, $publicRoot);
-        $config->setValue(\CannyDain\Shorty\Config\ShortyConfiguration::KEY_STYLE_ROOT, $publicRoot.'styles/');
-        $config->setValue(\CannyDain\Shorty\Config\ShortyConfiguration::KEY_SCRIPT_ROOT, $publicRoot.'scripts/');
         $config->setValue(\CannyDain\Shorty\Config\ShortyConfiguration::KEY_PRIVATE_DATA_ROOT, $root.'private/');
 
         return $config;

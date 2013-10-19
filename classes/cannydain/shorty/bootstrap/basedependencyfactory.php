@@ -20,6 +20,8 @@ use CannyDain\Shorty\Config\ShortyConfiguration;
 use CannyDain\Shorty\ECommerce\Basket\BasketHelper;
 use CannyDain\Shorty\ECommerce\Products\ProductManager;
 use CannyDain\Shorty\Events\EventManager;
+use CannyDain\Shorty\FileManager\FileManager;
+use CannyDain\Shorty\FileManager\FileManagerInterface;
 use CannyDain\Shorty\Finance\InvoiceManager;
 use CannyDain\Shorty\Finance\PaymentManager;
 use CannyDain\Shorty\Geo\AddressManager;
@@ -56,6 +58,7 @@ class BaseDependencyFactory implements DependencyFactoryInterface
     const CONSUMER_PRODUCT_MANAGER = '\\CannyDain\\Shorty\\Consumers\\ProductManagerConsumer';
     const CONSUMER_OBJECT_PERMISSIONS = '\\CannyDain\\Shorty\\Consumers\\ObjectPermissionsConsumer';
     const CONSUMER_CONTROLLER_FACTORY = '\\CannyDain\\Shorty\\Consumers\\ControllerFactoryConsumer';
+    const CONSUMER_FILE_MANAGER = '\\CannyDain\\Shorty\\Consumers\\FileManagerConsumer';
 
     /**
      * @var DependencyInjector
@@ -96,7 +99,22 @@ class BaseDependencyFactory implements DependencyFactoryInterface
             self::CONSUMER_PRODUCT_MANAGER,
             self::CONSUMER_OBJECT_PERMISSIONS,
             self::CONSUMER_CONTROLLER_FACTORY,
+            self::CONSUMER_FILE_MANAGER,
         );
+    }
+
+    /**
+     * @return FileManagerInterface
+     */
+    protected function _factory_fileManager()
+    {
+        $fsRoot = $this->_config->getValue(ShortyConfiguration::KEY_PUBLIC_ROOT);
+        $webRoot = $this->_config->getValue(ShortyConfiguration::KEY_PUBLIC_ROOT);
+        $privateRoot = $this->_config->getValue(ShortyConfiguration::KEY_PRIVATE_DATA_ROOT);
+
+        $fileManager = new FileManager($webRoot, $fsRoot, $privateRoot);
+
+        return $fileManager;
     }
 
     /**
@@ -329,6 +347,9 @@ class BaseDependencyFactory implements DependencyFactoryInterface
                 break;
             case self::CONSUMER_CONTROLLER_FACTORY:
                 $this->_cachedDependenciesByInterface[$consumerInterface] = $this->_factory_controllerFactory();
+                break;
+            case self::CONSUMER_FILE_MANAGER:
+                $this->_cachedDependenciesByInterface[$consumerInterface] = $this->_factory_fileManager();
                 break;
             default:
                 $object = $this->_createOtherInstance($consumerInterface);

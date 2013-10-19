@@ -6,6 +6,7 @@ abstract class HTMLView implements ViewInterface
 {
     protected $_breadcrumbs = array();
     protected $_isAjax = false;
+    protected $_isFramed = false;
 
     /**
      * Todo: promote this to the ViewInterface
@@ -14,6 +15,16 @@ abstract class HTMLView implements ViewInterface
     public function setIsAjax($isAjax)
     {
         $this->_isAjax = $isAjax;
+    }
+
+    public function setIsFramed($isFramed)
+    {
+        $this->_isFramed = $isFramed;
+    }
+
+    public function getIsFramed()
+    {
+        return $this->_isFramed;
     }
 
     /**

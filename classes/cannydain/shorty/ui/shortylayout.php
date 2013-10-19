@@ -4,16 +4,13 @@ namespace CannyDain\Shorty\UI;
 
 use CannyDain\Lib\DependencyInjection\DependencyInjector;
 use CannyDain\Lib\Routing\Interfaces\RouterInterface;
-use CannyDain\Lib\Routing\Models\Route;
 use CannyDain\Lib\UI\Response\Layouts\Layout;
 use CannyDain\Shorty\Consumers\DependencyConsumer;
 use CannyDain\Shorty\Consumers\RouterConsumer;
 use CannyDain\Shorty\Consumers\SessionConsumer;
 use CannyDain\Shorty\Helpers\SessionHelper;
-use CannyDain\ShortyModules\Minifier\Controllers\MinifierController;
-use CannyDain\ShortyModules\SimpleShop\Views\MiniBasketView;
 
-class ShortyLayout extends Layout implements DependencyConsumer, RouterConsumer, SessionConsumer
+class ShortyLayout extends FramedViewLayout implements DependencyConsumer, RouterConsumer, SessionConsumer
 {
     /**
      * @var DependencyInjector
@@ -38,58 +35,9 @@ class ShortyLayout extends Layout implements DependencyConsumer, RouterConsumer,
                 echo '<title>Shorty Mk II</title>';
                 $this->_outputStylesheets();
                 $this->_outputScripts();
-                echo <<<HTML
-<script type="text/javascript">
-    $(document).ready(function()
-    {
-        $('body').on('mutation', function(e)
-        {
-            console.log(e);
-        })
-    });
-</script>
-HTML;
-
             echo '</head>';
 
             echo '<body>';
-    }
-
-    protected function _outputStylesheets()
-    {
-        echo '<link rel="stylesheet" type="text/css" href="/styles.php" />';
-    }
-
-    protected function _outputScripts()
-    {
-        echo '<script type="application/javascript" src="/scripts.php"></script>';
-        echo '<script type="application/javascript" src="/unbundledscripts/tinymce/tinymce.min.js"></script>';
-        echo '<script type="application/javascript" src="/unbundledscripts/filemanager/filemanager.js"></script>';
-        echo '<script type="application/javascript" src="/unbundledscripts/filemanager/tinymce.filemanager.js"></script>';
-
-        echo <<<HTML
-<script type="text/javascript">
-    tinymce.init(
-    {
-        selector : "textarea.richText",
-        plugins :
-        [
-            "advlist autolink lists link image charmap print preview hr anchor pagebreak",
-            "searchreplace wordcount visualblocks visualchars code fullscreen",
-            "insertdatetime media nonbreaking save table contextmenu directionality",
-            "emoticons template paste textcolor fileManager"
-        ],
-        toolbar1 : "insertfile undo redo | styleselect | bold italic | alignleft aligncnter alignright alignjustify | bullist numlist outdent indent | link image",
-        toolbar2 : "print preview media | forecolor backcolor emoticons",
-        convert_urls : false,
-        fileManager :
-        {
-            //view : filemanagerView
-        }
-    });
-</script>
-HTML;
-
     }
 
     protected function _displayPageHead()

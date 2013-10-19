@@ -23,6 +23,7 @@ use CannyDain\Shorty\Exceptions\ControllerNotFoundException;
 use CannyDain\Shorty\Exceptions\MethodNotFoundException;
 use CannyDain\Shorty\Exceptions\RoutingException;
 use CannyDain\Shorty\RouteAccessControl\RouteAccessControlInterface;
+use CannyDain\Shorty\UI\FramedViewLayout;
 use CannyDain\Shorty\UI\ShortyLayout;
 use CannyDain\Shorty\Views\Errors\ExceptionView;
 use CannyDain\Shorty\Views\Errors\NotAuthorisedView;
@@ -92,6 +93,11 @@ class ShortyMain implements AppMainInterface, DependencyConsumer, RouterConsumer
         if ($view instanceof HTMLView && $view->getIsAjax())
         {
             return new NullLayout($view->getContentType());
+        }
+
+        if ($view instanceof HTMLView && $view->getIsFramed())
+        {
+            return new FramedViewLayout();
         }
 
         return new ShortyLayout();

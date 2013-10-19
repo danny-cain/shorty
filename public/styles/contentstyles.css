@@ -1,0 +1,36 @@
+blockquote
+{
+	font-family: consolas, sans-serif;
+	margin-left: 20px;
+	border-top: 1px solid #ccc;
+	border-bottom: 1px solid #ccc;
+	background-color: #ddd;
+	padding: 5px 5px;
+}
+
+.highlight
+{
+	background-color: yellow;
+}
+
+button,
+.button
+{
+	display: inline-block;
+	font-size: 0.8em;
+	padding: 2px 5px;
+	border: 1px solid black;
+	font-style: italic;
+	cursor: pointer;
+	background-color: #ccc;
+	border-radius: 2px;
+	color: black;
+	text-decoration: none;
+	margin: 0 2px;
+}
+
+button:hover,
+.button:hover
+{
+	background-color: #ddd;
+}

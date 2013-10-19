@@ -16,12 +16,21 @@ class DirectMappedRouter implements RouterInterface
         $method = $route->getMethod();
         $params = $route->getParams();
 
-        $uri = '/'.$controller.'/'.$method.'/'.implode('/', $params);
+        $uri = '/'.$controller.'/'.$method;
+
+        foreach ($params as $param)
+        {
+            $uri .= '/'.urlencode($param);
+        }
+
         while (strpos($uri, '//') !== false)
             $uri = str_replace('//', '/', $uri);
 
         if (substr($uri, strlen($uri) - 1) == '/' && strlen($uri) > 1)
             $uri = substr($uri, 0, strlen($uri) - 1);
+
+        if (count($route->getRequestParameters()) > 0)
+            $uri .= '?'.$route->getRequestParametersAsURIEncodedString();
 
         return $uri;
     }

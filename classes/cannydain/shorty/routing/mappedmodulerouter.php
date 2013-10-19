@@ -33,6 +33,9 @@ class MappedModuleRouter implements RouterInterface
         foreach ($route->getParams() as $param)
             $uri .= '/'.$param;
 
+        if (count($route->getRequestParameters()) > 0)
+            $uri .= '?'.$route->getRequestParametersAsURIEncodedString();
+
         return $uri;
     }
 

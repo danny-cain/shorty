@@ -7,12 +7,57 @@ class Route
     protected $_controller = '';
     protected $_method = '';
     protected $_params = array();
+    protected $_requestParameters = array();
 
-    public function __construct($controller = '', $method = '', $params = array())
+    public function __construct($controller = '', $method = '', $params = array(), $requestParams = array())
     {
         $this->_controller = $controller;
         $this->_method = $method;
         $this->_params = $params;
+        $this->_requestParameters = $requestParams;
+    }
+
+    public function getRequestParametersAsURIEncodedString()
+    {
+        $ret = $this->flattenArrayForURIEncoding($this->_requestParameters);
+
+        return implode('&', $ret);
+    }
+
+    protected function flattenArrayForURIEncoding($array, $prefix = '')
+    {
+        $ret = array();
+
+        foreach ($array as $key => $val)
+        {
+            $key = urlencode($key);
+            if ($prefix == '')
+                $newKey = $key;
+            else
+                $newKey = $prefix.'['.$key.']';
+
+            if (is_array($val))
+            {
+                $ret = array_merge($ret, $this->flattenArrayForURIEncoding($val, $newKey));
+            }
+            else
+            {
+                $val = urlencode($val);
+                $ret[] = $newKey.'='.$val;
+            }
+        }
+
+        return $ret;
+    }
+
+    public function setRequestParameters($requestParameters)
+    {
+        $this->_requestParameters = $requestParameters;
+    }
+
+    public function getRequestParameters()
+    {
+        return $this->_requestParameters;
     }
 
     public function getRouteWithReplacements($replacements = array())
@@ -25,7 +70,25 @@ class Route
         foreach ($this->getParams() as $param)
             $params[] = strtr($param, $replacements);
 
+        $ret->setRequestParameters($this->_doReplacementsOnArray($this->getRequestParameters(), $replacements));
         $ret->setParams($params);
+
+        return $ret;
+    }
+
+    protected function _doReplacementsOnArray($array, $replacements)
+    {
+        $ret = array();
+
+        foreach ($array as $key => $val)
+        {
+            if (is_array($val))
+                $val = $this->_doReplacementsOnArray($val, $replacements);
+            else
+                $val = strtr($val, $replacements);
+
+            $ret[$key] = $val;
+        }
 
         return $ret;
     }

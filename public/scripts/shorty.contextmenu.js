@@ -1,7 +1,11 @@
-function MenuInfo(caption, callback)
+function MenuInfo(caption, callback, data)
 {
 	this.caption = caption;
 	this.callback = callback;
+	if (data == undefined)
+		this.data = {};
+	else
+		this.data = data;
 }
 
 if (window.contextMenu == undefined)
@@ -9,6 +13,23 @@ if (window.contextMenu == undefined)
 	window.contextMenu =
 	{
 		menuElement : $('<div class="contextMenu" style="display: none; position: absolute; "></div>'),
+		bindMenu : function(domElement, menuInfo)
+		{
+			var self = this;
+
+			domElement.bind('click', function()
+			{
+				var data = {};
+
+				try
+				{
+					data = JSON.parse($(this).attr('data-menuData'));
+				}
+				catch(error) {}
+
+				menuInfo.callback.call(self, data);
+			});
+		},
 		drawMenu : function(x, y, menuInfo, positioningCallback)
 		{
 			if (positioningCallback == undefined)
@@ -18,7 +39,10 @@ if (window.contextMenu == undefined)
 			for (var i = 0; i < menuInfo.length; i ++)
 			{
 				var element = $('<div class="menuItem">' + menuInfo[i].caption + '</div>');
-				element.bind('click', menuInfo[i].callback);
+
+				element.attr('data-menuData', JSON.stringify(menuInfo[i].data));
+
+				this.bindMenu(element, menuInfo[i]);
 				this.menuElement.append(element);
 			}
 
